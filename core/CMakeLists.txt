@@ -13,3 +13,10 @@ add_library(graphics STATIC
         graphics/Shader.h
         graphics/Shader.cpp
         )
+
+add_library(gameplay STATIC
+        gameplay/Command.h
+        gameplay/Command.cpp
+        gameplay/State.h
+        gameplay/State.cpp
+        )
