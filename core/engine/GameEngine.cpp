@@ -8,12 +8,14 @@
 #include <manager/AssetManager.h>
 
 GameEngine::GameEngine() {
-    EngineConfig config = {640, 480, "Hello World"};
-    this->config = config;
+    EngineConfig engineConfig = {640, 480, "Hello World"};
+    config = engineConfig;
+    init();
 }
 
-GameEngine::GameEngine(const EngineConfig &config) {
-    this->config = config;
+GameEngine::GameEngine(const EngineConfig &engineConfig) {
+    config = engineConfig;
+    init();
 }
 
 GameEngine::~GameEngine() {
@@ -23,23 +25,33 @@ GameEngine::~GameEngine() {
 }
 
 void GameEngine::start() {
-    this->init();
+//    this->init();
     this->gameLoop();
 }
 
 void GameEngine::init() {
-    this->window = initGLFW();
+    this->window = initGLFW(
+            this->config.width,
+            this->config.height,
+            this->config.title
+    );
     initGlad();
 
     // Initialize assets after opengl context is created
     AssetManager::initializeAssets();
 
+    // Set input manager
+    this->inputManager = new InputManager(this->window);
+
+    // Set the resize callback
     glfwSetWindowSizeCallback(this->window, onResize);
 }
 
 void GameEngine::gameLoop() {
     while (!glfwWindowShouldClose(this->window)) {
-        this->render();
+        inputManager->handleInput();
+
+        render();
 
         glfwSwapBuffers(this->window);
         glfwPollEvents();
@@ -51,8 +63,12 @@ void GameEngine::render() {
     // Update the model matrix from camera
 }
 
-GLFWwindow *initGLFW() {
-    GLFWwindow* window;
+void GameEngine::addInputListener(InputListener *listener) {
+    inputManager->addInputListener(listener);
+}
+
+GLFWwindow *initGLFW(int width, int height, const char *title) {
+    GLFWwindow *window;
 
     if (!glfwInit()) {
         std::cout << "Failed to initialize GLFW" << std::endl;
@@ -66,9 +82,10 @@ GLFWwindow *initGLFW() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
 
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if (!window) {
         glfwTerminate();
+
         std::cout << "Failed to create window" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -77,11 +94,11 @@ GLFWwindow *initGLFW() {
     unsigned int minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
     std::cout << "opengl shader version: " << major << "." << minor << std::endl;
 
-    // Make the window's context current
+// Make the window's context current
     glfwMakeContextCurrent(window);
 
-    // Disable cursor
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+// Disable cursor
+    glfwSetInputMode(window,GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwSetErrorCallback(error_callback);
 
@@ -89,16 +106,16 @@ GLFWwindow *initGLFW() {
 }
 
 void initGlad() {
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
 
-void onResize(GLFWwindow *window, int width, int height) {
+void onResize(GLFWwindow *, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void error_callback(int error, const char* description) {
+void error_callback(int, const char *description) {
     std::cerr << "GLFW Error: " << description << std::endl;
 }

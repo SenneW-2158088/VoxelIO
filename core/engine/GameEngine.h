@@ -10,8 +10,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <graphics/Uniform.h>
+#include <manager/InputManager.h>
 
-GLFWwindow *initGLFW();
+GLFWwindow *initGLFW(int width, int height, const char *title);
 
 void initGlad();
 
@@ -29,6 +30,7 @@ class GameEngine {
 private:
     GLFWwindow *window;
     EngineConfig config;
+    InputManager* inputManager;
     std::vector<Entity> entities{};
 private:
     void init();
@@ -37,6 +39,8 @@ private:
 
     void render();
 
+public:
+    void addInputListener(InputListener *listener);
 public:
     GameEngine();
 

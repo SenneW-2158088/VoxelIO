@@ -1,0 +1,9 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S "/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio" -B "/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/cmake-build-debug"
+-- GLM_INCLUDE_DIR = /Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/includes
+-- GLM included at /Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/includes
+-- Found GLFW3 in /opt/homebrew/include
+-- Found ASSIMP in /opt/homebrew/include;/opt/homebrew/include
+-- Included all libraries
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/cmake-build-debug

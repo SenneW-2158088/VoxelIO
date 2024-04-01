@@ -37,4 +37,7 @@ add_library(engine STATIC
 add_library(manager STATIC
         manager/AssetManager.h
         manager/AssetManager.cpp
+
+        manager/InputManager.h
+        manager/InputManager.cpp
         )

@@ -3,6 +3,7 @@
 //
 
 #include "Game.h"
+#include <model/Player.h>
 
 Game::Game() {
     EngineConfig config = EngineConfig {
@@ -15,5 +16,7 @@ Game::Game() {
 }
 
 void Game::start() {
+    Player* player = new PlayerImplementation();
+    engine->addInputListener(player);
     engine->start();
 }

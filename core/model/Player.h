@@ -8,12 +8,13 @@
 #include <model/Entity.h>
 #include <gameplay/Command.h>
 #include <gameplay/State.h>
+#include <manager/InputManager.h>
 
 
 /**
  * @brief Interface for the player class.
  */
-class Player : public Entity {
+class Player : public Entity, public InputListener {
 };
 
 /**
@@ -65,13 +66,13 @@ namespace PlayerCommands {
 /**
  * @brief Implementation of the player class.
  */
-class PlayerImplementation : public Entity {
+class PlayerImplementation : public Player {
 private:
     const float speed = -1.1f;
 protected:
-    void handleInput();
-
     void transition(PlayerStates::PlayerState *state);
+
+    void onKeyPressed(int key) override;
 
 public:
     void update(float dt) override;
