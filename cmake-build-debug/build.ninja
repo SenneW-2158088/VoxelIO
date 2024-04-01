@@ -224,6 +224,22 @@ build core/CMakeFiles/model.dir/model/Player.cpp.o: CXX_COMPILER__model_Debug /U
   OBJECT_DIR = core/CMakeFiles/model.dir
   OBJECT_FILE_DIR = core/CMakeFiles/model.dir/model
 
+build core/CMakeFiles/model.dir/model/Camera.cpp.o: CXX_COMPILER__model_Debug /Users/zenneh/Documents/University/2023-2024/Computer$ Graphics/voxelio/core/model/Camera.cpp || cmake_object_order_depends_target_model
+  DEFINES = -D_SOURCE_DIR="\"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio\""
+  DEP_FILE = core/CMakeFiles/model.dir/model/Camera.cpp.o.d
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -std=gnu++17
+  INCLUDES = -I"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/core" -I"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/include" -I/opt/homebrew/include
+  OBJECT_DIR = core/CMakeFiles/model.dir
+  OBJECT_FILE_DIR = core/CMakeFiles/model.dir/model
+
+build core/CMakeFiles/model.dir/model/Voxel.cpp.o: CXX_COMPILER__model_Debug /Users/zenneh/Documents/University/2023-2024/Computer$ Graphics/voxelio/core/model/Voxel.cpp || cmake_object_order_depends_target_model
+  DEFINES = -D_SOURCE_DIR="\"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio\""
+  DEP_FILE = core/CMakeFiles/model.dir/model/Voxel.cpp.o.d
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -std=gnu++17
+  INCLUDES = -I"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/core" -I"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/include" -I/opt/homebrew/include
+  OBJECT_DIR = core/CMakeFiles/model.dir
+  OBJECT_FILE_DIR = core/CMakeFiles/model.dir/model
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target model
@@ -232,7 +248,7 @@ build core/CMakeFiles/model.dir/model/Player.cpp.o: CXX_COMPILER__model_Debug /U
 #############################################
 # Link the static library core/libmodel.a
 
-build core/libmodel.a: CXX_STATIC_LIBRARY_LINKER__model_Debug core/CMakeFiles/model.dir/model/Entity.cpp.o core/CMakeFiles/model.dir/model/Player.cpp.o
+build core/libmodel.a: CXX_STATIC_LIBRARY_LINKER__model_Debug core/CMakeFiles/model.dir/model/Entity.cpp.o core/CMakeFiles/model.dir/model/Player.cpp.o core/CMakeFiles/model.dir/model/Camera.cpp.o core/CMakeFiles/model.dir/model/Voxel.cpp.o
   ARCH_FLAGS = -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = core/CMakeFiles/model.dir

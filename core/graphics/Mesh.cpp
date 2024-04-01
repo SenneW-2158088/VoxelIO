@@ -71,3 +71,7 @@ void Mesh::BaseMesh::scale() {
 }
 
 
+Mesh::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures,
+                 glm::vec3 size, glm::vec3 position) : BaseMesh{vertices, indices, textures}, size(size), position(position) {}
+Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
+                                   std::vector<unsigned int> textures, std::vector<glm::vec3> positions) : BaseMesh{vertices, indices, textures}, positions{positions}{}

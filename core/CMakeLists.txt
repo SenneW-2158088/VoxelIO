@@ -9,6 +9,12 @@ add_library(model STATIC
 
         model/Player.h
         model/Player.cpp
+
+        model/Camera.h
+        model/Camera.cpp
+
+        model/Voxel.h
+        model/Voxel.cpp
         )
 
 add_library(graphics STATIC
