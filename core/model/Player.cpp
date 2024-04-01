@@ -3,8 +3,3 @@
 //
 
 #include "Player.h"
-
-void Player::handleInput() {
-    // Handle input
-
-}

@@ -5,16 +5,11 @@
 #ifndef VOXELIO_GAME_H
 #define VOXELIO_GAME_H
 
-
-class GameConfig {
-
-};
+#include <engine/GameEngine.h>
 
 class Game {
-private:
-//    void gameloop();
-
-//    void render();
+protected:
+    GameEngine* engine;
 public:
     Game();
     void start();

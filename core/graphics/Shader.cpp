@@ -9,6 +9,7 @@
 #include <sstream>
 
 
+//TODO: Refactor shader, load from file of from code
 Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath) {
     this->program = glCreateProgram();
     this->vertexShader = compileShader(vertexPath, GL_VERTEX_SHADER);
@@ -18,7 +19,6 @@ Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath) {
     glAttachShader(this->program, this->fragmentShader);
 
     glLinkProgram(this->program);
-
 }
 
 Shader::~Shader() {

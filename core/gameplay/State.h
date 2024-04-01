@@ -8,16 +8,24 @@
 #include <optional>
 #include <model/Player.h>
 
+/**
+ * Base class for all states
+ */
+template<class T>
 class BaseState {
 protected:
-    Player* player;
+    T* entity;
 public:
-    explicit BaseState(Player* player) : player(player) {}
+    explicit BaseState(T* entity) : entity(entity) {}
     virtual ~BaseState() = default;
+
+    virtual void handleInput() = 0;
 
     virtual void onEnter() = 0;
 
     virtual void onExit() = 0;
 };
+
+// state tells
 
 #endif //VOXELIO_STATE_H

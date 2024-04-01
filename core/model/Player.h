@@ -9,18 +9,41 @@
 #include <gameplay/Command.h>
 #include <gameplay/State.h>
 
-class Player : public Entity {
-private:
-    const float speed = 0.1f;
-protected:
-    void handleInput();
-public:
-    Player() = default;
-    void update(float dt) override;
 
-    void draw() override;
+/**
+ * @brief Interface for the player class.
+ */
+class Player : public Entity {
 };
 
+/**
+ * @brief States for the player.
+ */
+namespace PlayerStates {
+    class PlayerState : public BaseState<Player> {
+    };
+
+    class IdleState : public PlayerState {
+
+    };
+
+    class WalkingState : public PlayerState {
+
+    };
+
+    class RunningState : public PlayerState {
+
+    };
+
+    class JumpingState : public PlayerState {
+
+    };
+}
+
+
+/**
+ * @brief Command to move the player in a certain direction.
+ */
 namespace PlayerCommands {
 
     class MoveCommand : public Command<Player> {
@@ -39,5 +62,21 @@ namespace PlayerCommands {
     };
 }
 
+/**
+ * @brief Implementation of the player class.
+ */
+class PlayerImplementation : public Entity {
+private:
+    const float speed = -1.1f;
+protected:
+    void handleInput();
+
+    void transition(PlayerStates::PlayerState *state);
+
+public:
+    void update(float dt) override;
+
+    void draw() override;
+};
 
 #endif //VOXELIO_PLAYER_H
