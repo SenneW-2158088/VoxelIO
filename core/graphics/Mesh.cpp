@@ -6,11 +6,6 @@
 #include <glad/glad.h>
 #include <iostream>
 
-Mesh::BaseMesh::BaseMesh() {
-    this->VAO = 0;
-    this->VBO = 0;
-}
-
 Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
                          std::vector<unsigned int> textures) :
         vertices(vertices), indices(indices), textures(textures) {
@@ -22,13 +17,11 @@ Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int>
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &this->vertices[0], GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Bind IBO
     glGenBuffers(1, &IBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &this->indices[0], GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // Calculate stride
     const unsigned int stride = sizeof(Vertex);
@@ -43,25 +36,27 @@ Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int>
 
     // Unbind VAO
     glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Mesh::BaseMesh::draw(Shader &shader) {
-
+void Mesh::BaseMesh::draw(Shader *shader) {
+    shader->use();
 
     // Bind buffers
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 
-    shader.use();
+
 
     // Validate program
     int success;
     char infoLog[512];
-    glValidateProgram(shader.getProgram());
-    glGetProgramiv(shader.getProgram(), GL_VALIDATE_STATUS, &success);
+    glValidateProgram(shader->getProgram());
+    glGetProgramiv(shader->getProgram(), GL_VALIDATE_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(shader.getProgram(), 512, NULL, infoLog);
+        glGetProgramInfoLog(shader->getProgram(), 512, NULL, infoLog);
         std::cout << "ERROR::PROGRAM::VALIDATION_FAILED\n" << infoLog << std::endl;
     }
 
@@ -88,12 +83,8 @@ void Mesh::BaseMesh::scale() {
 }
 
 
-Mesh::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures,
-                 glm::vec3 size, glm::vec3 position) : BaseMesh{vertices, indices, textures}, size(size),
-                                                       position(position) {}
+Mesh::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures) : BaseMesh{vertices, indices, textures}{}
 
 Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-                                   std::vector<unsigned int> textures,
-                                   std::vector<glm::vec3> positions) : BaseMesh{vertices, indices,
-                                                                                textures},
-                                                                       positions{positions} {}
+                                   std::vector<unsigned int> textures) : BaseMesh{vertices, indices,
+                                                                                textures}{}

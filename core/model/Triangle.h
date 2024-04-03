@@ -12,16 +12,9 @@
 
 class Triangle : public Entity {
 private:
-    unsigned int VAO, VBO, EBO;
-
+    Mesh::Mesh* mesh;
     Shader* shader;
 
-    const std::vector<Mesh::Vertex> vertices = {
-            {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
-            {{0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},
-            {{0.0f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 1.0f}}
-    };
-    const std::vector<unsigned int> indices = {0, 1, 2};
 public:
     Triangle();
     void update(float dt) override;

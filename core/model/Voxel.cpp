@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Voxel::Voxel() :
-        mesh{new Mesh::Mesh(vertices, indices, {}, glm::vec3{1.0f}, glm::vec3{0.0f})},
+        mesh{new Mesh::Mesh(vertices, indices, {})},
         shader{AssetManager::getShader("basic")} {
 
 //    this->shader->setBlockBinding("Matrices", 0);
@@ -28,5 +28,5 @@ void Voxel::draw() {
 //    model = glm::translate(model, this->position);
 //
 //    shader->setMat4("model", model);
-    mesh->draw(*shader);
+    mesh->draw(shader);
 }
