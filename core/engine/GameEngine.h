@@ -31,6 +31,7 @@ private:
     GLFWwindow *window;
     EngineConfig config;
     InputManager *inputManager;
+    Uniform::GameUniform *uniform;
     std::vector<Entity*> entities{};
 private:
     void init();
@@ -52,6 +53,8 @@ public:
     ~GameEngine();
 
     void start();
+
+    void resize(int width, int height);
 };
 
 

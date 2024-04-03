@@ -22,6 +22,8 @@ namespace Mesh {
             unsigned int VBO{};
             unsigned int IBO{};
 
+            glm::mat4 model;
+
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
             std::vector<unsigned int> textures;
@@ -31,9 +33,9 @@ namespace Mesh {
             BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures);
 
             // Simple Mesh operations
-            virtual void move(glm::vec3 position);
-            virtual void rotate();
-            virtual void scale();
+            virtual void move(const glm::vec3 position);
+            virtual void rotate(const float rotation, const glm::vec3 axis);
+            virtual void scale(const glm::vec3 scale);
 
             virtual void draw(Shader *shader);
     };

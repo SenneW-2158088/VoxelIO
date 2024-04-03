@@ -22,6 +22,8 @@ Game::Game() {
 
 void Game::start() {
     Triangle *triangle = new Triangle();
+    Voxel *voxel = new Voxel();
     engine->addEntity(triangle);
+    engine->addEntity(voxel);
     engine->start();
 }

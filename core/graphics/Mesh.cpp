@@ -5,10 +5,11 @@
 #include "Mesh.h"
 #include <glad/glad.h>
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
                          std::vector<unsigned int> textures) :
-        vertices(vertices), indices(indices), textures(textures) {
+        vertices(vertices), indices(indices), textures(textures), model{1.f} {
     // Bind VAO
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -41,7 +42,10 @@ Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int>
 }
 
 void Mesh::BaseMesh::draw(Shader *shader) {
+
     shader->use();
+//    shader->setBlockBinding("Matrices", 0);
+    shader->setMat4("model", model);
 
     // Bind buffers
     glBindVertexArray(VAO);
@@ -71,15 +75,15 @@ void Mesh::BaseMesh::draw(Shader *shader) {
 }
 
 void Mesh::BaseMesh::move(glm::vec3 position) {
-
+    model = glm::translate(model, position);
 }
 
-void Mesh::BaseMesh::rotate() {
-
+void Mesh::BaseMesh::rotate(const float rotation, const glm::vec3 axis) {
+    model = glm::rotate(model, glm::radians(90.f), axis);
 }
 
-void Mesh::BaseMesh::scale() {
-
+void Mesh::BaseMesh::scale(const glm::vec3 scale) {
+    model = glm::scale(model, scale);
 }
 
 

@@ -18,10 +18,10 @@ namespace Uniform {
     private:
         glm::mat4 projection;
         glm::mat4 view;
-        glm::vec3 viewPos;
+        glm::vec4 viewPos;
     public:
     public:
-        GameUniform(glm::mat4 projection, glm::mat4 view, glm::vec3 viewPos);
+        GameUniform(glm::mat4 projection, glm::mat4 view, glm::vec4 viewPos);
         ~GameUniform();
 
         inline glm::mat4 getProjection() const {
@@ -32,7 +32,7 @@ namespace Uniform {
             return view;
         }
 
-        inline glm::vec3 getViewPos() const {
+        inline glm::vec4 getViewPos() const {
             return viewPos;
         }
 
@@ -41,7 +41,7 @@ namespace Uniform {
 
         void setView(glm::mat4 view);
 
-        void setViewPos(glm::vec3 viewPos);
+        void setViewPos(glm::vec4 viewPos);
     };
 }
 

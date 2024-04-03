@@ -135,6 +135,11 @@ void Shader::setMat4(const std::string &name, const glm::mat4 &mat) const {
 }
 
 void Shader::setBlockBinding(const std::string &uniformBlockName, int uniformBlockBinding) const {
-    glUniformBlockBinding(this->program, glGetUniformBlockIndex(this->program, uniformBlockName.c_str()), uniformBlockBinding);
+    const int index = glGetUniformBlockIndex(this->program, uniformBlockName.c_str());
+    if (index == GL_INVALID_INDEX) {
+        std::cout << "Failed to find uniform block " << uniformBlockName << std::endl;
+        return;
+    }
+    glUniformBlockBinding(this->program, index, uniformBlockBinding);
 }
 

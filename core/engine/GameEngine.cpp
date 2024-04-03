@@ -4,6 +4,7 @@
 
 #include "GameEngine.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <manager/AssetManager.h>
@@ -47,11 +48,22 @@ void GameEngine::init() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+//    glfwSetInputMode(window,GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetErrorCallback(error_callback);
+    glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, int width, int height){
+
+    });
+
+    uniform = new Uniform::GameUniform(
+            glm::perspective(glm::radians(45.0f), (float) config.width / (float) config.height, 0.1f, 100.0f),
+            glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
+            glm::vec4(0.0f, 0.0f, 3.0f, 1.0f)
+    );
+
     // Initialize assets after opengl context is created
     AssetManager::initializeAssets();
 
     // Set the resize callback
-    glfwSetWindowSizeCallback(this->window, onResize);
 }
 
 void GameEngine::gameLoop() {
@@ -112,11 +124,6 @@ GLFWwindow *initGLFW(int width, int height, const char *title) {
 
 // Make the window's context current
     glfwMakeContextCurrent(window);
-
-// Disable cursor
-    glfwSetInputMode(window,GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    glfwSetErrorCallback(error_callback);
 
     return window;
 }
