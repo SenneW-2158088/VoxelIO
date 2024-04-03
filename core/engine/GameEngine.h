@@ -18,7 +18,7 @@ void initGlad();
 
 void onResize(GLFWwindow *window, int width, int height);
 
-void error_callback(int error, const char* description);
+void error_callback(int error, const char *description);
 
 struct EngineConfig {
     int width;
@@ -30,8 +30,8 @@ class GameEngine {
 private:
     GLFWwindow *window;
     EngineConfig config;
-    InputManager* inputManager;
-    std::vector<Entity> entities{};
+    InputManager *inputManager;
+    std::vector<Entity*> entities{};
 private:
     void init();
 
@@ -41,6 +41,9 @@ private:
 
 public:
     void addInputListener(InputListener *listener);
+
+    void addEntity(Entity *entity);
+
 public:
     GameEngine();
 

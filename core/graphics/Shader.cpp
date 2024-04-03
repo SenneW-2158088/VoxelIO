@@ -11,37 +11,50 @@
 
 //TODO: Refactor shader, load from file of from code
 Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath) {
-    this->program = glCreateProgram();
-    this->vertexShader = compileShader(vertexPath, GL_VERTEX_SHADER);
-    glAttachShader(this->program, this->vertexShader);
+    program = glCreateProgram();
+    vertexShader = compileShader(vertexPath, GL_VERTEX_SHADER);
 
-    this->fragmentShader = compileShader(fragmentPath, GL_FRAGMENT_SHADER);
-    glAttachShader(this->program, this->fragmentShader);
+    fragmentShader = compileShader(fragmentPath, GL_FRAGMENT_SHADER);
+    glAttachShader(program, this->vertexShader);
+    glAttachShader(program, this->fragmentShader);
 
-    glLinkProgram(this->program);
+    int success;
+    char infoLog[512];
+    glLinkProgram(program);
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
+    if(!success) {
+        glGetProgramInfoLog(this->program, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
 }
 
 Shader::~Shader() {
-    glDeleteShader(this->vertexShader);
-    glDeleteShader(this->fragmentShader);
-    glDeleteProgram(this->program);
+//    TODO: Fix this
+    std::cout << "Deleting shader" << std::endl;
+//    glDeleteShader(this->vertexShader);
+//    glDeleteShader(this->fragmentShader);
+//    glDeleteProgram(this->program);
 }
 
 const void Shader::use() {
-    glUseProgram(this->program);
+    glUseProgram(program);
+    GLuint error = glGetError();
+    if(error != GL_NO_ERROR) {
+        std::cout << "Failed to use shader program! "<< error << std::endl;
+    }
 }
 
 // Compile shader from source file
 unsigned int compileShader(const std::string &shaderSource, unsigned int shaderType) {
     unsigned int shader = glCreateShader(shaderType);
 
+    std::ifstream stream;
     try {
-       // loading shader source from file
-        std::ifstream file(shaderSource);
-        std::stringstream stream;
-        stream << file.rdbuf();
+        stream.open(shaderSource);
+        std::stringstream shader_string;
+        shader_string << stream.rdbuf();
 
-        std::string shaderCode = stream.str();
+        std::string shaderCode = shader_string.str();
         const char* src = shaderCode.c_str();
 
         glShaderSource(shader, 1, &src, nullptr);
@@ -62,9 +75,6 @@ unsigned int compileShader(const std::string &shaderSource, unsigned int shaderT
 
             std::cout << "Failed to compile " << (shaderType == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
             std::cout << message << std::endl;
-
-            // Delete shader program from memory
-            glDeleteShader(shader);
 
             return 0;
         }
@@ -128,3 +138,4 @@ void Shader::setMat4(const std::string &name, const glm::mat4 &mat) const {
 void Shader::setBlockBinding(const std::string &uniformBlockName, int uniformBlockBinding) const {
     glUniformBlockBinding(this->program, glGetUniformBlockIndex(this->program, uniformBlockName.c_str()), uniformBlockBinding);
 }
+

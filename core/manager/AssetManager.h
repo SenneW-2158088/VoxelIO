@@ -16,10 +16,12 @@ static const std::string SHADER_PATH = std::filesystem::path(ASSET_PATH) / "shad
 
 class AssetManager {
 private:
-    static std::map<std::string, Shader> shaders;
+    // Assets
+    static std::map<std::string, std::shared_ptr<Shader>> shaders;
 
     // Load shaders
     static void loadShaders();
+    static Shader* loadShader(const std::string &vertex, const std::string &fragment);
 public:
     AssetManager() = default;
     static void initializeAssets();

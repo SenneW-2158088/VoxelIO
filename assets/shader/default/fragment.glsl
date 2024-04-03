@@ -11,7 +11,5 @@ void main(){
     vec3 norm = normalize(Normal);
     vec3 view = normalize(ViewPos - FragPos);
 
-    FragColor = vec4(0.5, 0.0, 0.0, 1.0);
+    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
 }
-
-

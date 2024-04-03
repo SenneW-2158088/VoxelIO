@@ -15,6 +15,9 @@ add_library(model STATIC
 
         model/Voxel.h
         model/Voxel.cpp
+
+        model/Triangle.h
+        model/Triangle.cpp
         )
 
 add_library(graphics STATIC

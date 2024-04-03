@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 
 class Entity {
-private:
+protected:
     glm::vec3 position{};
 
 public:

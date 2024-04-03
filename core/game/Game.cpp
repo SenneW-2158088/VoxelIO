@@ -3,20 +3,25 @@
 //
 
 #include "Game.h"
+#include "model/Triangle.h"
 #include <model/Player.h>
+#include <graphics/Uniform.h>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <model/Voxel.h>
 
 Game::Game() {
-    EngineConfig config = EngineConfig {
-       1920,
-       1080,
-         "Voxelio",
+    EngineConfig config = EngineConfig{
+            1920 / 2,
+            1080 / 2,
+            "Voxelio",
     };
 
     engine = new GameEngine(config);
 }
 
 void Game::start() {
-    Player* player = new PlayerImplementation();
-    engine->addInputListener(player);
+    Triangle *triangle = new Triangle();
+    engine->addEntity(triangle);
     engine->start();
 }
