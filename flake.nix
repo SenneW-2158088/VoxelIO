@@ -55,6 +55,7 @@
 			glew
 			glfw
 			glm
+      assimp
 
           ];
           name = "C";

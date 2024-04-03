@@ -16,10 +16,14 @@ message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
+if(APPLE)
+  set(LIBS glfw3 "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
+else()
+  set(LIBS ${LIBS} glfw3)
+endif()
+
 find_package(assimp REQUIRED)
 message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIRS}")
-
-set(LIBS glfw3 "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
 
 add_library(GLAD "glad.c" include/KHR/khrplatform.h)
 set(LIBS ${LIBS} GLAD)
