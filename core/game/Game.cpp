@@ -26,7 +26,7 @@ void Game::start() {
     Voxel *voxel = new Voxel();
     PerspectiveCamera* camera = PerspectiveCameraBuilder()
         .setPosition(glm::vec3{0.f, 0.f, 3.f})
-        ->setDirection(glm::vec3{0.f, 0.f, 0.f}) // looking forward in z direction
+        ->setDirection(glm::vec3{0.f, 0.f, -1.f}) // looking forward in z direction
         ->setField(45.f)
         ->setAspect(16.f / 9.f)
         ->build();

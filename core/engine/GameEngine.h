@@ -21,7 +21,7 @@ struct EngineConfig {
     const char *title;
 };
 
-class GameEngine {
+class GameEngine : InputListener {
 private:
     WindowManager* windowManager;
     EngineConfig config;
@@ -41,6 +41,8 @@ public:
     void addEntity(Entity *entity);
 
     void setCamera(Camera *camera);
+
+    void onKeyPressed(int key) override;
 
 public:
     GameEngine(const EngineConfig &config);

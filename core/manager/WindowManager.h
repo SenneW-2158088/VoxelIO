@@ -14,112 +14,117 @@ void error_callback(int, const char *description);
 
 class WindowManager {
 public:
-    virtual void update() const = 0;
+  virtual GLFWwindow *getWindow() const = 0;
 
-    virtual void clear() const = 0;
+  virtual void update() const = 0;
 
-    virtual void resize(int width, int height) = 0;
+  virtual void clear() const = 0;
 
-    virtual void setResizeCallback(void (*callback)(int, int)) = 0;
+  virtual void resize(int width, int height) = 0;
 
-    virtual void setWidth(int width) = 0;
+  virtual void setResizeCallback(void (*callback)(int, int)) = 0;
 
-    virtual void setHeight(int height) = 0;
+  virtual void setWidth(int width) = 0;
 
-    virtual void setTitle(const char *title) = 0;
+  virtual void setHeight(int height) = 0;
 
-    virtual int getWidth() = 0;
+  virtual void setTitle(const char *title) = 0;
 
-    virtual int getHeight() = 0;
+  virtual int getWidth() = 0;
 
-    virtual const char *getTitle() = 0;
+  virtual int getHeight() = 0;
 
-    virtual bool shouldClose() = 0;
+  virtual const char *getTitle() = 0;
+
+  virtual bool shouldClose() = 0;
 };
 
 class WindowService : public WindowManager {
 private:
-    GLFWwindow *window;
-    int width;
-    int height;
-    const char *title;
+  GLFWwindow *window;
+  int width;
+  int height;
+  const char *title;
 
-    void (*callback)(int, int);
+  void (*callback)(int, int);
 
 private:
-    void initGLFW(int width, int height, const char *title);
+  void initGLFW(int width, int height, const char *title);
 
-    void initGlad();
-
-public:
-    void update() const override;
-
-    void clear() const override;
-
-    void resize(int width, int height) override;
-
-    void setResizeCallback(void (*callback)(int, int)) override;
-
-    inline int getWidth() override { return this->width; };
-
-    inline int getHeight() override { return this->height; };
-
-    inline const char *getTitle() override { return this->title; };
-
-    void setWidth(int width) override { this->width = width; };
-
-    void setHeight(int height) override { this->height = height; };
-
-    void setTitle(const char *title) override { this->title = title; };
-
-    bool shouldClose() override;
+  void initGlad();
 
 public:
-    WindowService(int width, int height, const char *title);
+  void update() const override;
 
-    ~WindowService();
+  void clear() const override;
 
-    void start();
+  void resize(int width, int height) override;
+
+  void setResizeCallback(void (*callback)(int, int)) override;
+
+  inline GLFWwindow *getWindow() const override { return window; };
+
+  inline int getWidth() override { return this->width; };
+
+  inline int getHeight() override { return this->height; };
+
+  inline const char *getTitle() override { return this->title; };
+
+  void setWidth(int width) override { this->width = width; };
+
+  void setHeight(int height) override { this->height = height; };
+
+  void setTitle(const char *title) override { this->title = title; };
+
+  bool shouldClose() override;
+
+public:
+  WindowService(int width, int height, const char *title);
+
+  ~WindowService();
+
+  void start();
 };
 
 class NullWindowService : public WindowManager {
 public:
-    NullWindowService() = default;
+  NullWindowService() = default;
 
-    ~NullWindowService() = default;
+  ~NullWindowService() = default;
 
-    void update() const override {};
+  void update() const override{};
 
-    void clear() const override {};
+  void clear() const override{};
 
-    inline void resize(int width, int height) override {};
+  inline void resize(int width, int height) override{};
 
-    inline void setResizeCallback(void (*callback)(int, int)) override {};
+  inline void setResizeCallback(void (*callback)(int, int)) override{};
 
-    inline void setWidth(int width) override {};
+  inline void setWidth(int width) override{};
 
-    inline void setHeight(int height) override {};
+  inline void setHeight(int height) override{};
 
-    inline void setTitle(const char *title) override {};
+  inline void setTitle(const char *title) override{};
 
-    inline int getWidth() override { return 0; };
+  GLFWwindow * getWindow() const override {};
+  inline int getWidth() override { return 0; };
 
-    inline int getHeight() override { return 0; };
+  inline int getHeight() override { return 0; };
 
-    inline const char *getTitle() override { return "NullWindowService"; };
+  inline const char *getTitle() override { return "NullWindowService"; };
 
-    inline bool shouldClose() override { return true; };
+  inline bool shouldClose() override { return true; };
 };
 
 class WindowLocator {
 private:
-    static WindowManager *windowManager;
-public:
-    WindowLocator() = delete;
-    static void provide(WindowManager *windowManager);
+  static WindowManager *windowManager;
 
-    static WindowManager *get();
+public:
+  WindowLocator() = delete;
+  static void provide(WindowManager *windowManager);
+
+  static WindowManager *get();
 };
 
-
-#endif //VOXELIO_WINDOWMANAGER_H
+#endif // VOXELIO_WINDOWMANAGER_H

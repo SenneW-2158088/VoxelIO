@@ -5,6 +5,7 @@
 #ifndef VOXELIO_INPUTMANAGER_H
 #define VOXELIO_INPUTMANAGER_H
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <vector>
 
