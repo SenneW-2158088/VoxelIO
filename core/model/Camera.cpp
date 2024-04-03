@@ -4,8 +4,6 @@
 
 #include "Camera.h"
 #include "glm/ext/matrix_clip_space.hpp"
-#include "glm/ext/quaternion_geometric.hpp"
-
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(){}
@@ -20,11 +18,12 @@ void Camera::setDirection(float yaw, float pitch) {
 
 PerspectiveCamera::PerspectiveCamera(){}
 PerspectiveCamera::PerspectiveCamera(glm::vec3 position, glm::vec3 direction, float fov, float aspect) : Camera(position, direction){
-  
+  this->field = fov;
+  this->aspect = aspect;
 }
 
 glm::mat4 PerspectiveCamera::getProjection() const {
-  return glm::perspective(field, aspect, NEAR, FAR);
+  return glm::perspective(glm::radians(field), aspect, NEAR, FAR);
 }
 
 glm::mat4 PerspectiveCamera::getView() const {

@@ -12,6 +12,8 @@
 #include <graphics/Uniform.h>
 #include <manager/InputManager.h>
 #include <manager/WindowManager.h>
+#include <model/Camera.h>
+#include <optional>
 
 struct EngineConfig {
     int width;
@@ -24,6 +26,8 @@ private:
     WindowManager* windowManager;
     EngineConfig config;
     InputManager *inputManager;
+
+    std::optional<Camera*> camera;
     Uniform::GameUniform *uniform;
     std::vector<Entity*> entities{};
 private:
@@ -35,6 +39,8 @@ public:
     void addInputListener(InputListener *listener);
 
     void addEntity(Entity *entity);
+
+    void setCamera(Camera *camera);
 
 public:
     GameEngine(const EngineConfig &config);

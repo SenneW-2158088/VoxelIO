@@ -57,10 +57,10 @@ public:
 
 class PerspectiveCameraBuilder{
 private:
-  glm::vec3 position;
-  glm::vec3 direction;
-  float field;  // Field Of View
-  float aspect; // Aspect ratio
+  glm::vec3 position = glm::vec3(0.f, 0.f, 0.f);
+  glm::vec3 direction = glm::vec3(0.f, 0.f, 1.f);
+  float field = 45.f;  // Field Of View
+  float aspect = 16.f / 9.f; // Aspect ratio
 
 public:
   PerspectiveCameraBuilder() = default;

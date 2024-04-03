@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <manager/AssetManager.h>
+#include <optional>
 
 GameEngine::GameEngine(const EngineConfig &engineConfig) {
     config = engineConfig;
@@ -27,13 +28,11 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
     windowManager->setResizeCallback([](int width, int height) {
         // Get uniform
         auto uniform = UniformLocator::get();
-        uniform->setProjection(glm::perspective(45.f, (float) width / (float) height, .1f, 100.f));
+        // uniform->setProjection(glm::perspective(45.f, (float) width / (float) height, .1f, 100.f));
     });
 
     // Initialize assets after opengl context is created
     AssetManager::initializeAssets();
-
-    // Set the resize callback
 }
 
 GameEngine::~GameEngine() {
@@ -57,11 +56,25 @@ void GameEngine::gameLoop() {
 void GameEngine::render() {
     windowManager->clear();
 
+    // update Uniform buffer
+    if(camera.has_value()){
+        auto uniform = UniformLocator::get();        
+        auto c = camera.value();
+        uniform->setProjection(c->getProjection());
+        uniform->setView(c->getView());
+        uniform->setViewPos(glm::vec4(c->getPosition(), 1.f));
+        std::cout << "Updating uniform" << std::endl;
+    }
+
     for(const auto&entity : entities) {
         entity->draw();
     }
 
     windowManager->update();
+}
+
+void GameEngine::setCamera(Camera* camera) {
+    this->camera.emplace(camera);
 }
 
 void GameEngine::addInputListener(InputListener *listener) {
