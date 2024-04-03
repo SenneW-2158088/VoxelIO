@@ -2,7 +2,6 @@
 // Created by Senne Wertelaers on 28/03/2024.
 //
 
-#include <iostream>
 #include <game/Game.h>
 #include <manager/AssetManager.h>
 

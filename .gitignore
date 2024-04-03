@@ -36,6 +36,7 @@
 *.app
 
 .cache
+compile_commands.json
 /build
 /cmake-build-debug
 /lib

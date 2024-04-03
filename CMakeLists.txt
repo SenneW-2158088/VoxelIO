@@ -19,7 +19,7 @@ message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 if(APPLE)
   set(LIBS glfw3 "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
 else()
-  set(LIBS ${LIBS} glfw3)
+  set(LIBS ${LIBS} glfw)
 endif()
 
 find_package(assimp REQUIRED)
