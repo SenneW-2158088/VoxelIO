@@ -7,60 +7,82 @@
 
 #include <glm/glm.hpp>
 
+/*
+  Basic Camera interface that represents a perspective camera
+*/
 class Camera {
-private:
-    float last_x;
-    float last_y;
+protected:
+  const glm::vec3 up = glm::vec3(0.f, 1.f, 0.f); // We use the y-axis for up
 
-    float yaw;      // horizontal angle
-    float pitch;    // vertical angle
-    const float FOV = 45.f;
-    float sensitivity = 0.1f;
-
-    const glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
-    glm::vec3 direction;
-    glm::vec3 position;
-    glm::mat4 projection;
-public:
-    inline glm::vec3 getPosition() const {
-        return position;
-    }
-
-    inline glm::mat4 getProjection() const {
-        return projection;
-    }
-
-    glm::mat4 getView() const;
+  float yaw, pitch;
+  glm::vec3 position;
+  glm::vec3 direction;
 
 public:
-    inline void setPosition(glm::vec3 position) {
-        this->position = position;
-    }
+  virtual glm::vec3 getPosition() const = 0;
+  virtual glm::mat4 getProjection() const = 0;
+  virtual glm::mat4 getView() const = 0;
 
-    void setDirectionByMouse(float x, float y);
-    void setDirection(float yaw, float pitch);
 public:
-    Camera(glm::vec3 position, float yaw, float pitch, float sensitivity);
-    ~Camera() = default;
+  inline void setPosition(glm::vec3 position) { this->position = position; };
+  inline void setDirection(glm::vec3 direction) {
+    this->direction = direction;
+  };
+  void setDirection(float yaw, float pitch);
 
+public:
+  Camera();
+  explicit Camera(glm::vec3 position, glm::vec3 direction);
 };
 
-class CameraBuilder {
+class PerspectiveCamera : public Camera {
 private:
-    float sensitivity = 100.f;
-    glm::vec3 position{}, orientation{}, rotation{};
+  const float NEAR = .5f;
+  const float FAR = 100.f;
+  float field;  // Field Of View
+  float aspect; // Aspect ratio
+public:
+  PerspectiveCamera();
+  explicit PerspectiveCamera(glm::vec3 position, glm::vec3 direction, float fov,
+                             float aspect);
+public:
+  inline void setField(float field) { this->field = field; };
+  inline void setAspect(float aspect) { this->aspect = aspect; };
 
 public:
-    CameraBuilder() = default;
-    inline CameraBuilder* setPosition(glm::vec3 position) { this->position = position; return this; }
-    inline CameraBuilder* setOrientation(glm::vec3 orientation) { this->orientation = orientation; return this; }
-    inline CameraBuilder* setRotation(glm::vec3 rotation) { this->rotation = rotation; return this; }
-    inline CameraBuilder* setSensitivity(float sensitivity) { this->sensitivity = sensitivity; return this; };
-    inline Camera* build() {
-        return new Camera(position, 0.f, 0.f, sensitivity);
-    }
+  inline glm::vec3 getPosition() const override { return this->position; };
+  glm::mat4 getProjection() const override;
+  glm::mat4 getView() const override;
 };
 
+class PerspectiveCameraBuilder{
+private:
+  glm::vec3 position;
+  glm::vec3 direction;
+  float field;  // Field Of View
+  float aspect; // Aspect ratio
 
+public:
+  PerspectiveCameraBuilder() = default;
+  inline PerspectiveCameraBuilder*setPosition(glm::vec3 position) {
+    this->position = position;
+    return this;
+  }
+  inline PerspectiveCameraBuilder *setDirection(glm::vec3 direction) {
+    this->direction= direction;
+    return this;
+  }
+  inline PerspectiveCameraBuilder *setField(float field) {
+    this->field = field;
+    return this;
+  }
+  inline PerspectiveCameraBuilder *setSensitivity(float aspect) {
+    this->aspect = aspect;
+    return this;
+  };
+  inline Camera *build() { return new PerspectiveCamera(
+    position, direction, field, aspect
+  ); };
+};
 
-#endif //VOXELIO_CAMERA_H
+#endif // VOXELIO_CAMERA_H
