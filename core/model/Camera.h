@@ -76,11 +76,11 @@ public:
     this->field = field;
     return this;
   }
-  inline PerspectiveCameraBuilder *setSensitivity(float aspect) {
+  inline PerspectiveCameraBuilder *setAspect(float aspect) {
     this->aspect = aspect;
     return this;
   };
-  inline Camera *build() { return new PerspectiveCamera(
+  inline PerspectiveCamera*build() { return new PerspectiveCamera(
     position, direction, field, aspect
   ); };
 };

@@ -8,6 +8,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+Camera::Camera(){}
+Camera::Camera(glm::vec3 position, glm::vec3 direction) : position{position}, direction{direction} {}
+
 void Camera::setDirection(float yaw, float pitch) {
   direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
   direction.y = sin(glm::radians(pitch));
@@ -15,7 +18,10 @@ void Camera::setDirection(float yaw, float pitch) {
   direction = glm::normalize(direction);
 }
 
-PerspectiveCamera::PerspectiveCamera() : Camera() {}
+PerspectiveCamera::PerspectiveCamera(){}
+PerspectiveCamera::PerspectiveCamera(glm::vec3 position, glm::vec3 direction, float fov, float aspect) : Camera(position, direction){
+  
+}
 
 glm::mat4 PerspectiveCamera::getProjection() const {
   return glm::perspective(field, aspect, NEAR, FAR);

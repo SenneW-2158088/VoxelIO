@@ -9,41 +9,44 @@
 
 namespace Uniform {
 
-    class BaseUniform {
-    protected:
-        unsigned int UBO;
-    };
+class BaseUniform {
+protected:
+  unsigned int UBO;
+};
 
-    class GameUniform : public BaseUniform {
-    private:
-        glm::mat4 projection;
-        glm::mat4 view;
-        glm::vec4 viewPos;
-    public:
-    public:
-        GameUniform(glm::mat4 projection, glm::mat4 view, glm::vec4 viewPos);
-        ~GameUniform();
+class GameUniform : public BaseUniform {
+private:
+  glm::mat4 projection;
+  glm::mat4 view;
+  glm::vec4 viewPos;
 
-        inline glm::mat4 getProjection() const {
-            return projection;
-        }
+public:
+public:
+  GameUniform(glm::mat4 projection, glm::mat4 view, glm::vec4 viewPos);
+  ~GameUniform();
 
-        inline glm::mat4 getView() const {
-            return view;
-        }
+  inline glm::mat4 getProjection() const { return projection; }
 
-        inline glm::vec4 getViewPos() const {
-            return viewPos;
-        }
+  inline glm::mat4 getView() const { return view; }
 
-    public:
-        void setProjection(glm::mat4 projection);
+  inline glm::vec4 getViewPos() const { return viewPos; }
 
-        void setView(glm::mat4 view);
+public:
+  void setProjection(glm::mat4 projection);
 
-        void setViewPos(glm::vec4 viewPos);
-    };
-}
+  void setView(glm::mat4 view);
 
+  void setViewPos(glm::vec4 viewPos);
+};
+} // namespace Uniform
 
-#endif //VOXELIO_UNIFORM_H
+class UniformLocator {
+private:
+  static Uniform::GameUniform *uniform;
+public:
+  UniformLocator() = delete;
+  static void provide(Uniform::GameUniform* uniform);
+  static Uniform::GameUniform* get();
+};
+
+#endif // VOXELIO_UNIFORM_H

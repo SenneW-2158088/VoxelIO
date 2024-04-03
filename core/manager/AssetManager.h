@@ -7,12 +7,12 @@
 
 #include <map>
 #include <graphics/Shader.h>
-#include <experimental/filesystem>
+#include <filesystem>
 
 #define SOURCE_DIR _SOURCE_DIR
 
-static const std::string ASSET_PATH = std::experimental::filesystem::path(SOURCE_DIR) / "assets";
-static const std::string SHADER_PATH = std::experimental::filesystem::path(ASSET_PATH) / "shader";
+static const std::string ASSET_PATH = std::filesystem::path(SOURCE_DIR) / "assets";
+static const std::string SHADER_PATH = std::filesystem::path(ASSET_PATH) / "shader";
 
 class AssetManager {
 private:

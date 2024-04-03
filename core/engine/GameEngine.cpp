@@ -3,9 +3,9 @@
 //
 
 #include "GameEngine.h"
+#include "graphics/Uniform.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <iostream>
 #include <manager/AssetManager.h>
 
@@ -21,8 +21,13 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
             glm::vec4(0.0f, 0.0f, 3.0f, 1.0f)
     );
 
-    windowManager->setResizeCallback([](int width, int height) {
+    // Todo provide with player camera
+    UniformLocator::provide(uniform);
 
+    windowManager->setResizeCallback([](int width, int height) {
+        // Get uniform
+        auto uniform = UniformLocator::get();
+        uniform->setProjection(glm::perspective(45.f, (float) width / (float) height, .1f, 100.f));
     });
 
     // Initialize assets after opengl context is created

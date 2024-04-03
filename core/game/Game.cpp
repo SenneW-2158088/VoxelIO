@@ -3,10 +3,12 @@
 //
 
 #include "Game.h"
+#include "glm/gtc/type_ptr.hpp"
 #include "model/Triangle.h"
 #include <model/Player.h>
 #include <graphics/Uniform.h>
 
+#include <model/Camera.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <model/Voxel.h>
 
@@ -23,6 +25,13 @@ Game::Game() {
 void Game::start() {
     Triangle *triangle = new Triangle();
     Voxel *voxel = new Voxel();
+    PerspectiveCamera* camera = PerspectiveCameraBuilder()
+        .setPosition(glm::vec3{0.f, 0.f, 0.f})
+        ->setDirection(glm::vec3{0.f, 0.f, 1.f}) // looking forward in z direction
+        ->setField(45.f)
+        ->setAspect(16.f / 9.f)
+        ->build();
+
     engine->addEntity(triangle);
     engine->addEntity(voxel);
     engine->start();

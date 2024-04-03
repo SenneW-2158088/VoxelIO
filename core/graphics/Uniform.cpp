@@ -3,6 +3,8 @@
 //
 
 #include "Uniform.h"
+#include "game/Game.h"
+#include <exception>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
@@ -49,4 +51,20 @@ void Uniform::GameUniform::setViewPos(glm::vec4 viewPos) {
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::vec4),
                     glm::value_ptr(this->viewPos));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+Uniform::GameUniform *UniformLocator::uniform = nullptr;
+
+void UniformLocator::provide(Uniform::GameUniform* uniform){
+    Uniform::GameUniform* gameUniform = uniform;
+    if (!gameUniform){
+        // Todo implement null uniform class
+    }
+
+    UniformLocator::uniform = gameUniform;
+
+}
+
+Uniform::GameUniform* UniformLocator::get(){
+    return uniform;
 }
