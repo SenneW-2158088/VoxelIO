@@ -11,14 +11,7 @@
 #include <GLFW/glfw3.h>
 #include <graphics/Uniform.h>
 #include <manager/InputManager.h>
-
-GLFWwindow *initGLFW(int width, int height, const char *title);
-
-void initGlad();
-
-void onResize(GLFWwindow *window, int width, int height);
-
-void error_callback(int error, const char *description);
+#include <manager/WindowManager.h>
 
 struct EngineConfig {
     int width;
@@ -28,14 +21,12 @@ struct EngineConfig {
 
 class GameEngine {
 private:
-    GLFWwindow *window;
+    WindowManager* windowManager;
     EngineConfig config;
     InputManager *inputManager;
     Uniform::GameUniform *uniform;
     std::vector<Entity*> entities{};
 private:
-    void init();
-
     void gameLoop();
 
     void render();
@@ -46,15 +37,11 @@ public:
     void addEntity(Entity *entity);
 
 public:
-    GameEngine();
-
-    explicit GameEngine(const EngineConfig &config);
+    GameEngine(const EngineConfig &config);
 
     ~GameEngine();
 
     void start();
-
-    void resize(int width, int height);
 };
 
 

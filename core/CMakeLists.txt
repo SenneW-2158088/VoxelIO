@@ -49,4 +49,7 @@ add_library(manager STATIC
 
         manager/InputManager.h
         manager/InputManager.cpp
+
+        manager/WindowManager.h
+        manager/WindowManager.cpp
         )

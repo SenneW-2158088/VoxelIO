@@ -416,6 +416,14 @@ build core/CMakeFiles/manager.dir/manager/InputManager.cpp.o: CXX_COMPILER__mana
   OBJECT_DIR = core/CMakeFiles/manager.dir
   OBJECT_FILE_DIR = core/CMakeFiles/manager.dir/manager
 
+build core/CMakeFiles/manager.dir/manager/WindowManager.cpp.o: CXX_COMPILER__manager_Debug /Users/zenneh/Documents/University/2023-2024/Computer$ Graphics/voxelio/core/manager/WindowManager.cpp || cmake_object_order_depends_target_manager
+  DEFINES = -D_SOURCE_DIR="\"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio\""
+  DEP_FILE = core/CMakeFiles/manager.dir/manager/WindowManager.cpp.o.d
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -std=gnu++17
+  INCLUDES = -I"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/core" -I"/Users/zenneh/Documents/University/2023-2024/Computer Graphics/voxelio/include" -I/opt/homebrew/include
+  OBJECT_DIR = core/CMakeFiles/manager.dir
+  OBJECT_FILE_DIR = core/CMakeFiles/manager.dir/manager
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target manager
@@ -424,7 +432,7 @@ build core/CMakeFiles/manager.dir/manager/InputManager.cpp.o: CXX_COMPILER__mana
 #############################################
 # Link the static library core/libmanager.a
 
-build core/libmanager.a: CXX_STATIC_LIBRARY_LINKER__manager_Debug core/CMakeFiles/manager.dir/manager/AssetManager.cpp.o core/CMakeFiles/manager.dir/manager/InputManager.cpp.o
+build core/libmanager.a: CXX_STATIC_LIBRARY_LINKER__manager_Debug core/CMakeFiles/manager.dir/manager/AssetManager.cpp.o core/CMakeFiles/manager.dir/manager/InputManager.cpp.o core/CMakeFiles/manager.dir/manager/WindowManager.cpp.o
   ARCH_FLAGS = -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = core/CMakeFiles/manager.dir
