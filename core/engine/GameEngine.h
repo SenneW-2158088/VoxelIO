@@ -5,6 +5,7 @@
 #ifndef VOXELIO_GAMEENGINE_H
 #define VOXELIO_GAMEENGINE_H
 
+#include "manager/CameraHandler.h"
 #include <vector>
 #include <model/Entity.h>
 #include <glad/glad.h>
@@ -25,6 +26,7 @@ class GameEngine : InputListener {
 private:
     WindowManager* windowManager;
     EngineConfig config;
+    CameraHandler *cameraHandler;
     InputManager *inputManager;
 
     std::optional<Camera*> camera;

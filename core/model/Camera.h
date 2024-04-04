@@ -22,6 +22,9 @@ public:
   virtual glm::vec3 getPosition() const = 0;
   virtual glm::mat4 getProjection() const = 0;
   virtual glm::mat4 getView() const = 0;
+  inline float getYaw() const { return yaw; }
+  inline float getPitch() const { return pitch; }
+  inline glm::vec3 getDirection() const {return direction; };
 
 public:
   inline void setPosition(glm::vec3 position) { this->position = position; };
@@ -45,6 +48,7 @@ public:
   PerspectiveCamera();
   explicit PerspectiveCamera(glm::vec3 position, glm::vec3 direction, float fov,
                              float aspect);
+
 public:
   inline void setField(float field) { this->field = field; };
   inline void setAspect(float aspect) { this->aspect = aspect; };
@@ -55,21 +59,21 @@ public:
   glm::mat4 getView() const override;
 };
 
-class PerspectiveCameraBuilder{
+class PerspectiveCameraBuilder {
 private:
   glm::vec3 position = glm::vec3(0.f, 0.f, 0.f);
   glm::vec3 direction = glm::vec3(0.f, 0.f, 1.f);
-  float field = 45.f;  // Field Of View
+  float field = 45.f;        // Field Of View
   float aspect = 16.f / 9.f; // Aspect ratio
 
 public:
   PerspectiveCameraBuilder() = default;
-  inline PerspectiveCameraBuilder*setPosition(glm::vec3 position) {
+  inline PerspectiveCameraBuilder *setPosition(glm::vec3 position) {
     this->position = position;
     return this;
   }
   inline PerspectiveCameraBuilder *setDirection(glm::vec3 direction) {
-    this->direction= direction;
+    this->direction = direction;
     return this;
   }
   inline PerspectiveCameraBuilder *setField(float field) {
@@ -80,9 +84,9 @@ public:
     this->aspect = aspect;
     return this;
   };
-  inline PerspectiveCamera*build() { return new PerspectiveCamera(
-    position, direction, field, aspect
-  ); };
+  inline PerspectiveCamera *build() {
+    return new PerspectiveCamera(position, direction, field, aspect);
+  };
 };
 
 #endif // VOXELIO_CAMERA_H

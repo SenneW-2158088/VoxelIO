@@ -4,6 +4,7 @@
 
 #include "GameEngine.h"
 #include "graphics/Uniform.h"
+#include "manager/CameraHandler.h"
 #include "manager/InputManager.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -40,9 +41,13 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
   // Initialize assets after opengl context is created
   AssetManager::initializeAssets();
 
+  // Camera input handler
+  cameraHandler = new CameraHandler(0.1f);
+
   const auto window = windowManager->getWindow();
   inputManager = new InputManager(window);
   addInputListener(this);
+  addInputListener(cameraHandler);
 }
 
 GameEngine::~GameEngine() {
@@ -70,7 +75,9 @@ void GameEngine::render() {
     uniform->setProjection(c->getProjection());
     uniform->setView(c->getView());
     uniform->setViewPos(glm::vec4(c->getPosition(), 0.f));
+    cameraHandler->updateCamera(c);
   }
+
 
   for (const auto &entity : entities) {
     entity->draw();
@@ -90,5 +97,5 @@ void GameEngine::addEntity(Entity *entity) { entities.push_back(entity); }
 void GameEngine::onKeyPressed(int key) {
   const auto pos = camera.value()->getPosition();
   camera.value()->setPosition(pos + glm::vec3(0.f, 0.f, .1f));
-  std::cout << "Pressed " << key << std::endl;
+  // std::cout << "Pressed " << key << std::endl;
 }

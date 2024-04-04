@@ -52,4 +52,7 @@ add_library(manager STATIC
 
         manager/WindowManager.h
         manager/WindowManager.cpp
+
+        manager/CameraHandler.h
+        manager/CameraHandler.cpp
         )

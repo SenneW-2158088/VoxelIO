@@ -7,9 +7,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(){}
-Camera::Camera(glm::vec3 position, glm::vec3 direction) : position{position}, direction{direction} {}
+Camera::Camera(glm::vec3 position, glm::vec3 direction) : position{position}, direction{direction}, yaw{45.f}, pitch{} {}
 
 void Camera::setDirection(float yaw, float pitch) {
+  this->yaw = yaw;
+  this->pitch = pitch;
   direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
   direction.y = sin(glm::radians(pitch));
   direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));

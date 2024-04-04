@@ -19,7 +19,7 @@ WindowService::WindowService(int width, int height, const char *title) {
 
 
     // TODO
-//    glfwSetInputMode(window,GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window,GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwSetErrorCallback(error_callback);
     glfwSetFramebufferSizeCallback(window, onResize);
