@@ -4,10 +4,14 @@
 
 #include "Camera.h"
 #include "glm/ext/matrix_clip_space.hpp"
+#include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(){}
-Camera::Camera(glm::vec3 position, glm::vec3 direction) : position{position}, direction{direction}, yaw{45.f}, pitch{} {}
+Camera::Camera(glm::vec3 position, glm::vec3 direction) : position{position}, direction{direction} {
+  yaw = atan2(direction.z, direction.x) * 180.f / M_PI;
+  pitch = atan2(direction.y, sqrt(direction.x * direction.x + direction.z * direction.z)) * 180.0f / M_PI;
+}
 
 void Camera::setDirection(float yaw, float pitch) {
   this->yaw = yaw;

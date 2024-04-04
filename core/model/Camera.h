@@ -24,7 +24,7 @@ public:
   virtual glm::mat4 getView() const = 0;
   inline float getYaw() const { return yaw; }
   inline float getPitch() const { return pitch; }
-  inline glm::vec3 getDirection() const {return direction; };
+  inline glm::vec3 getDirection() const { return direction; };
 
 public:
   inline void setPosition(glm::vec3 position) { this->position = position; };

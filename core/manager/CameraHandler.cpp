@@ -1,19 +1,39 @@
 #include "CameraHandler.h"
 #include <iostream>
 
-CameraHandler::CameraHandler(float sensitivity): sensitivity{sensitivity}{}
+CameraHandler::CameraHandler(float sensitivity): sensitivity{sensitivity}, firstLoad(true), y{}, x{}{}
 
 void CameraHandler::onMouseMove(double x, double y) {
+  if(firstLoad && x != 0 && y != 0){
+    std::cout << "first " << x << " " << y << std::endl;
+    this->y = y;
+    this->x = x;
+    firstLoad = false;
+  }
+
   offset_x = x - this->x;
   offset_y = this->y - y;
+
   this->y = y;
   this->x = x;
-  // std::cout << offset_x << " " << offset_y << std::endl;
+
+  if (offset_x != 0.f && offset_y != 0.f){
+    std::cout << offset_x << " " << offset_y << std::endl;
+  }
+  
 }
 
-void CameraHandler::updateCamera(Camera *camera) const {
-  float yaw = camera->getYaw();
-  float pitch = camera->getPitch();
+void CameraHandler::updateCamera(Camera *camera) {
+  if (firstLoad) {
+    
+    float yaw = camera->getYaw();
+    float pitch = camera->getPitch();
+    camera->setDirection(yaw, pitch);
+    return;
+  }
+
+  float yaw = camera->getYaw() + this->offset_x * sensitivity;
+  float pitch = camera->getPitch() + this->offset_y * sensitivity;
 
   if (pitch >= 89.f){
     pitch = 89.f;
@@ -23,7 +43,7 @@ void CameraHandler::updateCamera(Camera *camera) const {
     pitch = -89.f;
   }
 
-  std::cout << yaw + this->offset_x << " " << pitch + this->offset_y << std::endl;
+  // std::cout << yaw << " " << pitch << std::endl;
 
-  camera->setDirection(yaw + this->offset_x * sensitivity, pitch + this->offset_y * sensitivity);
+  camera->setDirection(yaw, pitch);
 }
