@@ -3,55 +3,30 @@
 //
 
 #include "InputManager.h"
+#include "GLFW/glfw3.h"
 
 InputManager::InputManager(GLFWwindow *window) : window{window} {}
 
 void InputManager::handleInput() {
-    handleMouse();
+  handleMouse();
 
-    for (InputListener* listener : listeners) {
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            listener->onKeyPressed(GLFW_KEY_W);
-        }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            listener->onKeyPressed(GLFW_KEY_A);
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            listener->onKeyPressed(GLFW_KEY_S);
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            listener->onKeyPressed(GLFW_KEY_D);
-        }
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            listener->onKeyPressed(GLFW_KEY_SPACE);
-        }
+  const auto up = glfwGetKey(window, GLFW_KEY_W);
+  const auto left = glfwGetKey(window, GLFW_KEY_A);
+  const auto down = glfwGetKey(window, GLFW_KEY_S);
+  const auto right = glfwGetKey(window, GLFW_KEY_D);
 
-
-//        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE) {
-//            listener->onKeyReleased(GLFW_KEY_W);
-//        }
-//        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE) {
-//            listener->onKeyReleased(GLFW_KEY_A);
-//        }
-//        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE) {
-//            listener->onKeyReleased(GLFW_KEY_S);
-//        }
-//        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE) {
-//            listener->onKeyReleased(GLFW_KEY_D);
-//        }
-//        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
-//            listener->onKeyPressed(GLFW_KEY_SPACE);
-//        }
-    }
+  for (const auto listener : listeners) {
+    listener->onInput(InputKeymap{up, left, down, right});
+  }
 }
 
 void InputManager::handleMouse() {
-    glfwGetCursorPos(window, &cursor_x, &cursor_y);
-    for (InputListener* listener : listeners) {
-        listener->onMouseMove(cursor_x, cursor_y);
-    }
+  glfwGetCursorPos(window, &cursor_x, &cursor_y);
+  for (InputListener *listener : listeners) {
+    listener->onMouseMove(cursor_x, cursor_y);
+  }
 }
 
 void InputManager::addInputListener(InputListener *listener) {
-    listeners.push_back(listener);
+  listeners.push_back(listener);
 }

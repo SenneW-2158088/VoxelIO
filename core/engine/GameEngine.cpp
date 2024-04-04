@@ -61,7 +61,16 @@ void GameEngine::start() { this->gameLoop(); }
 void GameEngine::gameLoop() {
   while (!windowManager->shouldClose()) {
     inputManager->handleInput();
+
+    update(windowManager->getDelta());
+
     render();
+  }
+}
+
+void GameEngine::update(float dt){
+  for (auto entity : entities){
+    entity->update(dt);
   }
 }
 
@@ -94,8 +103,6 @@ void GameEngine::addInputListener(InputListener *listener) {
 
 void GameEngine::addEntity(Entity *entity) { entities.push_back(entity); }
 
-void GameEngine::onKeyPressed(int key) {
-  const auto pos = camera.value()->getPosition();
-  camera.value()->setPosition(pos + glm::vec3(0.f, 0.f, .1f));
-  // std::cout << "Pressed " << key << std::endl;
+void GameEngine::onInput(InputKeymap map) {
+
 }

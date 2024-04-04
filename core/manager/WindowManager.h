@@ -37,6 +37,8 @@ public:
   virtual const char *getTitle() = 0;
 
   virtual bool shouldClose() = 0;
+
+  virtual float getDelta() = 0;
 };
 
 class WindowService : public WindowManager {
@@ -45,6 +47,7 @@ private:
   int width;
   int height;
   const char *title;
+  float time;
 
   void (*callback)(int, int);
 
@@ -77,6 +80,8 @@ public:
   void setTitle(const char *title) override { this->title = title; };
 
   bool shouldClose() override;
+
+  float getDelta() override;
 
 public:
   WindowService(int width, int height, const char *title);
@@ -114,6 +119,8 @@ public:
   inline const char *getTitle() override { return "NullWindowService"; };
 
   inline bool shouldClose() override { return true; };
+
+  float getDelta() override { return .0f;};
 };
 
 class WindowLocator {

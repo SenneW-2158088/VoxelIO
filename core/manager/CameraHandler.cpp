@@ -16,11 +16,6 @@ void CameraHandler::onMouseMove(double x, double y) {
 
   this->y = y;
   this->x = x;
-
-  if (offset_x != 0.f && offset_y != 0.f){
-    std::cout << offset_x << " " << offset_y << std::endl;
-  }
-  
 }
 
 void CameraHandler::updateCamera(Camera *camera) {

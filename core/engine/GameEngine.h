@@ -35,6 +35,7 @@ private:
 private:
     void gameLoop();
 
+    void update(float dt);
     void render();
 
 public:
@@ -44,7 +45,7 @@ public:
 
     void setCamera(Camera *camera);
 
-    void onKeyPressed(int key) override;
+    void onInput(InputKeymap key) override;
 
 public:
     GameEngine(const EngineConfig &config);

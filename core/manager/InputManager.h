@@ -9,10 +9,13 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+struct InputKeymap {
+    int up, down, left, right, space;
+};
+
 class InputListener {
 public:
-    virtual void onKeyPressed(int key) {};
-    virtual void onKeyReleased(int key){};
+    virtual void onInput(InputKeymap map) {};
     virtual void onMouseMove(double x, double y){};
 };
 

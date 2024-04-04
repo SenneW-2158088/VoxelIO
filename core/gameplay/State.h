@@ -5,27 +5,27 @@
 #ifndef VOXELIO_STATE_H
 #define VOXELIO_STATE_H
 
+#include "manager/InputManager.h"
 #include <optional>
-#include <model/Player.h>
 
 /**
  * Base class for all states
  */
-template<class T>
-class BaseState {
+template <class T, class S> class BaseState {
 protected:
-    T* entity;
+  T *entity;
+
 public:
-    explicit BaseState(T* entity) : entity(entity) {}
-    virtual ~BaseState() = default;
+  explicit BaseState(T *entity) : entity(entity) {}
+  virtual ~BaseState() = default;
 
-    virtual void handleInput() = 0;
+  virtual std::optional<S *> handleInput(InputKeymap map) = 0;
 
-    virtual void onEnter() = 0;
+  virtual void onEnter() = 0;
 
-    virtual void onExit() = 0;
+  virtual void onExit() = 0;
 };
 
 // state tells
 
-#endif //VOXELIO_STATE_H
+#endif // VOXELIO_STATE_H

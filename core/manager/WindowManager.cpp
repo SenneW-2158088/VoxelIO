@@ -3,6 +3,7 @@
 //
 
 #include "WindowManager.h"
+#include "GLFW/glfw3.h"
 #include <iostream>
 
 WindowService::WindowService(int width, int height, const char *title) {
@@ -23,6 +24,13 @@ WindowService::WindowService(int width, int height, const char *title) {
 
     glfwSetErrorCallback(error_callback);
     glfwSetFramebufferSizeCallback(window, onResize);
+}
+
+float WindowService::getDelta() {
+    const float newTime = glfwGetTime();
+    const float delta = newTime - time;
+    time = newTime;
+    return delta;
 }
 
 void WindowService::update() const {
