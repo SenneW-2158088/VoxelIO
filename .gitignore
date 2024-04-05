@@ -40,5 +40,6 @@ compile_commands.json
 /build
 /cmake-build-debug
 /lib
+.direnv
 
 # End of https://www.toptal.com/developers/gitignore/api/c++
