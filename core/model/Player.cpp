@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "GLFW/glfw3.h"
+#include "gameplay/Collision.h"
 #include "gameplay/State.h"
 #include "glm/gtx/dual_quaternion.hpp"
 #include "manager/InputManager.h"
@@ -52,7 +53,9 @@ PlayerStates::JumpingState::handleInput(InputKeymap map) {}
 std::optional<PlayerStates::PlayerState *>
 PlayerStates::RunningState::handleInput(InputKeymap map) {}
 
-PlayerImplementation::PlayerImplementation() {
+PlayerImplementation::PlayerImplementation() 
+{
+  
   PerspectiveCamera *camera =
       PerspectiveCameraBuilder()
           .setPosition(glm::vec3{0.f, 0.f, 3.f})
@@ -87,8 +90,8 @@ void PlayerImplementation::update(float dt) {
 
 // Todo normalize with camera direction
 void PlayerImplementation::forward() {
-  auto newPos = camera->getDirection() * speed;
-  newPos.y = 0;
+  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
+  auto newPos = glm::normalize(newDir) * speed;
 
   std::cout << glm::to_string(newPos) << std::endl;
 
@@ -96,24 +99,24 @@ void PlayerImplementation::forward() {
 
 }
 void PlayerImplementation::backward() {
-  auto newPos = camera->getDirection() * speed;
-  newPos.y = 0;
+  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
+  auto newPos = glm::normalize(newDir) * speed;
 
   std::cout << glm::to_string(newPos) << std::endl;
 
   position -= newPos;
 }
 void PlayerImplementation::left() {
-  auto newPos = glm::normalize(glm::cross(camera->getDirection(), glm::vec3{0.f, 1.f, 0.f})) * speed;
-  newPos.y = 0;
+  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().y);
+  auto newPos = glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
 
   std::cout << glm::to_string(newPos) << std::endl;
 
   position -= newPos;
 }
 void PlayerImplementation::right() {
-  auto newPos = glm::normalize(glm::cross(camera->getDirection(), glm::vec3{0.f, 1.f, 0.f})) * speed;
-  newPos.y = 0;
+  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().y);
+  auto newPos = glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
 
   std::cout << glm::to_string(newPos) << std::endl;
 
@@ -121,3 +124,7 @@ void PlayerImplementation::right() {
 }
 
 void PlayerImplementation::draw() {}
+
+void PlayerImplementation::onCollide(Collision::Collisionable &other) {
+  // Todo implement collision logic
+}

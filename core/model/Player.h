@@ -5,6 +5,8 @@
 #ifndef VOXELIO_PLAYER_H
 #define VOXELIO_PLAYER_H
 
+#include "gameplay/Collision.h"
+#include "glad/glad.h"
 #include "glm/fwd.hpp"
 #include "model/Camera.h"
 #include <gameplay/Command.h>
@@ -16,11 +18,12 @@
 /**
  * @brief Interface for the player class.
  */
-class Player : public Entity, public InputListener {
+class Player : public Entity, public InputListener, public Collision::Collisionable {
 public:
   Player() = default;
   virtual Camera *getCamera() const = 0;
   void onInput(InputKeymap map) override = 0;
+  void onCollide(Collisionable &other) override = 0;
 
   virtual void forward() = 0;
   virtual void backward() = 0;
@@ -119,8 +122,10 @@ public:
   void left() override;
   void right() override;
 
+
 public:
   Camera *getCamera() const override { return camera; };
+  void onCollide(Collision::Collisionable &other) override;
 };
 
 #endif // VOXELIO_PLAYER_H

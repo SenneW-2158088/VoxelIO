@@ -27,9 +27,10 @@ protected:
   BoundingBox* boundingBox;
 
 public:
+  explicit Collisionable() = default;
   Collisionable(Entity* entity, BoundingBox* boundingbox);
   void collide(Collisionable &other);
-  virtual BoundingBox &getBoundingBox() = 0;
+  inline BoundingBox* getBoundingBox() { return boundingBox; };
   virtual void onCollide(Collisionable &other) = 0;
 };
 } // namespace Collision

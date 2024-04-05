@@ -29,6 +29,9 @@ add_library(graphics STATIC
 
         graphics/Uniform.h
         graphics/Uniform.cpp
+
+        graphics/Texture.h
+        graphics/Texture.cpp
         )
 
 add_library(gameplay STATIC

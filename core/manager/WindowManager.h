@@ -111,7 +111,7 @@ public:
 
   inline void setTitle(const char *title) override{};
 
-  GLFWwindow * getWindow() const override {};
+  GLFWwindow * getWindow() const override { return nullptr; };
   inline int getWidth() override { return 0; };
 
   inline int getHeight() override { return 0; };

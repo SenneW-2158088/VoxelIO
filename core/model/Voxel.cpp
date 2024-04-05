@@ -8,7 +8,8 @@
 #include <iostream>
 
 Voxel::Voxel() :
-        shader{AssetManager::getShader("default")} {
+        shader{AssetManager::getShader("voxel")},
+        texture{AssetManager::getTexture("villager.jpg")} {
 
     this->mesh = new Mesh::Mesh(vertices, indices, {});
     this->shader->setBlockBinding("Matrices", 0);
@@ -20,5 +21,6 @@ void Voxel::update(float dt) {
 }
 
 void Voxel::draw() {
+    texture->use();
     mesh->draw(shader);
 }

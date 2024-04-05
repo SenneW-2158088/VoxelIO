@@ -5,6 +5,7 @@
 #ifndef VOXELIO_VOXEL_H
 #define VOXELIO_VOXEL_H
 
+#include "graphics/Texture.h"
 #include <graphics/Mesh.h>
 #include <graphics/Shader.h>
 #include <model/Entity.h>
@@ -14,6 +15,7 @@ class Voxel : public Entity {
 private:
   Shader *shader;
   Mesh::Mesh *mesh;
+  Texture* texture;
 
   // Todo use the asset manager to load the vertices and indices
   const std::vector<Mesh::Vertex> vertices = {
