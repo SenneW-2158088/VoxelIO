@@ -23,12 +23,11 @@ Game::Game() {
 
 void Game::start() {
     Player* player = new PlayerImplementation();
-    Triangle *triangle = new Triangle();
     Voxel *voxel = new Voxel();
 
     engine->addInputListener(player);
     engine->setCamera(player->getCamera());
-    engine->addEntity(triangle);
+    engine->addEntity(player);
     engine->addEntity(voxel);
     engine->start();
 }

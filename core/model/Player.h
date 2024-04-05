@@ -99,8 +99,7 @@ public:
 class PlayerImplementation : public Player {
 private:
   const float height = 1.8f;
-  const float speed = 1.f;
-  glm::vec3 direction;
+  const float speed = 0.05f;
 
   Camera *camera;
   PlayerStates::PlayerState *state;

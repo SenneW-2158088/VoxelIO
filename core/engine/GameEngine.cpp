@@ -69,7 +69,7 @@ void GameEngine::gameLoop() {
 }
 
 void GameEngine::update(float dt){
-  for (auto entity : entities){
+  for (const auto &entity : entities){
     entity->update(dt);
   }
 }

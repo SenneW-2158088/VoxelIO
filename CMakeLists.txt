@@ -28,7 +28,6 @@ message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIRS}")
 add_library(GLAD "glad.c" include/KHR/khrplatform.h)
 set(LIBS ${LIBS} GLAD)
 
-
 include_directories(${PROJECT_SOURCE_DIR}/core)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${ASSIMP_INCLUDE_DIRS})
