@@ -37,8 +37,12 @@ add_library(graphics STATIC
 add_library(gameplay STATIC
         gameplay/Command.h
         gameplay/Command.cpp
+
         gameplay/State.h
         gameplay/State.cpp
+
+        gameplay/Collision.h
+        gameplay/Collision.cpp
         )
 
 add_library(engine STATIC

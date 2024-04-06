@@ -23,6 +23,7 @@ Game::Game() {
 
 void Game::start() {
     Player* player = new PlayerImplementation();
+    player->setPosition(glm::vec3{0.f, 0.f, -3.f});
     Voxel *voxel = new Voxel();
 
     engine->addInputListener(player);

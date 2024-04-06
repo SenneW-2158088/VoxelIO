@@ -38,6 +38,8 @@ namespace Mesh {
             virtual void scale(const glm::vec3 scale);
 
             virtual void draw(Shader *shader);
+        public:
+            inline std::vector<Vertex> getVertices() const {return vertices;};
     };
 
 //    Standard Mesh class for basic objects

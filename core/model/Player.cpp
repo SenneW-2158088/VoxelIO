@@ -6,7 +6,6 @@
 #include "GLFW/glfw3.h"
 #include "gameplay/Collision.h"
 #include "gameplay/State.h"
-#include "glm/gtx/dual_quaternion.hpp"
 #include "manager/InputManager.h"
 #include "model/Camera.h"
 #include <glm/gtx/string_cast.hpp>
@@ -47,18 +46,18 @@ PlayerStates::WalkingState::handleInput(InputKeymap map) {
 
 // Jumping state
 std::optional<PlayerStates::PlayerState *>
-PlayerStates::JumpingState::handleInput(InputKeymap map) {}
+PlayerStates::JumpingState::handleInput(InputKeymap map) { return std::nullopt; }
 
 // Running state
 std::optional<PlayerStates::PlayerState *>
-PlayerStates::RunningState::handleInput(InputKeymap map) {}
+PlayerStates::RunningState::handleInput(InputKeymap map) { return std::nullopt; }
 
-PlayerImplementation::PlayerImplementation() 
+PlayerImplementation::PlayerImplementation()
 {
   
   PerspectiveCamera *camera =
       PerspectiveCameraBuilder()
-          .setPosition(glm::vec3{0.f, 0.f, 3.f})
+          .setPosition(glm::vec3{position.x, height, position.z})
           ->setDirection(
               glm::vec3{0.f, 0.f, -1.f}) // looking forward in z direction
           ->setField(45.f)
@@ -68,6 +67,13 @@ PlayerImplementation::PlayerImplementation()
   this->camera = camera;
 
   state = new PlayerStates::IdleState(this);
+
+  Collision::Collisioner collisioner = Collision::Collisioner(
+    this,
+    new Collision::AABoundingBox(glm::vec3{}, glm::vec3{})
+  );
+
+  setCollisioner(collisioner);
 }
 
 void PlayerImplementation::onInput(InputKeymap map) {
@@ -85,46 +91,34 @@ void PlayerImplementation::transition(
 void PlayerImplementation::update(float dt) {
   const glm::vec3 cameraPos = glm::vec3{position.x, height, position.z};
   camera->setPosition(cameraPos);
-  std::cout << "Player pos: "<< glm::to_string(position) << " state: " << state->toString() << std::endl;
 }
 
 // Todo normalize with camera direction
 void PlayerImplementation::forward() {
   auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
-
-  std::cout << glm::to_string(newPos) << std::endl;
-
   position += newPos;
 
 }
 void PlayerImplementation::backward() {
   auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
-
-  std::cout << glm::to_string(newPos) << std::endl;
-
   position -= newPos;
 }
 void PlayerImplementation::left() {
-  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().y);
+  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
-
-  std::cout << glm::to_string(newPos) << std::endl;
-
   position -= newPos;
 }
 void PlayerImplementation::right() {
-  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().y);
+  auto newDir = glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
-
-  std::cout << glm::to_string(newPos) << std::endl;
-
   position += newPos;
 }
 
 void PlayerImplementation::draw() {}
 
-void PlayerImplementation::onCollide(Collision::Collisionable &other) {
+void PlayerImplementation::onCollide(Collision::Collisioner &other) {
   // Todo implement collision logic
+  std::cout << "Player collide with " << other.getEntity()->getName() << std::endl;
 }

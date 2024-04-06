@@ -10,7 +10,7 @@
 namespace fs = std::filesystem;
 
 std::map<std::string, std::shared_ptr<Shader>> AssetManager::shaders{};
-std::map<std::string, std::shared_ptr<Shader>> AssetManager::textures{};
+std::map<std::string, std::shared_ptr<Texture>> AssetManager::textures{};
 
 void AssetManager::initializeAssets() {
     loadShaders();

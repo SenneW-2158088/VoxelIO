@@ -1,36 +1,41 @@
 #pragma once
 
-#include "graphics/Mesh.h"
 #include "model/Entity.h"
+#include <glm/glm.hpp>
 
 namespace Collision {
-
-// Only for now
 class AABoundingBox;
-  
+
 class BoundingBox {
-public:
-  virtual bool collides(BoundingBox &other) = 0;
-  virtual bool collideWith(AABoundingBox &other) = 0;
+  virtual bool collides(BoundingBox &other);
+  virtual void collideWith(AABoundingBox &other){};
 };
 
 class AABoundingBox : BoundingBox {
+private:
+  glm::vec3 min, max;
+
 public:
-  AABoundingBox(Mesh::Mesh *mesh);
   bool collides(BoundingBox &other) override;
-  bool collideWith(AABoundingBox &other) override;
+  void collideWith(AABoundingBox &other) override;
+
+public:
+  glm::vec3 getMin() const { return min; };
+  glm::vec3 getMax() const { return max;};
+};
+
+class Collisioner {
+private:
+  Entity *entity;
+  BoundingBox boundingbox;
 };
 
 class Collisionable {
-protected:
-  Entity* entity; // Entity reference for futute collision checks
-  BoundingBox* boundingBox;
+private:
+  Collisioner collisioner;
 
 public:
-  explicit Collisionable() = default;
-  Collisionable(Entity* entity, BoundingBox* boundingbox);
   void collide(Collisionable &other);
-  inline BoundingBox* getBoundingBox() { return boundingBox; };
-  virtual void onCollide(Collisionable &other) = 0;
+  virtual void onCollide(Collisionable &other){};
 };
-} // namespace Collision
+}; // namespace Collision

@@ -5,13 +5,14 @@
 #ifndef VOXELIO_VOXEL_H
 #define VOXELIO_VOXEL_H
 
+#include "gameplay/Collision.h"
 #include "graphics/Texture.h"
 #include <graphics/Mesh.h>
 #include <graphics/Shader.h>
 #include <model/Entity.h>
 #include <vector>
 
-class Voxel : public Entity {
+class Voxel : public Entity, public Collision::Collisionable {
 private:
   Shader *shader;
   Mesh::Mesh *mesh;
@@ -69,6 +70,8 @@ public:
   void update(float dt) override;
 
   void draw() override;
+
+  void onCollide(Collision::Collisioner &other) override;
 };
 
 #endif // VOXELIO_VOXEL_H

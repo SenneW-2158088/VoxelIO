@@ -6,7 +6,6 @@
 #define VOXELIO_PLAYER_H
 
 #include "gameplay/Collision.h"
-#include "glad/glad.h"
 #include "glm/fwd.hpp"
 #include "model/Camera.h"
 #include <gameplay/Command.h>
@@ -18,12 +17,14 @@
 /**
  * @brief Interface for the player class.
  */
-class Player : public Entity, public InputListener, public Collision::Collisionable {
+class Player : public Entity, public InputListener, public Collision::Collisionable{
 public:
   Player() = default;
   virtual Camera *getCamera() const = 0;
   void onInput(InputKeymap map) override = 0;
-  void onCollide(Collisionable &other) override = 0;
+  void onCollide(Collision::Collisioner &other) override = 0;
+
+  std::string getName() override { return "Player"; };
 
   virtual void forward() = 0;
   virtual void backward() = 0;
@@ -125,7 +126,7 @@ public:
 
 public:
   Camera *getCamera() const override { return camera; };
-  void onCollide(Collision::Collisionable &other) override;
+  void onCollide(Collision::Collisioner &other) override;
 };
 
 #endif // VOXELIO_PLAYER_H

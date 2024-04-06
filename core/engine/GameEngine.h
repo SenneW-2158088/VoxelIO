@@ -5,6 +5,7 @@
 #ifndef VOXELIO_GAMEENGINE_H
 #define VOXELIO_GAMEENGINE_H
 
+#include "gameplay/Collision.h"
 #include "manager/CameraHandler.h"
 #include <vector>
 #include <model/Entity.h>
@@ -32,10 +33,14 @@ private:
     std::optional<Camera*> camera;
     Uniform::GameUniform *uniform;
     std::vector<Entity*> entities{};
+    std::vector<Collision::Collisionable*> collisioners{};
 private:
     void gameLoop();
 
     void update(float dt);
+
+    void handleCollisions();
+
     void render();
 
 public:

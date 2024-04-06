@@ -6,6 +6,7 @@
 #define VOXELIO_ENTITY_H
 
 #include <glm/glm.hpp>
+#include <string>
 
 class Entity {
 protected:
@@ -13,6 +14,7 @@ protected:
 
 public:
     inline glm::vec3 getPosition() { return position; }
+    virtual std::string getName() { return "[Entity ()]";};
 
 public:
     inline void setPosition(glm::vec3 position) { this->position = position; }

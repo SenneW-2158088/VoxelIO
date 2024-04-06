@@ -3,14 +3,17 @@
 //
 
 #include "GameEngine.h"
+#include "gameplay/Collision.h"
 #include "graphics/Uniform.h"
 #include "manager/CameraHandler.h"
 #include "manager/InputManager.h"
+#include "model/Entity.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <manager/AssetManager.h>
+#include <memory>
 #include <optional>
 
 GameEngine::GameEngine(const EngineConfig &engineConfig) {
@@ -74,6 +77,16 @@ void GameEngine::update(float dt){
   }
 }
 
+void GameEngine::handleCollisions(){
+  for(const auto& collisioner : collisioners){
+    for(const auto& other : collisioners) {
+      if(collisioner != other) {
+        collisioner->collide(*other);
+      }
+    }
+  }
+}
+
 void GameEngine::render() {
   windowManager->clear();
 
@@ -101,7 +114,13 @@ void GameEngine::addInputListener(InputListener *listener) {
   inputManager->addInputListener(listener);
 }
 
-void GameEngine::addEntity(Entity *entity) { entities.push_back(entity); }
+void GameEngine::addEntity(Entity *entity) { 
+  entities.push_back(entity);
+  if(const auto c{dynamic_cast<Collision::Collisionable*>(entity)}){
+    collisioners.push_back(c);
+    std::cout << "Adding " << entity->getName() << " to collisioners" << std::endl;
+  }
+}
 
 void GameEngine::onInput(InputKeymap map) {
 
