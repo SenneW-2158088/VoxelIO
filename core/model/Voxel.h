@@ -71,7 +71,7 @@ public:
 
   void draw() override;
 
-  void onCollide(Collision::Collisioner &other) override;
+  void onCollide(Collisionable &other) override;
 };
 
 #endif // VOXELIO_VOXEL_H

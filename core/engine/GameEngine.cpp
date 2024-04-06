@@ -65,8 +65,10 @@ void GameEngine::gameLoop() {
   while (!windowManager->shouldClose()) {
     inputManager->handleInput();
 
-    update(windowManager->getDelta());
+    handleCollisions();
 
+    update(windowManager->getDelta());
+    
     render();
   }
 }

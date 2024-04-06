@@ -1,14 +1,17 @@
 #include "Collision.h"
+#include "glm/gtx/string_cast.hpp"
 #include <iostream>
 
 using namespace Collision;
 
+BoundingBox::BoundingBox(glm::vec3 position) : position{position}{}
+
 Collisioner::Collisioner() {
   entity = std::nullopt;
-  boundingbox = AABoundingBox(glm::vec3{0.f}, glm::vec3{0.f}); //single point
+  boundingbox = new AABoundingBox(glm::vec3{0.f}, glm::vec3{0.f}, glm::vec3{0.f}); //single point
 }
 
-Collisioner::Collisioner(Entity *entity, BoundingBox boundingbox) 
+Collisioner::Collisioner(Entity *entity, BoundingBox* boundingbox) 
 : entity(entity), boundingbox(boundingbox){}
 
 void Collisionable::collide(Collisionable &other) {
@@ -18,10 +21,10 @@ void Collisionable::collide(Collisionable &other) {
   }
 }
 
-AABoundingBox::AABoundingBox(glm::vec3 min, glm::vec3 max)
-    : min{min}, max{max} {}
+AABoundingBox::AABoundingBox(glm::vec3 position, glm::vec3 min, glm::vec3 max)
+    : BoundingBox{position}, min{min}, max{max} {}
 
-AABoundingBox::AABoundingBox(Mesh::Mesh *mesh) {
+AABoundingBox::AABoundingBox(glm::vec3 position, Mesh::Mesh *mesh) : BoundingBox{position} {
   for (const auto &vertex : mesh->getVertices()) {
     if (vertex.position.x < min.x) {
       min.x = vertex.position.x;
@@ -46,10 +49,13 @@ AABoundingBox::AABoundingBox(Mesh::Mesh *mesh) {
 }
 
 bool AABoundingBox::collides(BoundingBox &other) {
+  std::cout << "Collide with AABB" << std::endl;
   return other.collideWith(*this);
 }
 
 bool AABoundingBox::collideWith(AABoundingBox &other) {
-  return (this->min.x <= other.getMax().x && this->max.x >= other.getMin().x && this->min.y <= other.getMax().y &&
-          this->max.y >= other.getMin().y && this->min.z <= other.getMax().z && this->max.z >= other.getMin().z);
+  std::cout << "Check AABB Colission this:" << glm::to_string(this->getMax()) << ", " << glm::to_string(this->getMin()) << std::endl;
+  std::cout << "Check AABB Colission other:" << glm::to_string(other.getMax()) << ", " << glm::to_string(other.getMin()) << std::endl;
+  return (this->getMin().x <= other.getMax().x && this->getMax().x >= other.getMin().x && this->getMin().y <= other.getMax().y &&
+          this->getMax().y >= other.getMin().y && this->getMin().z <= other.getMax().z && this->getMax().z >= other.getMin().z);
 }

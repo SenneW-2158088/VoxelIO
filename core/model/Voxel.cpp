@@ -8,6 +8,7 @@
 
 #include <manager/AssetManager.h>
 #include <iostream>
+#include <mutex>
 
 Voxel::Voxel() :
         shader{AssetManager::getShader("voxel")},
@@ -15,15 +16,16 @@ Voxel::Voxel() :
         Collision::Collisionable{}
 {
     this->mesh = new Mesh::Mesh(vertices, indices, {});
-    this->mesh->scale(glm::vec3{1.f});
-    this->shader->setBlockBinding("Matrices", 0);
     this->position = glm::vec3{0.0f, 0.0f, 10.0f};
+    this->shader->setBlockBinding("Matrices", 0);
+    this->mesh->move(this->position);
+    this->mesh->scale(glm::vec3{1.f});
 
     // Setup collision
 
     Collision::Collisioner collisioner = Collision::Collisioner(
       this,
-      new Collision::AABoundingBox(mesh)
+      new Collision::AABoundingBox(this->position, mesh)
     );
 
     setCollisioner(collisioner);
@@ -38,6 +40,6 @@ void Voxel::draw() {
     mesh->draw(shader);
 }
 
-void Voxel::onCollide(Collision::Collisioner &other) {
-    std::cout << getName() << " collided with" << other.getEntity()->getName() << std::endl;
+void Voxel::onCollide(Collision::Collisionable &other) {
+    std::cout << getName() << " collided with" << other.getCollisioner().getEntity().value()->getName() << std::endl;
 }

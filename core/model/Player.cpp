@@ -70,7 +70,7 @@ PlayerImplementation::PlayerImplementation()
 
   Collision::Collisioner collisioner = Collision::Collisioner(
     this,
-    Collision::AABoundingBox(glm::vec3{-0.5f, 0.f, -.2f}, glm::vec3{0.5f, height, .2f})
+    new Collision::AABoundingBox(this->position, glm::vec3{-0.5f, 0.f, -.2f}, glm::vec3{0.5f, height, .2f})
   );
 
   setCollisioner(collisioner);
@@ -91,6 +91,8 @@ void PlayerImplementation::transition(
 void PlayerImplementation::update(float dt) {
   const glm::vec3 cameraPos = glm::vec3{position.x, height, position.z};
   camera->setPosition(cameraPos);
+  auto collisioner = getCollisioner();
+  collisioner.getBoundingBox()->setPosition(this->position);
 }
 
 // Todo normalize with camera direction
