@@ -3,8 +3,13 @@
 
 using namespace Collision;
 
-Collisioner::Collisioner(Entity *entity, BoundingBox *boundingbox)
-    : entity{entity}, boundingBox{boundingbox} {}
+Collisioner::Collisioner() {
+  entity = std::nullopt;
+  boundingbox = AABoundingBox(glm::vec3{0.f}, glm::vec3{0.f}); //single point
+}
+
+Collisioner::Collisioner(Entity *entity, BoundingBox boundingbox) 
+: entity(entity), boundingbox(boundingbox){}
 
 void Collisionable::collide(Collisionable &other) {
   BoundingBox *box = other.collisioner.getBoundingBox();

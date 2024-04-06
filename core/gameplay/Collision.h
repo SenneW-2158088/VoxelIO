@@ -17,9 +17,10 @@ public:
 class AABoundingBox : public BoundingBox {
 private:
   glm::vec3 min, max;
+
 public:
   AABoundingBox(glm::vec3 min, glm::vec3 max);
-  AABoundingBox(Mesh::Mesh* mesh);
+  AABoundingBox(Mesh::Mesh *mesh);
   bool collides(BoundingBox &other) override;
   bool collideWith(AABoundingBox &other) override;
 
@@ -35,15 +36,24 @@ private:
 
 public:
   std::optional<Entity *> getEntity() const { return entity; };
-  BoundingBox *getBoundingBox() {return &boundingbox;};
+  BoundingBox *getBoundingBox() { return &boundingbox; };
 
 public:
   Collisioner();
+  Collisioner(Entity *entity, BoundingBox boundingbox);
 };
 
 class Collisionable {
 private:
   Collisioner collisioner;
+
+public:
+  inline void setCollisioner(Collisioner collisioner) {
+    this->collisioner = collisioner;
+  };
+
+public:
+  inline Collisioner &getCollisioner() { return collisioner; };
 
 public:
   void collide(Collisionable &other);

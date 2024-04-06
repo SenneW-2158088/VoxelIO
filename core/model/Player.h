@@ -22,7 +22,7 @@ public:
   Player() = default;
   virtual Camera *getCamera() const = 0;
   void onInput(InputKeymap map) override = 0;
-  void onCollide(Collision::Collisioner &other) override = 0;
+  void onCollide(Collision::Collisionable &other) override = 0;
 
   std::string getName() override { return "Player"; };
 
@@ -126,7 +126,7 @@ public:
 
 public:
   Camera *getCamera() const override { return camera; };
-  void onCollide(Collision::Collisioner &other) override;
+  void onCollide(Collision::Collisionable &other) override;
 };
 
 #endif // VOXELIO_PLAYER_H

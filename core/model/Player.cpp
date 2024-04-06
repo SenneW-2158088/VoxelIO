@@ -70,7 +70,7 @@ PlayerImplementation::PlayerImplementation()
 
   Collision::Collisioner collisioner = Collision::Collisioner(
     this,
-    new Collision::AABoundingBox(glm::vec3{}, glm::vec3{})
+    Collision::AABoundingBox(glm::vec3{-0.5f, 0.f, -.2f}, glm::vec3{0.5f, height, .2f})
   );
 
   setCollisioner(collisioner);
@@ -118,7 +118,7 @@ void PlayerImplementation::right() {
 
 void PlayerImplementation::draw() {}
 
-void PlayerImplementation::onCollide(Collision::Collisioner &other) {
+void PlayerImplementation::onCollide(Collision::Collisionable &other) {
   // Todo implement collision logic
-  std::cout << "Player collide with " << other.getEntity()->getName() << std::endl;
+  std::cout << "Player collide with " << other.getCollisioner().getEntity().value()->getName() << std::endl;
 }
