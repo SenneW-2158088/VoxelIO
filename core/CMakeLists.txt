@@ -43,6 +43,12 @@ add_library(gameplay STATIC
 
         gameplay/Collision.h
         gameplay/Collision.cpp
+
+        gameplay/Noise.h
+        gameplay/Noise.cpp
+
+        gameplay/db_perlin.h
+        gameplay/db_perlin.cpp
         )
 
 add_library(engine STATIC
