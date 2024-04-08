@@ -49,6 +49,9 @@ add_library(gameplay STATIC
 
         gameplay/db_perlin.h
         gameplay/db_perlin.cpp
+
+        gameplay/Chunk.h
+        gameplay/Chunk.cpp
         )
 
 add_library(engine STATIC
@@ -68,4 +71,7 @@ add_library(manager STATIC
 
         manager/CameraHandler.h
         manager/CameraHandler.cpp
+
+        manager/ChunkManager.h
+        manager/ChunkManager.cpp
         )

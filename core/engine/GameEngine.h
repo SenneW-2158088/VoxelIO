@@ -5,6 +5,7 @@
 #ifndef VOXELIO_GAMEENGINE_H
 #define VOXELIO_GAMEENGINE_H
 
+#include "gameplay/Chunk.h"
 #include "gameplay/Collision.h"
 #include "manager/CameraHandler.h"
 #include <vector>
@@ -34,6 +35,11 @@ private:
     Uniform::GameUniform *uniform;
     std::vector<Entity*> entities{};
     std::vector<Collision::Collisionable*> collisioners{};
+
+
+    // Todo refactor
+    Chunk* chunk;
+    
 private:
     void gameLoop();
 

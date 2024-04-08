@@ -6,12 +6,17 @@
 #include <vector>
 
 // Very basic shitty chunk with individual voxels
-class Chunk : Entity {
+class Chunk {
 private:
-  std::vector<Voxel> voxels;
-  const unsigned int chunk_size = 16; // 16^3 blocks per chunk
-
 public:
-  Chunk();
-  void draw() override;
+  Chunk() = default;
+  virtual void draw() const = 0;
+};
+
+class BasicChunk : public Chunk {
+private:
+  std::vector<Voxel*> voxels;
+public:
+  BasicChunk();
+  void draw() const override;
 };

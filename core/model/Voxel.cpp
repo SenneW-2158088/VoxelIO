@@ -10,13 +10,13 @@
 #include <iostream>
 #include <mutex>
 
-Voxel::Voxel() :
+Voxel::Voxel(glm::vec3 position) :
         shader{AssetManager::getShader("voxel")},
         texture{AssetManager::getTexture("villager.jpg")},
         Collision::Collisionable{}
 {
+    this->position = position;
     this->mesh = new Mesh::Mesh(vertices, indices, {});
-    this->position = glm::vec3{0.0f, 0.0f, 10.0f};
     this->shader->setBlockBinding("Matrices", 0);
     this->mesh->move(this->position);
     this->mesh->scale(glm::vec3{1.f});

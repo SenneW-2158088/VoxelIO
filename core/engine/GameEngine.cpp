@@ -3,6 +3,7 @@
 //
 
 #include "GameEngine.h"
+#include "gameplay/Chunk.h"
 #include "gameplay/Collision.h"
 #include "graphics/Uniform.h"
 #include "manager/CameraHandler.h"
@@ -51,6 +52,8 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
   inputManager = new InputManager(window);
   addInputListener(this);
   addInputListener(cameraHandler);
+
+  this->chunk = new BasicChunk();
 }
 
 GameEngine::~GameEngine() {
@@ -106,6 +109,8 @@ void GameEngine::render() {
   for (const auto &entity : entities) {
     entity->draw();
   }
+
+  chunk->draw();
 
   windowManager->update();
 }

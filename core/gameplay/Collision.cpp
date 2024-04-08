@@ -49,13 +49,10 @@ AABoundingBox::AABoundingBox(glm::vec3 position, Mesh::Mesh *mesh) : BoundingBox
 }
 
 bool AABoundingBox::collides(BoundingBox &other) {
-  std::cout << "Collide with AABB" << std::endl;
   return other.collideWith(*this);
 }
 
 bool AABoundingBox::collideWith(AABoundingBox &other) {
-  std::cout << "Check AABB Colission this:" << glm::to_string(this->getMax()) << ", " << glm::to_string(this->getMin()) << std::endl;
-  std::cout << "Check AABB Colission other:" << glm::to_string(other.getMax()) << ", " << glm::to_string(other.getMin()) << std::endl;
   return (this->getMin().x <= other.getMax().x && this->getMax().x >= other.getMin().x && this->getMin().y <= other.getMax().y &&
           this->getMax().y >= other.getMin().y && this->getMin().z <= other.getMax().z && this->getMax().z >= other.getMin().z);
 }
