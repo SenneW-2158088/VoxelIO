@@ -70,10 +70,11 @@ PlayerImplementation::PlayerImplementation()
 
   Collision::Collisioner collisioner = Collision::Collisioner(
     this,
-    new Collision::AABoundingBox(this->position, glm::vec3{-0.5f, 0.f, -.2f}, glm::vec3{0.5f, height, .2f})
+    new Collision::AABoundingBox(this->position, glm::vec3{-0.5f, 0.f, -.2f}, glm::vec3{0.5f, height, .2f}),
+    "Player bounding box"
   );
 
-  setCollisioner(collisioner);
+  addCollsioner(collisioner);
 }
 
 void PlayerImplementation::onInput(InputKeymap map) {
@@ -91,8 +92,9 @@ void PlayerImplementation::transition(
 void PlayerImplementation::update(float dt) {
   const glm::vec3 cameraPos = glm::vec3{position.x, height, position.z};
   camera->setPosition(cameraPos);
-  auto collisioner = getCollisioner();
-  collisioner.getBoundingBox()->setPosition(this->position);
+  for (auto collisioner : getCollisioners()){
+    collisioner.getBoundingBox()->setPosition(this->position);
+  }
 }
 
 // Todo normalize with camera direction
@@ -120,7 +122,6 @@ void PlayerImplementation::right() {
 
 void PlayerImplementation::draw() {}
 
-void PlayerImplementation::onCollide(Collision::Collisionable &other) {
-  // Todo implement collision logic
-  std::cout << "Player collide with " << other.getCollisioner().getEntity().value()->getName() << std::endl;
+void PlayerImplementation::onCollide(const Collision::Collisioner &other) {
+  std::cout << "Player Collided with : " << other.getEntity().value()->getName() << std::endl;
 }

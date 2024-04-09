@@ -14,7 +14,7 @@ protected:
 
 public:
     inline glm::vec3 getPosition() { return position; }
-    virtual std::string getName() { return "[Entity ()]";};
+    virtual std::string getName() const { return "[Entity ()]";};
 
 public:
     inline void setPosition(glm::vec3 position) { this->position = position; }

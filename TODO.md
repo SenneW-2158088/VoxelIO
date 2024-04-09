@@ -1,5 +1,7 @@
 # Todo
 
-- [ ] Create basic chunk
-- Perlin noise
-- Array of voxels
+- Terrain interface
+- Chunk manager
+  - cache chunks
+
+- instanced collision detection

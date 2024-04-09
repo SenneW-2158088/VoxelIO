@@ -50,8 +50,12 @@ namespace Mesh {
 
 //    Instanced Mesh class for instanced objects
     class InstancedMesh : public BaseMesh {
+    private:
+        unsigned int VBO_INSTANCED{};
+        std::vector<glm::mat4> models;
     public:
-        InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures);
+        InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures, std::vector<glm::vec3> positions);
+        void draw(Shader *shader) override;
     };
 }
 

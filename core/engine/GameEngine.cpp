@@ -53,7 +53,10 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
   addInputListener(this);
   addInputListener(cameraHandler);
 
+  // TODO: remove this hardcoded chunk
   this->chunk = new BasicChunk();
+  this->instancedChunk = new InstancedChunk();
+
 }
 
 GameEngine::~GameEngine() {
@@ -84,6 +87,9 @@ void GameEngine::update(float dt){
 
 void GameEngine::handleCollisions(){
   for(const auto& collisioner : collisioners){
+    for( auto e : instancedChunk->getEntities()){
+      collisioner->collide(*dynamic_cast<Collision::Collisionable*>(e));
+    }
     for(const auto& other : collisioners) {
       if(collisioner != other) {
         collisioner->collide(*other);
@@ -110,7 +116,8 @@ void GameEngine::render() {
     entity->draw();
   }
 
-  chunk->draw();
+  // chunk->draw();
+  instancedChunk->draw();
 
   windowManager->update();
 }
