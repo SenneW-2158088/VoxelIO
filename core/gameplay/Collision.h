@@ -14,19 +14,26 @@ class BoundingBox {
 private:
 protected:
   glm::vec3 position; // Could get the position from the entity but this is more
-                      // flexible
+  glm::vec3 size; // size of the bounding box in each direction
+
 public:
   BoundingBox(glm::vec3 position);
+  BoundingBox(glm::vec3 position, glm::vec3 size);
   virtual bool collides(const BoundingBox &other) const { return false; };
   virtual bool collideWith(const AABoundingBox &other) const { return false; };
 
 public:
   inline void setPosition(glm::vec3 position) { this->position = position; };
+  inline glm::vec3 getPosition() const { return position; }
+
+  virtual inline glm::vec3 getCenter() const { return position; };
+  virtual inline glm::vec3 getSize() const { return glm::vec3{0.f}; };
 };
 
 class AABoundingBox : public BoundingBox {
 protected:
   glm::vec3 min, max;
+
 public:
   AABoundingBox(glm::vec3 position, glm::vec3 min, glm::vec3 max);
   AABoundingBox(glm::vec3 position, Mesh::BaseMesh *mesh);
@@ -36,6 +43,10 @@ public:
 public:
   glm::vec3 getMin() const { return min + position; };
   glm::vec3 getMax() const { return max + position; };
+  inline glm::vec3 getCenter() const override {
+    return (getMin() / 2.f + getMax() / 2.f);
+  };
+  inline glm::vec3 getSize() const override { return (getMax() - getMin()); }
 };
 
 class Collisioner {
@@ -62,16 +73,54 @@ protected:
 
 private:
   bool collide(const Collisioner &own, const Collisioner &other) const;
+
 public:
   inline std::vector<Collisioner> &getCollisioners() { return collisioners; };
-  inline void setCollisioners(std::vector<Collisioner> collisioners) { this->collisioners = collisioners ;};
+  inline void setCollisioners(std::vector<Collisioner> collisioners) {
+    this->collisioners = collisioners;
+  };
   inline bool isActive() const { return active; };
   inline void setActive(bool activation) { this->active = activation; };
-  inline void addCollsioner(Collisioner collisioner) { collisioners.push_back(collisioner); };
-    
+  inline void addCollsioner(Collisioner collisioner) {
+    collisioners.push_back(collisioner);
+  };
+
 public:
-  virtual void collide(Collisionable &other);
+  void collide(Collisionable &other);
   virtual void onCollide(const Collisioner &other){};
+};
+
+class AABBCollisionerOctreeNode {
+private:
+  std::vector<std::unique_ptr<AABBCollisionerOctreeNode>> children;
+  std::vector<Collisioner const *> collisioners;
+  AABoundingBox boundingbox;
+
+private:
+  int getIndex(const glm::vec3 position) const;
+  AABoundingBox calculateBoundingBoxForChild(int index);
+
+public:
+  AABBCollisionerOctreeNode(AABoundingBox boundingbox)
+      : boundingbox{boundingbox}, children(8) {}
+  bool insert(Collisioner const *collisioner);
+  void query(const Collisioner &other, std::vector<const Collisioner *> &found);
+};
+
+class CollisionerOctree {
+private:
+  std::unique_ptr<AABBCollisionerOctreeNode> root;
+
+public:
+  CollisionerOctree();
+
+  inline void insert(Collisioner *collisioner) { root->insert(collisioner); }
+
+  inline std::vector<const Collisioner *> query(const Collisioner &object) {
+    std::vector<const Collisioner *> potential{};
+    root->query(object, potential);
+    return potential;
+  }
 };
 
 }; // namespace Collision

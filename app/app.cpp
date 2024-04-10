@@ -2,6 +2,8 @@
 // Created by Senne Wertelaers on 28/03/2024.
 //
 
+#include "gameplay/Collision.h"
+#include "glm/gtx/string_cast.hpp"
 #include "manager/ChunkManager.h"
 #include <algorithm>
 #include <game/Game.h>
@@ -12,20 +14,28 @@
 
 int main() {
 
-  // LRUChunkCache<int, Test> cache{2};
+  auto c1 = Collision::Collisioner(
+    nullptr,
+    new Collision::AABoundingBox({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 2.5f,1.f})
+  );
 
-  // cache.put(1, std::make_shared<Test>(1));
-  // cache.put(2, std::make_shared<Test>(2));
-  // cache.put(3, std::make_shared<Test>(3));
-  // cache.put(4, std::make_shared<Test>(4));
+  auto t1 = Collision::Collisioner( nullptr, new Collision::AABoundingBox({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 1.f,1.f}) );
+  auto t2 = Collision::Collisioner( nullptr, new Collision::AABoundingBox({0.f, 2.f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 3.f,1.f}) );
+  auto t3 = Collision::Collisioner( nullptr, new Collision::AABoundingBox({0.f, 0.f, 2.f}, {0.f, 0.f, 0.f}, {1.f, 1.f,1.f}) );
 
-  // auto c2 = cache.get(2);
-  // if(auto c2ptr = c2.lock()){
-  //   std::cout << "lost c2" << std::endl;
-  // }
+  auto tree = Collision::CollisionerOctree();
+  tree.insert(&t1);
+  tree.insert(&t2);
+  tree.insert(&t3);
 
-  Game game = Game{};
-  game.start();
+  auto found = tree.query(c1);
+
+  for (const auto& i : found){
+    std::cout << "c1 collided with: " << glm::to_string(i->getBoundingBox()->getPosition()) << std::endl;
+  }
+
+  // Game game = Game{};
+  // game.start();
 
   return 0;
 }
