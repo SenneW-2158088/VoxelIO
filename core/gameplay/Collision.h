@@ -27,7 +27,7 @@ public:
   inline glm::vec3 getPosition() const { return position; }
 
   virtual inline glm::vec3 getCenter() const { return position; };
-  virtual inline glm::vec3 getSize() const { return glm::vec3{0.f}; };
+  virtual inline glm::vec3 getSize() const { return size; };
 };
 
 class AABoundingBox : public BoundingBox {
@@ -43,9 +43,7 @@ public:
 public:
   glm::vec3 getMin() const { return min + position; };
   glm::vec3 getMax() const { return max + position; };
-  inline glm::vec3 getCenter() const override {
-    return (getMin() / 2.f + getMax() / 2.f);
-  };
+  inline glm::vec3 getCenter() const override { return (getMin() + getMax()) * .5f; };
   inline glm::vec3 getSize() const override { return (getMax() - getMin()); }
 };
 

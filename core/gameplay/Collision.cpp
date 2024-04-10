@@ -8,6 +8,7 @@
 using namespace Collision;
 
 BoundingBox::BoundingBox(glm::vec3 position) : position{position} {}
+BoundingBox::BoundingBox(glm::vec3 position, glm::vec3 size) : position{position}, size{size} {}
 
 Collisioner::Collisioner() {
   entity = std::nullopt;
