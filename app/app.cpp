@@ -16,12 +16,14 @@ int main() {
 
   auto c1 = Collision::Collisioner(
     nullptr,
-    new Collision::AABoundingBox({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 2.5f,1.f})
+    new Collision::AABoundingBox({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 2.5f,2.f})
   );
 
   auto t1 = Collision::Collisioner( nullptr, new Collision::AABoundingBox({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 1.f,1.f}) );
   auto t2 = Collision::Collisioner( nullptr, new Collision::AABoundingBox({0.f, 2.f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 3.f,1.f}) );
   auto t3 = Collision::Collisioner( nullptr, new Collision::AABoundingBox({0.f, 0.f, 2.f}, {0.f, 0.f, 0.f}, {1.f, 1.f,1.f}) );
+
+  auto t4 = Collision::Collisioner( nullptr, new Collision::AABoundingBox({0.f, 0.f, 1.f}, {0.f, 0.f, 0.f}, {2.f, 2.f,2.f}) );
 
   auto tree = Collision::CollisionerOctree();
   tree.insert(&t1);
@@ -33,6 +35,8 @@ int main() {
   for (const auto& i : found){
     std::cout << "c1 collided with: " << glm::to_string(i->getBoundingBox()->getPosition()) << std::endl;
   }
+
+  tree.print_tree();
 
   // Game game = Game{};
   // game.start();

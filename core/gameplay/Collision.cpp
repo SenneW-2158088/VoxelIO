@@ -85,27 +85,34 @@ bool AABoundingBox::collideWith(const AABoundingBox &other) const {
 bool AABBCollisionerOctreeNode::insert(Collisioner const *collisioner) {
   const auto bb = collisioner->getBoundingBox();
 
+  std::cout << "Checking for: " << glm::to_string(bb->getPosition()) << " - " << glm::to_string(bb->getSize()) << std::endl;
+
   // Check if objects fits in boundingbox
-  if (!bb->collideWith(boundingbox))
-    return false;
-  ;
+  if (!bb->collideWith(boundingbox)) return false;
 
   // Check if bb is smaller then the current bounding box
-  auto fits = bb->getSize().x < boundingbox.getSize().x &&
-              bb->getSize().y < boundingbox.getSize().y &&
-              bb->getSize().z < boundingbox.getSize().z;
+  auto fits = bb->getSize().x < boundingbox.getSize().x / 2.f &&
+              bb->getSize().y < boundingbox.getSize().y / 2.f &&
+              bb->getSize().z < boundingbox.getSize().z / 2.f;
 
   if (fits) {
+    std::cout << "fits" << std::endl;
     int index = getIndex(bb->getCenter());
 
     // create new node
     if (!children[index]) {
       AABoundingBox new_bb = calculateBoundingBoxForChild(index);
+
+      std::cout << "creating new child" << std::endl;
+      std::cout << "Created new bounding box: " << glm::to_string(new_bb.getPosition()) << " - " << glm::to_string(new_bb.getSize());
       children[index] = std::make_unique<AABBCollisionerOctreeNode>(new_bb);
     }
+    std::cout << "Adding to child" << std::endl;
     return children[index]->insert(collisioner);
 
   } else {
+    std::cout << "doesnt fit" << std::endl;
+    std::cout << "Adding to this box" << std::endl;
     collisioners.push_back(collisioner);
     return true;
   }
@@ -130,7 +137,7 @@ AABoundingBox AABBCollisionerOctreeNode::calculateBoundingBoxForChild(int index)
     index & 1 ? boundingbox.getPosition().z +  (size.z / 2) : boundingbox.getPosition().z,
   };
 
-  return AABoundingBox(pos, pos, pos + size / 2.f);
+  return AABoundingBox(pos, {0.f, 0.f, 0.f}, size / 2.f);
 }
 
 void AABBCollisionerOctreeNode::query(const Collisioner& other, std::vector<const Collisioner*> &found) {
@@ -152,4 +159,30 @@ void AABBCollisionerOctreeNode::query(const Collisioner& other, std::vector<cons
 CollisionerOctree::CollisionerOctree(){
   auto bb = AABoundingBox({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {4.f, 4.f, 4.f});
   root = std::make_unique<AABBCollisionerOctreeNode>(bb);
+}
+
+void CollisionerOctree::print_tree() {
+  std::cout << "printing octree" << std::endl;
+  root->print_node(0);  
+}
+
+void AABBCollisionerOctreeNode::print_node(int index) {
+  std::cout << std::string(index, '-');
+  std::cout << "Node: " << glm::to_string(boundingbox.getPosition()) << " - " << glm::to_string(boundingbox.getSize()) << std::endl;
+
+  std::cout << std::string(index, '-');
+  std::cout << "Collisioners: " << collisioners.size() << std::endl;;
+  for (const auto & col : collisioners){
+    std::cout << "- " << col->getTag() << std::endl;
+  }
+
+  std::cout << std::string(index, '-');
+  std::cout << "Children: " << std::endl;
+  for( const auto & child : children) {
+    if (child) {
+      child->print_node(index+1);
+      std::cout << std::endl;
+    }
+  }
+
 }

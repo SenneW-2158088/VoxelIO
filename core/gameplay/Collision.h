@@ -103,6 +103,7 @@ public:
       : boundingbox{boundingbox}, children(8) {}
   bool insert(Collisioner const *collisioner);
   void query(const Collisioner &other, std::vector<const Collisioner *> &found);
+  void print_node(int index);
 };
 
 class CollisionerOctree {
@@ -119,6 +120,8 @@ public:
     root->query(object, potential);
     return potential;
   }
+
+  void print_tree();
 };
 
 }; // namespace Collision
