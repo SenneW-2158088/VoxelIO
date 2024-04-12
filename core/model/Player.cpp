@@ -68,7 +68,7 @@ PlayerImplementation::PlayerImplementation()
 
   state = new PlayerStates::IdleState(this);
 
-  Collision::Collisioner collisioner = Collision::Collisioner(
+  Collision::Collisioner* collisioner = new Collision::Collisioner(
     this,
     new Collision::AABoundingBox(this->position, glm::vec3{-0.5f, 0.f, -.2f}, glm::vec3{0.5f, height, .2f}),
     "Player bounding box"
@@ -93,7 +93,7 @@ void PlayerImplementation::update(float dt) {
   const glm::vec3 cameraPos = glm::vec3{position.x, height, position.z};
   camera->setPosition(cameraPos);
   for (auto collisioner : getCollisioners()){
-    collisioner.getBoundingBox()->setPosition(this->position);
+    collisioner->getBoundingBox()->setPosition(this->position);
   }
 }
 

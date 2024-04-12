@@ -35,8 +35,9 @@ protected:
   glm::vec3 min, max;
 
 public:
-  AABoundingBox(glm::vec3 position, glm::vec3 min, glm::vec3 max);
   AABoundingBox(glm::vec3 position, Mesh::BaseMesh *mesh);
+  AABoundingBox(glm::vec3 position, glm::vec3 min, glm::vec3 max);
+  AABoundingBox(glm::vec3 position, glm::vec3 size);
   bool collides(const BoundingBox &other) const override;
   bool collideWith(const AABoundingBox &other) const override;
 
@@ -66,25 +67,23 @@ public:
 
 class Collisionable {
 protected:
-  std::vector<Collisioner> collisioners;
+  std::vector<Collisioner* > collisioners;
   bool active = true; // if set to false, disables collision
-
-private:
   bool collide(const Collisioner &own, const Collisioner &other) const;
 
 public:
-  inline std::vector<Collisioner> &getCollisioners() { return collisioners; };
-  inline void setCollisioners(std::vector<Collisioner> collisioners) {
+  inline std::vector<Collisioner* > &getCollisioners() { return collisioners; };
+  inline void setCollisioners(std::vector<Collisioner*> collisioners) {
     this->collisioners = collisioners;
   };
   inline bool isActive() const { return active; };
   inline void setActive(bool activation) { this->active = activation; };
-  inline void addCollsioner(Collisioner collisioner) {
+  inline void addCollsioner(Collisioner* collisioner) {
     collisioners.push_back(collisioner);
   };
 
 public:
-  void collide(Collisionable &other);
+  virtual void collide(Collisionable &other);
   virtual void onCollide(const Collisioner &other){};
 };
 
@@ -111,7 +110,8 @@ private:
   std::unique_ptr<AABBCollisionerOctreeNode> root;
 
 public:
-  CollisionerOctree();
+  CollisionerOctree(glm::vec3 position, glm::vec3 size);
+  CollisionerOctree(AABoundingBox boundingbox);
 
   inline void insert(Collisioner *collisioner) { root->insert(collisioner); }
 

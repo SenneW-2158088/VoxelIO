@@ -29,8 +29,8 @@ void Collisionable::collide(Collisionable &other) {
 
   for (const auto &own_col : collisioners) {
     for (const auto &other_col : other.getCollisioners()) {
-      if (collide(own_col, other_col)) {
-        onCollide(other_col);
+      if (collide(*own_col, *other_col)) {
+        onCollide(*other_col);
       }
     }
   }
@@ -43,6 +43,9 @@ bool Collisionable::collide(const Collisioner &own,
 
 AABoundingBox::AABoundingBox(glm::vec3 position, glm::vec3 min, glm::vec3 max)
     : BoundingBox{position}, min{min}, max{max} {}
+
+AABoundingBox::AABoundingBox(glm::vec3 position, glm::vec3 size)
+    : BoundingBox{position, size}, min{0.f}, max{size}{}
 
 AABoundingBox::AABoundingBox(glm::vec3 position, Mesh::BaseMesh *mesh)
     : BoundingBox{position} {
@@ -144,7 +147,7 @@ void AABBCollisionerOctreeNode::query(const Collisioner& other, std::vector<cons
   if(!other.getBoundingBox()->collideWith(boundingbox)) return;
 
   for(const auto& collisioner: collisioners){
-    if(other.getBoundingBox()->collides(*collisioner->getBoundingBox())) {
+    if(collisioner->getBoundingBox()->collides(*other.getBoundingBox())) {
       found.push_back(collisioner);
     }
   }
@@ -156,9 +159,13 @@ void AABBCollisionerOctreeNode::query(const Collisioner& other, std::vector<cons
   }
 }
 
-CollisionerOctree::CollisionerOctree(){
-  auto bb = AABoundingBox({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {4.f, 4.f, 4.f});
+CollisionerOctree::CollisionerOctree(glm::vec3 position, glm::vec3 size){
+  auto bb = AABoundingBox(position, size);
   root = std::make_unique<AABBCollisionerOctreeNode>(bb);
+}
+
+CollisionerOctree::CollisionerOctree(AABoundingBox boundingbox){
+  root = std::make_unique<AABBCollisionerOctreeNode>(boundingbox);
 }
 
 void CollisionerOctree::print_tree() {

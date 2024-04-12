@@ -88,7 +88,8 @@ void GameEngine::update(float dt){
 void GameEngine::handleCollisions(){
   for(const auto& collisioner : collisioners){
     for( auto e : instancedChunk->getEntities()){
-      collisioner->collide(*dynamic_cast<Collision::Collisionable*>(e));
+      const auto ec = dynamic_cast<Collision::Collisionable*>(e);
+      ec->collide(*collisioner);
     }
     for(const auto& other : collisioners) {
       if(collisioner != other) {

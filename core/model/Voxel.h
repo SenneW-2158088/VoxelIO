@@ -80,6 +80,7 @@ private:
   Shader *shader;
   Mesh::InstancedMesh* mesh;
   Texture *texture;
+  Collision::CollisionerOctree* tree;
 
   const std::vector<Mesh::Vertex> vertices = {
       // Front face
@@ -129,5 +130,7 @@ public:
   InstancedVoxel(std::vector<glm::vec3> positions);
   void draw() override;
   void update(float dt) override;
+  void collide(Collisionable &other) override;
+  void onCollide(const Collision::Collisioner &other) override;
 };
 #endif // VOXELIO_VOXEL_H
