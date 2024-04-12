@@ -142,6 +142,84 @@ app/fast:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/app.dir/build.make app/CMakeFiles/app.dir/build
 .PHONY : app/fast
 
+#=============================================================================
+# Target rules for targets named game
+
+# Build rule for target.
+game: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 game
+.PHONY : game
+
+# fast build rule for target.
+game/fast:
+	$(MAKE) $(MAKESILENT) -f core/CMakeFiles/game.dir/build.make core/CMakeFiles/game.dir/build
+.PHONY : game/fast
+
+#=============================================================================
+# Target rules for targets named model
+
+# Build rule for target.
+model: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 model
+.PHONY : model
+
+# fast build rule for target.
+model/fast:
+	$(MAKE) $(MAKESILENT) -f core/CMakeFiles/model.dir/build.make core/CMakeFiles/model.dir/build
+.PHONY : model/fast
+
+#=============================================================================
+# Target rules for targets named graphics
+
+# Build rule for target.
+graphics: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 graphics
+.PHONY : graphics
+
+# fast build rule for target.
+graphics/fast:
+	$(MAKE) $(MAKESILENT) -f core/CMakeFiles/graphics.dir/build.make core/CMakeFiles/graphics.dir/build
+.PHONY : graphics/fast
+
+#=============================================================================
+# Target rules for targets named gameplay
+
+# Build rule for target.
+gameplay: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gameplay
+.PHONY : gameplay
+
+# fast build rule for target.
+gameplay/fast:
+	$(MAKE) $(MAKESILENT) -f core/CMakeFiles/gameplay.dir/build.make core/CMakeFiles/gameplay.dir/build
+.PHONY : gameplay/fast
+
+#=============================================================================
+# Target rules for targets named engine
+
+# Build rule for target.
+engine: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 engine
+.PHONY : engine
+
+# fast build rule for target.
+engine/fast:
+	$(MAKE) $(MAKESILENT) -f core/CMakeFiles/engine.dir/build.make core/CMakeFiles/engine.dir/build
+.PHONY : engine/fast
+
+#=============================================================================
+# Target rules for targets named manager
+
+# Build rule for target.
+manager: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 manager
+.PHONY : manager
+
+# fast build rule for target.
+manager/fast:
+	$(MAKE) $(MAKESILENT) -f core/CMakeFiles/manager.dir/build.make core/CMakeFiles/manager.dir/build
+.PHONY : manager/fast
+
 glad.o: glad.c.o
 .PHONY : glad.o
 
@@ -176,6 +254,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... GLAD"
 	@echo "... app"
+	@echo "... engine"
+	@echo "... game"
+	@echo "... gameplay"
+	@echo "... graphics"
+	@echo "... manager"
+	@echo "... model"
 	@echo "... glad.o"
 	@echo "... glad.i"
 	@echo "... glad.s"

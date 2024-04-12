@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libmodel.a CMakeFiles/model.dir/model/Entity.cpp.o CMakeFiles/model.dir/model/Player.cpp.o CMakeFiles/model.dir/model/Camera.cpp.o CMakeFiles/model.dir/model/Voxel.cpp.o CMakeFiles/model.dir/model/Triangle.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libmodel.a
