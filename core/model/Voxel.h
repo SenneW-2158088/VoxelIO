@@ -6,6 +6,7 @@
 #define VOXELIO_VOXEL_H
 
 #include "gameplay/Collision.h"
+#include "glm/fwd.hpp"
 #include "graphics/Texture.h"
 #include <graphics/Mesh.h>
 #include <graphics/Shader.h>
@@ -126,8 +127,9 @@ private:
                                        16, 17, 18, 18, 19, 16,
                                        // Bottom face
                                        22, 21, 20, 20, 23, 22};
+  void tempCollide(const Collision::Collisioner& own, const Collision::Collisioner & other);
 public:
-  InstancedVoxel(std::vector<glm::vec3> positions);
+  InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 position);
   void draw() override;
   void update(float dt) override;
   void collide(Collisionable &other) override;

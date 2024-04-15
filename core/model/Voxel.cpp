@@ -43,16 +43,17 @@ void Voxel::onCollide(const Collision::Collisioner &other) {
             << other.getEntity().value()->getName() << std::endl;
 }
 
-InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions)
+InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 position)
     : shader{AssetManager::getShader("instanced_voxel")},
       texture{AssetManager::getTexture("villager.jpg")},
       Collision::Collisionable{} {
   // TODO: remove hardcoded value
-  this->position = glm::vec3{0.f, 0.f, 0.f};
-  this->mesh = new Mesh::InstancedMesh(vertices, indices, {}, positions);
+  this->position = position;
+  // std::cout << "voxel mesh on: " << glm::to_string(position) << std::endl;
+  this->mesh = new Mesh::InstancedMesh(vertices, indices, {}, positions, position);
   this->shader->setBlockBinding("Matrices", 0);
-  this->mesh->move(this->position);
-  this->mesh->scale(glm::vec3{1.f});
+  // this->mesh->move(this->position);
+  // this->mesh->scale(glm::vec3{1.f});
 
   const auto bb =
       Collision::AABoundingBox(position, glm::vec3{0.f, 0.f, 0.f},glm::vec3{16.f, 16.f, 16.f});
@@ -65,7 +66,6 @@ InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions)
     tree->insert(collisioner);
   }
 
-  tree->print_tree();
 }
 
 void InstancedVoxel::draw() {
@@ -84,12 +84,15 @@ void InstancedVoxel::collide(Collisionable &other) {
     const auto found = tree->query(*other_col);
     for (const auto &own_col : found) {
       if(Collisionable::collide(*own_col, *other_col)) {
-         onCollide(*other_col);
+          // tempCollide(*own_col, *other_col);
+         // onCollide(*other_col);
+
       }
     }
   }
 }
 
 void InstancedVoxel::onCollide(const Collision::Collisioner &other) {
+
   std::cout << "Player collided with block" << std::endl;
 }

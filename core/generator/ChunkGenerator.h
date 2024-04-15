@@ -1,21 +1,17 @@
 #pragma once
 
+#include "gameplay/Chunk.h"
+#include <cstddef>
 #include <gameplay/Noise.h>
+#include <generator/Generator.hpp>
 
-template<typename T>
-class ChunkGeneratorBase { 
+
+class BasicChunkGenerator : public Generator<Chunk, glm::vec2> {
+private:
+  const size_t size = 16;
+  noise::Noise *noise;
 public:
-  ChunkGeneratorBase() = default;
-  virtual T generate(Noise::BasicNoise * noise) const = 0;
-};
-
-/*
-  Very basic terrain generator for a basic chunk
-*/
-struct {
-  
-} typedef BasicChunkData;
-
-class BasicChunkGenerator : ChunkGeneratorBase<BasicChunkData> {
-  BasicChunkData generate(Noise::BasicNoise *noise) const override;
+  BasicChunkGenerator(noise::Noise *noise) : noise{noise}{}
+  ~BasicChunkGenerator() = default;
+  Chunk * generate(glm::vec2 pos) const override;
 };

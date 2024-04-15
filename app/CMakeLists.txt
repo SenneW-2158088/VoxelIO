@@ -10,4 +10,5 @@ target_link_libraries(app PUBLIC model)
 target_link_libraries(app PUBLIC graphics)
 target_link_libraries(app PUBLIC gameplay)
 target_link_libraries(app PUBLIC manager)
+target_link_libraries(app PUBLIC generator)
 

@@ -15,6 +15,7 @@
 #include <manager/WindowManager.h>
 #include <model/Camera.h>
 #include <model/Entity.h>
+#include <gameplay/Terrain.hpp>
 #include <optional>
 #include <vector>
 
@@ -33,12 +34,11 @@ private:
 
   std::optional<Camera *> camera;
   Uniform::GameUniform *uniform;
+
+  // Core objects
   std::vector<Entity *> entities{};
   std::vector<Collision::Collisionable *> collisioners{};
-
-  // Todo refactor
-  Chunk *chunk;
-  InstancedChunk *instancedChunk;
+  std::vector<Terrain *> terrains{};
 
 private:
   void gameLoop();
@@ -53,6 +53,8 @@ public:
   void addInputListener(InputListener *listener);
 
   void addEntity(Entity *entity);
+
+  void addTerrain(Terrain *terrain);
 
   void setCamera(Camera *camera);
 

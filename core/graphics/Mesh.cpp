@@ -93,7 +93,7 @@ Mesh::Mesh::Mesh(std::vector<Vertex> vertices,
 Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
                                    std::vector<unsigned int> indices,
                                    std::vector<unsigned int> textures,
-                                   std::vector<glm::vec3> positions)
+                                   std::vector<glm::vec3> positions, glm::vec3 position)
     : BaseMesh{vertices, indices, textures} {
   // Bind vertex array
   glBindVertexArray(VAO);
@@ -101,7 +101,7 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
   // Initialize model matrices
   for(const auto &pos : positions){
     glm::mat4 model{1.f};
-    models.push_back(glm::translate(model, pos));
+    models.push_back(glm::translate(this->model, position + pos));
   }
 
   // Initialize instance VBO
@@ -164,4 +164,10 @@ void Mesh::InstancedMesh::draw(Shader *shader) {
 
   // Unbind buffers
   glBindVertexArray(0);
+}
+
+void Mesh::InstancedMesh::move(const glm::vec3 position) {
+  for(int i = 0; i < models.size(); i++) {
+    models[i] = glm::translate(models[i], position);
+  }
 }

@@ -13,6 +13,18 @@
 
 int main() {
 
+  auto noise = noise::Perlin(256);
+
+  for (float x = -16; x < 0; x += 0.2f) {
+
+    for (float z = -16; z < 0; z += 0.2f) {
+      std::cout << "("<< x << ", " << z << ") ";
+      std::cout << noise.noise(x , z) << std::endl; 
+    }
+  }
+
+  std::cout << ((int)std::floor(-4.2) & 0xFF) << std::endl;
+
   Game game = Game{};
   game.start();
 

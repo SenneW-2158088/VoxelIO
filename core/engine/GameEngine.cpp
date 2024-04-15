@@ -5,15 +5,18 @@
 #include "GameEngine.h"
 #include "gameplay/Chunk.h"
 #include "gameplay/Collision.h"
+#include "glm/fwd.hpp"
 #include "graphics/Uniform.h"
 #include "manager/CameraHandler.h"
 #include "manager/InputManager.h"
 #include "model/Entity.h"
+#include "model/Player.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <manager/AssetManager.h>
+#include <cmath>
 #include <memory>
 #include <optional>
 
@@ -52,11 +55,6 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
   inputManager = new InputManager(window);
   addInputListener(this);
   addInputListener(cameraHandler);
-
-  // TODO: remove this hardcoded chunk
-  this->chunk = new BasicChunk();
-  this->instancedChunk = new InstancedChunk();
-
 }
 
 GameEngine::~GameEngine() {
@@ -80,17 +78,27 @@ void GameEngine::gameLoop() {
 }
 
 void GameEngine::update(float dt){
-  for (const auto &entity : entities){
+
+    for (const auto &entity : entities){
     entity->update(dt);
+  
+    for (const auto &terrain: terrains){
+      auto new_pos = glm::vec3 {
+        std::floor(entity->getPosition().x / 16),
+        0.f,
+        std::floor(entity->getPosition().z / 16),
+      };
+      terrain->setBasePosition(new_pos);
+    }
+  }
+
+  for (const auto &terrain: terrains){
+    terrain->update(dt);
   }
 }
 
 void GameEngine::handleCollisions(){
   for(const auto& collisioner : collisioners){
-    for( auto e : instancedChunk->getEntities()){
-      const auto ec = dynamic_cast<Collision::Collisionable*>(e);
-      ec->collide(*collisioner);
-    }
     for(const auto& other : collisioners) {
       if(collisioner != other) {
         collisioner->collide(*other);
@@ -117,8 +125,9 @@ void GameEngine::render() {
     entity->draw();
   }
 
-  // chunk->draw();
-  instancedChunk->draw();
+  for ( const auto &terrain : terrains) {
+    terrain->draw();
+  }
 
   windowManager->update();
 }
@@ -135,6 +144,10 @@ void GameEngine::addEntity(Entity *entity) {
     collisioners.push_back(c);
     std::cout << "Adding " << entity->getName() << " to collisioners" << std::endl;
   }
+}
+
+void GameEngine::addTerrain(Terrain *terrain) {
+  terrains.push_back(terrain);
 }
 
 void GameEngine::onInput(InputKeymap map) {

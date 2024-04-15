@@ -18,6 +18,9 @@ add_library(model STATIC
 
         model/Triangle.h
         model/Triangle.cpp
+
+        model/VoxelTerrain.h
+        model/VoxelTerrain.cpp
         )
 
 add_library(graphics STATIC
@@ -52,6 +55,8 @@ add_library(gameplay STATIC
 
         gameplay/Chunk.h
         gameplay/Chunk.cpp
+
+        gameplay/Terrain.hpp
         )
 
 add_library(engine STATIC
@@ -75,3 +80,11 @@ add_library(manager STATIC
         manager/ChunkManager.h
         manager/ChunkManager.cpp
         )
+
+add_library(generator STATIC
+
+        generator/Generator.hpp
+
+        generator/ChunkGenerator.h
+        generator/ChunkGenerator.cpp
+)

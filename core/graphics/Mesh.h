@@ -54,8 +54,9 @@ namespace Mesh {
         unsigned int VBO_INSTANCED{};
         std::vector<glm::mat4> models;
     public:
-        InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures, std::vector<glm::vec3> positions);
+        InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures, std::vector<glm::vec3> positions, glm::vec3 position);
         void draw(Shader *shader) override;
+        void move(const glm::vec3 position) override;
     };
 }
 

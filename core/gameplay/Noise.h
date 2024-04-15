@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Noise {
+namespace noise {
 // Basic class for generating a permutation
 class Permutation {
   static const int default_size = 256;
@@ -21,10 +21,10 @@ public:
   inline char operator[](int index) const { return table[index]; };
 
 public:
-  inline int getSize() { return size; };
+  inline int getSize() const { return size; };
 };
 
-class BasicNoise {
+class Noise {
 protected:
   template <typename T> static constexpr auto lerp(T a, T b, T t) -> T {
     return a + t * (b - a);
@@ -42,18 +42,20 @@ protected:
   static double gradient(int hash, double xf, double yf);
 
 public:
-  BasicNoise() = default;
-  virtual double noise(double) = 0;
-  virtual double noise(double, double) = 0;
+  Noise() = default;
+  virtual ~Noise() = default;
+  virtual double noise(double) const = 0;
+  virtual double noise(double, double) const = 0;
 };
 
-class Perlin : BasicNoise {
+class Perlin : public Noise {
 private:
   Permutation permutation;
 public:
   Perlin();
   Perlin(int size);
-  double noise(double x) override;
-  double noise(double x, double y) override;
+  ~Perlin() = default;
+  double noise(double x) const override;
+  double noise(double x, double y) const override;
 };
 } // namespace Noise

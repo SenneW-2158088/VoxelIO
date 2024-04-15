@@ -1,8 +1,9 @@
 #include "Noise.h"
 #include <cstring>
+#include <iostream>
 #include <random>
 
-using namespace Noise;
+using namespace noise;
 
 Permutation Permutation::generate() {
   unsigned char *table = new unsigned char[default_size * 2];
@@ -34,11 +35,12 @@ Permutation Permutation::generate(int size) {
   return Permutation(table, size);
 }
 
-double BasicNoise::gradient(int hash, double xf) {
+
+double Noise::gradient(int hash, double xf) {
   return (hash & 0x1) ? xf : -xf;
 }
 
-double BasicNoise::gradient(int hash, double xf, double yf) {
+double Noise::gradient(int hash, double xf, double yf) {
   switch (hash & 0x7) {
   case 0x0:
     return xf + yf;
@@ -64,7 +66,7 @@ double BasicNoise::gradient(int hash, double xf, double yf) {
 Perlin::Perlin() : permutation(Permutation::generate()) {}
 Perlin::Perlin(int size) : permutation(Permutation::generate(size)) {}
 
-double Perlin::noise(double x) {
+double Perlin::noise(double x) const {
   // Left coordinate of the unit-line that contains the input.
   int const xi0 = floor(x);
 
@@ -87,10 +89,13 @@ double Perlin::noise(double x) {
   return lerp(gradient(h0, xf0), gradient(h1, xf1), u);
 }
 
-double Perlin::noise(double x, double y) {
+double Perlin::noise(double x, double y) const {
   // doubleop-left coordinates of the unit-square.
-  int const xi0 = floor(x) & permutation.getSize() - 1;
-  int const yi0 = floor(y) & permutation.getSize() - 1;
+  // int const xi0 = (int)floor(x) & (permutation.getSize() - 1);
+  // int const yi0 = (int)floor(y) & (permutation.getSize() - 1);
+
+  int const xi0 = floor(x);
+  int const yi0 = floor(y);
 
   // Input location in the unit-square.
   double const xf0 = x - double(xi0);
@@ -99,8 +104,8 @@ double Perlin::noise(double x, double y) {
   double const yf1 = yf0 - double(1.0);
 
   // Wrap to range 0-255.
-  int const xi = xi0 & permutation.getSize() - 1;
-  int const yi = yi0 & permutation.getSize() - 1;
+  int const xi = xi0 & (permutation.getSize() - 1);
+  int const yi = yi0 & (permutation.getSize() - 1);
 
   // Apply the fade function to the location.
   double const u = fade(xf0);

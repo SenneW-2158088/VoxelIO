@@ -5,7 +5,6 @@ CameraHandler::CameraHandler(float sensitivity): sensitivity{sensitivity}, first
 
 void CameraHandler::onMouseMove(double x, double y) {
   if(firstLoad && x != 0 && y != 0){
-    std::cout << "first " << x << " " << y << std::endl;
     this->y = y;
     this->x = x;
     firstLoad = false;

@@ -88,7 +88,7 @@ bool AABoundingBox::collideWith(const AABoundingBox &other) const {
 bool AABBCollisionerOctreeNode::insert(Collisioner const *collisioner) {
   const auto bb = collisioner->getBoundingBox();
 
-  std::cout << "Checking for: " << glm::to_string(bb->getPosition()) << " - " << glm::to_string(bb->getSize()) << std::endl;
+  // std::cout << "Checking for: " << glm::to_string(bb->getPosition()) << " - " << glm::to_string(bb->getSize()) << std::endl;
 
   // Check if objects fits in boundingbox
   if (!bb->collideWith(boundingbox)) return false;
@@ -99,23 +99,23 @@ bool AABBCollisionerOctreeNode::insert(Collisioner const *collisioner) {
               bb->getSize().z < boundingbox.getSize().z / 2.f;
 
   if (fits) {
-    std::cout << "fits" << std::endl;
+    // std::cout << "fits" << std::endl;
     int index = getIndex(bb->getCenter());
 
     // create new node
     if (!children[index]) {
       AABoundingBox new_bb = calculateBoundingBoxForChild(index);
 
-      std::cout << "creating new child" << std::endl;
-      std::cout << "Created new bounding box: " << glm::to_string(new_bb.getPosition()) << " - " << glm::to_string(new_bb.getSize());
+      // std::cout << "creating new child" << std::endl;
+      // std::cout << "Created new bounding box: " << glm::to_string(new_bb.getPosition()) << " - " << glm::to_string(new_bb.getSize());
       children[index] = std::make_unique<AABBCollisionerOctreeNode>(new_bb);
     }
-    std::cout << "Adding to child" << std::endl;
+    // std::cout << "Adding to child" << std::endl;
     return children[index]->insert(collisioner);
 
   } else {
-    std::cout << "doesnt fit" << std::endl;
-    std::cout << "Adding to this box" << std::endl;
+    // std::cout << "doesnt fit" << std::endl;
+    // std::cout << "Adding to this box" << std::endl;
     collisioners.push_back(collisioner);
     return true;
   }
