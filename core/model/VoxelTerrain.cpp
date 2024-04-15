@@ -1,9 +1,11 @@
 #include "VoxelTerrain.h"
 #include "gameplay/Chunk.h"
+#include "gameplay/Collision.h"
 #include "gameplay/Noise.h"
 #include "generator/ChunkGenerator.h"
 #include "generator/Generator.hpp"
 #include "manager/ChunkManager.h"
+#include <memory>
 
 VoxelTerrain::VoxelTerrain() {
   noise::Noise *noise = new noise::Perlin(16);
@@ -31,4 +33,8 @@ void VoxelTerrain::draw() const {
 
 void VoxelTerrain::update(const float dt) {
   // TODO implement update code
+}
+
+void VoxelTerrain::collide(Collision::Collisionable &other){
+  // TODO implement collision
 }

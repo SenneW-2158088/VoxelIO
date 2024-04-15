@@ -101,8 +101,15 @@ void GameEngine::handleCollisions(){
   for(const auto& collisioner : collisioners){
     for(const auto& other : collisioners) {
       if(collisioner != other) {
+        // collide with other collisioners
         collisioner->collide(*other);
+
       }
+    }
+
+    // collide with terrain
+    for(const auto &terrain : terrains){
+      terrain->collide(*collisioner);
     }
   }
 }

@@ -3,6 +3,7 @@
 */
 #pragma once
 
+#include "gameplay/Collision.h"
 #include <glm/glm.hpp>
 
 class Terrain {
@@ -16,4 +17,5 @@ public:
 public:
   virtual void draw() const = 0;
   virtual void update(const float dt) {};
+  virtual void collide(Collision::Collisionable &other){};
 };
