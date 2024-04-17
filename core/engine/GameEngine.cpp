@@ -83,12 +83,15 @@ void GameEngine::update(float dt){
     entity->update(dt);
   
     for (const auto &terrain: terrains){
-      auto new_pos = glm::vec3 {
-        std::floor(entity->getPosition().x / 16),
-        0.f,
-        std::floor(entity->getPosition().z / 16),
-      };
-      terrain->setBasePosition(new_pos);
+      if(camera.has_value()){
+        auto new_pos = glm::vec3 {
+          std::floor(camera.value()->getPosition().x / 16),
+          0.f,
+          std::floor(camera.value()->getPosition().z / 16),
+        };
+        terrain->setBasePosition(new_pos);
+        
+      }
     }
   }
 

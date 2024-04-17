@@ -80,27 +80,21 @@ void AssetManager::loadCubemaps(){
 }
 
 Cubemap *AssetManager::loadCubemap(const std::string &filename){
-    static std::string faces[6] = {"right", "left", "top", "bottom", "back", "front"};
+    static std::string faces[6] = {"right", "left", "top", "bottom", "front", "back"};
     static std::string extensions[2] = {"png", "jpg"}; // supported extensions
 
     std::vector<std::string> facePaths{};
 
     if(fs::is_directory(filename)) {
         for(const auto &face : faces){
-            std::cout << "Trying to find: " << filename << "/" << face << std::endl;
             for(const auto &ext : extensions){
                 const std::string filePath = std::filesystem::path(filename) / (face + "." + ext);
                 if(fs::exists(filePath)){
                     facePaths.push_back(filePath);
-                    std::cout << "Found cubemap: " << filePath << std::endl;
                     break;
                 }
             }
         }
-    }
-
-    for(auto f : facePaths){
-        std::cout << f << std::endl;
     }
 
     // Load the cubemap

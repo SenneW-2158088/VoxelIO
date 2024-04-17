@@ -21,6 +21,9 @@ add_library(model STATIC
 
         model/VoxelTerrain.h
         model/VoxelTerrain.cpp
+
+        model/Skybox.h
+        model/Skybox.cpp
         )
 
 add_library(graphics STATIC

@@ -4,6 +4,7 @@
 
 #include "Game.h"
 #include "gameplay/Terrain.hpp"
+#include "model/Skybox.h"
 #include "model/Triangle.h"
 #include <model/VoxelTerrain.h>
 #include <model/Voxel.h>
@@ -32,9 +33,14 @@ void Game::start() {
     engine->setCamera(player->getCamera());
     engine->addEntity(player);
 
+    // Add cubemap
+    Skybox* skybox = new Skybox(); 
+    engine->addEntity(skybox);
+
     // Add terain
     Terrain* voxelTerrain = new VoxelTerrain();
     engine->addTerrain(voxelTerrain);
+
 
     // Start engine
     engine->start();
