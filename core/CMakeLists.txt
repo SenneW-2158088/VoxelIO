@@ -3,7 +3,7 @@ add_library(game STATIC
         game/Game.cpp
         )
 
-add_library(model SHARED
+add_library(model STATIC
         model/Entity.h
         model/Entity.cpp
 
@@ -23,7 +23,7 @@ add_library(model SHARED
         model/VoxelTerrain.cpp
         )
 
-add_library(graphics SHARED
+add_library(graphics STATIC
         graphics/Mesh.h
         graphics/Mesh.cpp
 
@@ -40,7 +40,7 @@ add_library(graphics SHARED
         graphics/Cubemap.cpp
         )
 
-add_library(gameplay SHARED
+add_library(gameplay STATIC
         gameplay/Command.h
         gameplay/Command.cpp
 
@@ -67,7 +67,7 @@ add_library(engine STATIC
         engine/GameEngine.cpp
         )
 
-add_library(manager SHARED
+add_library(manager STATIC
         manager/AssetManager.h
         manager/AssetManager.cpp
 
