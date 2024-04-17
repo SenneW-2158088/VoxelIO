@@ -1,9 +1,11 @@
 #pragma once
 
 // A simple cache for loading chunks
+#include <functional>
 #include <glm/glm.hpp>
 #include <cstddef>
 #include <list>
+#include <memory>
 
 struct Vec2Hash {
     std::size_t operator()(const glm::vec<2, float>& v) const {

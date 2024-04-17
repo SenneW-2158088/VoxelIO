@@ -5,15 +5,15 @@
 #include <stb/stb_image.h>
 
 Cubemap::Cubemap(std::vector<std::string> &faces) {
-  unsigned int textureID;
-  glGenTextures(1, &textureID);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
 
   int width, height, nrChannels;
 
  
   for (unsigned int i = 0; i < faces.size(); i++) {
     unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+    std::cout << "Trying to load: " << faces[i] << std::endl;
     if (data) {
       glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height,
                    0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -31,3 +31,8 @@ Cubemap::Cubemap(std::vector<std::string> &faces) {
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
+
+void Cubemap::use() const {
+  glActiveTexture(id);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+} 

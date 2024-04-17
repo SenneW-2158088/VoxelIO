@@ -3,7 +3,6 @@
 //
 
 #include "AssetManager.h"
-#include "graphics/Texture.h"
 #include <filesystem>
 #include <iostream>
 
@@ -11,15 +10,18 @@ namespace fs = std::filesystem;
 
 std::map<std::string, std::shared_ptr<Shader>> AssetManager::shaders{};
 std::map<std::string, std::shared_ptr<Texture>> AssetManager::textures{};
+std::map<std::string, std::shared_ptr<Cubemap>> AssetManager::cubemaps{};
 
 void AssetManager::initializeAssets() {
     loadShaders();
     loadTextures();
+    loadCubemaps();
 }
 
 void AssetManager::clearAssets() {
     shaders.clear();
     textures.clear();
+    cubemaps.clear();
 }
 
 void AssetManager::loadShaders() {
@@ -61,3 +63,53 @@ Texture* AssetManager::loadTexture(const std::string &filename){
 Texture* AssetManager::getTexture(const std::string &name){
     return textures.at(name).get();
 }
+
+
+void AssetManager::loadCubemaps(){
+    if(fs::is_directory(CUBEMAP_PATH)){
+            for (const auto& entry : fs::directory_iterator(CUBEMAP_PATH)) {
+            std::string name = entry.path().filename();
+            std::cout << "Loading " << entry.path().string() << std::endl;
+
+            Cubemap* cubemap = loadCubemap(entry.path().string());
+            cubemaps.emplace(name, std::shared_ptr<Cubemap>(cubemap));
+
+            std::cout << "Loaded Cubemap: " << name << std::endl;
+        }
+    }
+}
+
+Cubemap *AssetManager::loadCubemap(const std::string &filename){
+    static std::string faces[6] = {"right", "left", "top", "bottom", "back", "front"};
+    static std::string extensions[2] = {"png", "jpg"}; // supported extensions
+
+    std::vector<std::string> facePaths{};
+
+    if(fs::is_directory(filename)) {
+        for(const auto &face : faces){
+            std::cout << "Trying to find: " << filename << "/" << face << std::endl;
+            for(const auto &ext : extensions){
+                const std::string filePath = std::filesystem::path(filename) / (face + "." + ext);
+                if(fs::exists(filePath)){
+                    facePaths.push_back(filePath);
+                    std::cout << "Found cubemap: " << filePath << std::endl;
+                    break;
+                }
+            }
+        }
+    }
+
+    for(auto f : facePaths){
+        std::cout << f << std::endl;
+    }
+
+    // Load the cubemap
+    return new Cubemap(facePaths);
+
+}
+
+Cubemap *AssetManager::getCubemap(const std::string &name){
+    return cubemaps.at(name).get();
+}
+
+

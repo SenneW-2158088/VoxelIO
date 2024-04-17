@@ -12,10 +12,10 @@ public:
   [[nodiscard]] inline unsigned int getTexture() const {return texture;};
   [[nodiscard]] inline unsigned int getId() const { return id; };
 public:
-  void setTextureId(int id);
+  inline void setTextureId(int id) { this->id = id; };
 public:
   Cubemap(std::vector<std::string> &faces);
-  ~Cubemap();
+  ~Cubemap() = default;
 
   void use() const;
 };

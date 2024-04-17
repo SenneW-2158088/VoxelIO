@@ -5,11 +5,12 @@
 #ifndef VOXELIO_ASSETMANAGER_H
 #define VOXELIO_ASSETMANAGER_H
 
-#include "graphics/Cubemap.h"
-#include <map>
 #include <graphics/Shader.h>
 #include <graphics/Texture.h>
+#include "graphics/Cubemap.h"
+
 #include <filesystem>
+#include <map>
 
 #define SOURCE_DIR _SOURCE_DIR
 
@@ -35,7 +36,7 @@ private:
 
     // Load Cubemaps
     static void loadCubemaps();
-    static Texture* loadCubemap(const std::string &filename);
+    static Cubemap* loadCubemap(const std::string &filename);
     
 public:
     AssetManager() = default;

@@ -11,6 +11,7 @@
 - [ ] Refactor mesh
   - Make sure meshes can be moved during runtime
 - [ ] Refactor voxels, and chunks
+- [ ] Load multiple types of textures like, png, jpg (currently only jpg supported)
 
 ## Noise generation
 
@@ -18,3 +19,12 @@
 - [ ] Add different types of voxels
 
 ## Lighting
+
+- [ ] Basic lighting, multiple point lights
+- [ ] Shadow mapping
+- [ ] Bloom effect
+
+## Model loading
+
+- [ ] Load basic model
+- [ ] Model animations

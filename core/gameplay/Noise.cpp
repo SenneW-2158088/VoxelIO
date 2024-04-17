@@ -1,7 +1,8 @@
 #include "Noise.h"
+#include <algorithm>
 #include <cstring>
-#include <iostream>
 #include <random>
+#include <chrono>
 
 using namespace noise;
 

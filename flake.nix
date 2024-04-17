@@ -9,7 +9,7 @@
   outputs = { self, nixpkgs, utils, ... }@inputs:
     utils.lib.eachDefaultSystem (
       system:
-      let
+let
         p = import nixpkgs { 
 				inherit system;
 				config = { 
@@ -17,8 +17,7 @@
 				}; 
 			};
         llvm = p.llvmPackages_latest;
-      in
-      {
+      in{
         devShell = p.mkShell.override { stdenv = p.clangStdenv; } rec {
           packages = with p; [
 			# builder
