@@ -5,6 +5,7 @@
 #ifndef VOXELIO_ASSETMANAGER_H
 #define VOXELIO_ASSETMANAGER_H
 
+#include "graphics/Cubemap.h"
 #include <map>
 #include <graphics/Shader.h>
 #include <graphics/Texture.h>
@@ -15,12 +16,14 @@
 static const std::string ASSET_PATH = std::filesystem::path(SOURCE_DIR) / "assets";
 static const std::string SHADER_PATH = std::filesystem::path(ASSET_PATH) / "shader";
 static const std::string TEXTURE_PATH = std::filesystem::path(ASSET_PATH) / "texture";
+static const std::string CUBEMAP_PATH = std::filesystem::path(ASSET_PATH) / "cubemap";
 
 class AssetManager {
 private:
     // Assets
     static std::map<std::string, std::shared_ptr<Shader>> shaders;
     static std::map<std::string, std::shared_ptr<Texture>> textures;
+    static std::map<std::string, std::shared_ptr<Cubemap>> cubemaps;
 
     // Load shaders
     static void loadShaders();
@@ -29,6 +32,10 @@ private:
     // Load textures
     static void loadTextures();
     static Texture* loadTexture(const std::string &filename);
+
+    // Load Cubemaps
+    static void loadCubemaps();
+    static Texture* loadCubemap(const std::string &filename);
     
 public:
     AssetManager() = default;
@@ -37,6 +44,7 @@ public:
 
     static Shader* getShader(const std::string &name);
     static Texture* getTexture(const std::string &name);
+    static Cubemap* getCubemap(const std::string &name);
 };
 
 
