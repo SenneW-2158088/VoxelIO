@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "graphics/Shader.h"
 #include <glad/glad.h>
 #include <iostream>
 #define STB_IMAGE_IMPLEMENTATION
@@ -20,7 +21,7 @@ Texture::Texture(const std::string &texturePath) : id{GL_TEXTURE0}{
       stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 
   if (data) {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
   } else {
@@ -37,4 +38,8 @@ void Texture::use() const {
   glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-void Texture::setTextureId(int id) { texture = id; }
+void Texture::setTextureId(int id) { id = id; }
+
+void Texture::apply(Shader &shader) const {
+  shader.setInt("texture", id);
+}

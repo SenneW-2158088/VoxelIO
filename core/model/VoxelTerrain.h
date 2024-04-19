@@ -7,7 +7,7 @@
 
 // Voxel terrain 
 class VoxelTerrain : public Terrain {
-  const size_t distance = 2;
+  const size_t distance = 9;
 
   noise::Perlin* noise;
   BasicChunkGenerator* generator;

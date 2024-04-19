@@ -46,7 +46,7 @@ InstancedChunk::InstancedChunk(const noise::Noise &noise, glm::vec3 position){
 
       for (int y = 0; y < base + floor(size * height); y++) {
        // std::cout << "Created voxel on: " << glm::to_string(glm::vec3{x, y, z}) << std::endl;
-        positions.push_back(glm::vec3{x,y,z});
+        positions.push_back(glm::vec3{x,y-30,z});
       }
     }
   }

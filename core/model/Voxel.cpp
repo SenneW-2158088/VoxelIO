@@ -16,6 +16,7 @@ Voxel::Voxel(glm::vec3 position)
     : shader{AssetManager::getShader("voxel")},
       texture{AssetManager::getTexture("villager.jpg")},
       Collision::Collisionable{} {
+
   this->position = position;
   this->mesh = new Mesh::Mesh(vertices, indices, {});
   this->shader->setBlockBinding("Matrices", 0);

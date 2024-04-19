@@ -24,6 +24,9 @@ add_library(model STATIC
 
         model/Skybox.h
         model/Skybox.cpp
+
+        model/Box.h
+        model/Box.cpp
         )
 
 add_library(graphics STATIC
@@ -41,6 +44,9 @@ add_library(graphics STATIC
 
         graphics/Cubemap.h
         graphics/Cubemap.cpp
+
+        graphics/Material.h
+        graphics/Material.cpp
         )
 
 add_library(gameplay STATIC

@@ -19,9 +19,13 @@
 - [ ] create a better noise generation function for realistic terrain
 - [ ] Add different types of voxels
 
+## Particles
+
+- [ ] Add basic particles when player is running.
+
 ## Lighting
 
-- [ ] Basic lighting, multiple point lights
+- [x] Basic lighting, multiple point lights
 - [ ] Shadow mapping
 - [ ] Bloom effect
 
@@ -34,8 +38,11 @@
 
 - [ ] Player can collide with voxels
 - [ ] Player can jump
-- [ ] Player can
 
 ## Skybox
 
 - [x] Create and load skybox
+
+## Materials
+
+- Support to add textures and materials to shaders
