@@ -36,9 +36,10 @@ Texture::~Texture() {}
 void Texture::use() const {
   glActiveTexture(id);
   glBindTexture(GL_TEXTURE_2D, texture);
+  std::cout << "Binded texture with id " << texture << " to " << id << std::endl;
 }
 
-void Texture::setTextureId(int id) { id = id; }
+void Texture::setTextureId(int id) { this->id = id; }
 
 void Texture::apply(Shader &shader) const {
   shader.setInt("texture", id);
