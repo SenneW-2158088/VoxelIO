@@ -12,36 +12,13 @@ layout(std140) uniform DirectionalLightData {
     vec4 diffuse;
     vec4 specular;
     vec4 direction;
-    int isActive;
+    bool isActive;
 } DirLight;
 
 uniform sampler2D blockTexture;
 
-vec3 calculateLighting(vec3 lightPos, vec3 viewPos, vec3 fragPos, vec3 normal){
-
-    // ambient lighting
-    float as = 1;
-    vec3 ambient = as * vec3(1.0, 1.0, 1.0); // light color
-
-    vec3 lightDir = normalize(lightPos - fragPos);  
-
-    // Diffuse lighting
-    float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse = diff * vec3(.8, .2, .8);
-
-    vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectDir = reflect(-lightDir, normal);
-
-    // specular lighting
-    float ss = 0.9;
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32) * ss;
-
-
-    return ambient + diffuse + spec;
-}
-
 vec3 calculateDirLight(vec3 normal, vec3 view){
-    if(DirLight.isActive != 0){
+    if(DirLight.isActive){
         // ambient
         vec3 ambient = vec3(DirLight.ambient) * texture(blockTexture, TexCoord).rgb;
         

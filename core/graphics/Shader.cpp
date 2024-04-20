@@ -143,3 +143,12 @@ void Shader::setBlockBinding(const std::string &uniformBlockName, int uniformBlo
     glUniformBlockBinding(this->program, index, uniformBlockBinding);
 }
 
+void Shader::setResourceBinding(const std::string &resourceBlockName, int resourceBlockBinding) const {
+    const int index = glGetProgramResourceIndex(this->program, GL_SHADER_STORAGE_BLOCK, resourceBlockName.c_str());
+    if(index == GL_INVALID_INDEX){
+        std::cout << "Failed to find resource block " << resourceBlockName << std::endl;
+        return;
+    }
+    glShaderStorageBlockBinding(this->program, index, resourceBlockBinding);
+}
+

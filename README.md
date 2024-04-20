@@ -20,6 +20,38 @@ layout(std140, binding = 0) uniform DirectionalLightUBO {
 };
 ```
 
+## Shader Storage Buffers
+
+In our engine it is possible to have a large amount of lights, but setting these for every shaders as a uniform is pretty slow. Using a uniform shader buffer is also possible but we are limited to 16kb space. Storage buffers are a bit slower but allow us to store a large amount of data on the gpu.
+
+### Pointlight
+
+Shader struct that defines a pointlight.
+
+```c
+struct PointLight {
+    vec3 position;
+    float constant;
+    float linear;
+    float quadratic;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+```
+
+Accessing the SSBO buffer inside the shader.
+
+```c
+layout(std430) buffer PointLights {
+    PointLight pointLights[];
+};
+```
+
+> Make sure u bind the buffer to the correct index using the `shader->setResourceBlockBinding()`
+
+### Spotlight
+
 ## Shaders
 
 ### Textures

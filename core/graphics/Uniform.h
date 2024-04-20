@@ -41,7 +41,7 @@ public:
 };
 class LightingUniform : public Uniform::BaseUniform {
 private:
-  int active;
+  bool active;
   glm::vec4 ambient;
   glm::vec4 diffuse;
   glm::vec4 specular;

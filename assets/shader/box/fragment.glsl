@@ -12,7 +12,7 @@ layout(std140) uniform DirectionalLightData {
     vec4 diffuse;
     vec4 specular;
     vec4 direction;
-    int isActive;
+    bool isActive;
 } DirLight;
   
 struct Material {
@@ -24,7 +24,7 @@ struct Material {
 uniform Material material;
 
 vec3 calculateDirLight(vec3 normal, vec3 view){
-    if(DirLight.isActive != 0){
+    if(DirLight.isActive){
         // ambient
         vec3 ambient = vec3(DirLight.ambient) * texture(material.diffuse, TexCoord).rgb;
         

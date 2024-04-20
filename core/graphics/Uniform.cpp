@@ -80,10 +80,10 @@ Uniform::LightingUniform::~LightingUniform() {
 }
 
 void Uniform::LightingUniform::setActive(bool active) {
-    this->active = (int) active;
+    this->active = active;
     std::cout << "Uniform active: " << this->active << std::endl;
     glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 4, sizeof(int), &this->active);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 4, sizeof(bool), &this->active);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

@@ -38,6 +38,7 @@ public: // Methods
 
     const void use();
     void setBlockBinding(const std::string &uniformBlockName, int uniformBlockBinding) const;
+    void setResourceBinding(const std::string &resourceBlockName, int resourceBlockBinding) const;
 };
 
 
