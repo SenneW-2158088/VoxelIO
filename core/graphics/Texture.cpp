@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
-Texture::Texture(const std::string &texturePath) : id{GL_TEXTURE0}{
+Texture::Texture(const std::string &texturePath, Format format) : id{GL_TEXTURE0}{
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -20,8 +20,12 @@ Texture::Texture(const std::string &texturePath) : id{GL_TEXTURE0}{
   unsigned char *data =
       stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 
+  
+  unsigned int gl_format = (format == Format::PNG) ? GL_RGBA : GL_RGB;
+
+
   if (data) {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+    glTexImage2D(GL_TEXTURE_2D, 0, gl_format, width, height, 0, gl_format,
                  GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
   } else {
@@ -36,7 +40,6 @@ Texture::~Texture() {}
 void Texture::use() const {
   glActiveTexture(id);
   glBindTexture(GL_TEXTURE_2D, texture);
-  std::cout << "Binded texture with id " << texture << " to " << id << std::endl;
 }
 
 void Texture::setTextureId(int id) { this->id = id; }

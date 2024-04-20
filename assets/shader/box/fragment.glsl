@@ -28,7 +28,7 @@ void main(){
     vec3 norm = normalize(Normal);
     vec3 view = normalize(ViewPos - FragPos);
 
-    vec3 light_color = vec3(.3, .6, .4);
+    vec3 light_color = vec3(1, 1, 1);
 
     // diffuse
     vec3 lightDir = normalize(lightPos - FragPos);  

@@ -32,8 +32,7 @@ private:
 
     // Load textures
     static void loadTextures();
-    static Texture* loadTexture(const std::string &filename);
-
+    static Texture* loadTexture(const std::string &filename, Texture::Format format);
     // Load Cubemaps
     static void loadCubemaps();
     static Cubemap* loadCubemap(const std::string &filename);

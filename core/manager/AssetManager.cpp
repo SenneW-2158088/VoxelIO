@@ -3,6 +3,7 @@
 //
 
 #include "AssetManager.h"
+#include "graphics/Texture.h"
 #include <filesystem>
 #include <iostream>
 
@@ -13,97 +14,101 @@ std::map<std::string, std::shared_ptr<Texture>> AssetManager::textures{};
 std::map<std::string, std::shared_ptr<Cubemap>> AssetManager::cubemaps{};
 
 void AssetManager::initializeAssets() {
-    loadShaders();
-    loadTextures();
-    loadCubemaps();
+  loadShaders();
+  loadTextures();
+  loadCubemaps();
 }
 
 void AssetManager::clearAssets() {
-    shaders.clear();
-    textures.clear();
-    cubemaps.clear();
+  shaders.clear();
+  textures.clear();
+  cubemaps.clear();
 }
 
 void AssetManager::loadShaders() {
-    if (fs::is_directory(SHADER_PATH)) {
-        for (const auto &entry: fs::directory_iterator(SHADER_PATH)) {
-            std::string name = entry.path().filename();
-            Shader* shader = loadShader(entry.path() / "vertex.glsl", entry.path() / "fragment.glsl");
-            shaders.emplace(name, std::shared_ptr<Shader>(shader));
-            std::cout << "Loaded shader: " << name << std::endl;
-        }
+  if (fs::is_directory(SHADER_PATH)) {
+    for (const auto &entry : fs::directory_iterator(SHADER_PATH)) {
+      std::string name = entry.path().filename();
+      Shader *shader = loadShader(entry.path() / "vertex.glsl",
+                                  entry.path() / "fragment.glsl");
+      shaders.emplace(name, std::shared_ptr<Shader>(shader));
+      std::cout << "Loaded shader: " << name << std::endl;
     }
+  }
 }
 
-Shader *AssetManager::loadShader(const std::string &vertex, const std::string &fragment) {
-    return new Shader(vertex, fragment);
+Shader *AssetManager::loadShader(const std::string &vertex,
+                                 const std::string &fragment) {
+  return new Shader(vertex, fragment);
 }
 Shader *AssetManager::getShader(const std::string &name) {
-    return shaders.at(name).get();
+  return shaders.at(name).get();
 }
 
 void AssetManager::loadTextures() {
-    if(fs::is_directory(TEXTURE_PATH)){
-        for (const auto& entry : fs::directory_iterator(TEXTURE_PATH)) {
-            std::string name = entry.path().filename();
+  if (fs::is_directory(TEXTURE_PATH)) {
+    for (const auto &entry : fs::directory_iterator(TEXTURE_PATH)) {
+      std::string name = entry.path().filename();
 
-            std::cout << "Loading " << entry.path().string() << std::endl;
+      std::cout << "Loading " << entry.path().string() << std::endl;
 
-            Texture* texture = loadTexture(entry.path().string());
-            textures.emplace(name, std::shared_ptr<Texture>(texture));
-            std::cout << "Loaded Texture: " << name << std::endl;
-        }
+      Texture::Format format = (entry.path().extension().string() == ".png" ) ? Texture::Format::PNG: Texture::Format::JPG;
+
+      std::cout << "Detected format " << entry.path().extension().string() << std::endl;
+
+      Texture *texture = loadTexture(entry.path().string(), format);
+      textures.emplace(name, std::shared_ptr<Texture>(texture));
+      std::cout << "Loaded Texture: " << name << std::endl;
     }
+  }
 }
 
-Texture* AssetManager::loadTexture(const std::string &filename){
-    return new Texture(filename);
+Texture *AssetManager::loadTexture(const std::string &filename, Texture::Format format) {
+  return new Texture(filename, format);
 }
 
-Texture* AssetManager::getTexture(const std::string &name){
-    return textures.at(name).get();
+Texture *AssetManager::getTexture(const std::string &name) {
+  return textures.at(name).get();
 }
 
+void AssetManager::loadCubemaps() {
+  if (fs::is_directory(CUBEMAP_PATH)) {
+    for (const auto &entry : fs::directory_iterator(CUBEMAP_PATH)) {
+      std::string name = entry.path().filename();
+      std::cout << "Loading " << entry.path().string() << std::endl;
 
-void AssetManager::loadCubemaps(){
-    if(fs::is_directory(CUBEMAP_PATH)){
-            for (const auto& entry : fs::directory_iterator(CUBEMAP_PATH)) {
-            std::string name = entry.path().filename();
-            std::cout << "Loading " << entry.path().string() << std::endl;
+      Cubemap *cubemap = loadCubemap(entry.path().string());
+      cubemaps.emplace(name, std::shared_ptr<Cubemap>(cubemap));
 
-            Cubemap* cubemap = loadCubemap(entry.path().string());
-            cubemaps.emplace(name, std::shared_ptr<Cubemap>(cubemap));
-
-            std::cout << "Loaded Cubemap: " << name << std::endl;
-        }
+      std::cout << "Loaded Cubemap: " << name << std::endl;
     }
+  }
 }
 
-Cubemap *AssetManager::loadCubemap(const std::string &filename){
-    static std::string faces[6] = {"right", "left", "top", "bottom", "front", "back"};
-    static std::string extensions[2] = {"png", "jpg"}; // supported extensions
+Cubemap *AssetManager::loadCubemap(const std::string &filename) {
+  static std::string faces[6] = {"right",  "left",  "top",
+                                 "bottom", "front", "back"};
+  static std::string extensions[2] = {"png", "jpg"}; // supported extensions
 
-    std::vector<std::string> facePaths{};
+  std::vector<std::string> facePaths{};
 
-    if(fs::is_directory(filename)) {
-        for(const auto &face : faces){
-            for(const auto &ext : extensions){
-                const std::string filePath = std::filesystem::path(filename) / (face + "." + ext);
-                if(fs::exists(filePath)){
-                    facePaths.push_back(filePath);
-                    break;
-                }
-            }
+  if (fs::is_directory(filename)) {
+    for (const auto &face : faces) {
+      for (const auto &ext : extensions) {
+        const std::string filePath =
+            std::filesystem::path(filename) / (face + "." + ext);
+        if (fs::exists(filePath)) {
+          facePaths.push_back(filePath);
+          break;
         }
+      }
     }
+  }
 
-    // Load the cubemap
-    return new Cubemap(facePaths);
-
+  // Load the cubemap
+  return new Cubemap(facePaths);
 }
 
-Cubemap *AssetManager::getCubemap(const std::string &name){
-    return cubemaps.at(name).get();
+Cubemap *AssetManager::getCubemap(const std::string &name) {
+  return cubemaps.at(name).get();
 }
-
-
