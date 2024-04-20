@@ -20,6 +20,7 @@ Voxel::Voxel(glm::vec3 position)
   this->position = position;
   this->mesh = new Mesh::Mesh(vertices, indices, {});
   this->shader->setBlockBinding("Matrices", 0);
+  this->shader->setBlockBinding("DirectionalLightData", 1);
   this->mesh->move(this->position);
   this->mesh->scale(glm::vec3{1.f});
 

@@ -5,6 +5,7 @@
 #ifndef VOXELIO_UNIFORM_H
 #define VOXELIO_UNIFORM_H
 
+#include "graphics/Lighting.h"
 #include <glm/glm.hpp>
 
 namespace Uniform {
@@ -38,15 +39,40 @@ public:
 
   void setViewPos(glm::vec4 viewPos);
 };
+class LightingUniform : public Uniform::BaseUniform {
+private:
+  int active;
+  glm::vec4 ambient;
+  glm::vec4 diffuse;
+  glm::vec4 specular;
+  glm::vec4 direction;
+
+public:
+  void setActive(bool active);
+  void setAmbient(glm::vec3 ambient);
+  void setDiffuse(glm::vec3 diffuse);
+  void setSpecular(glm::vec3 specular);
+  void setDirection(glm::vec3 direction);
+public:
+  LightingUniform(lighting::DirectionalLight light);
+  ~LightingUniform();
+  void setDirectionalLight(lighting::DirectionalLight light);
+};
+
 } // namespace Uniform
 
+// a Static service for locating uniforms
 class UniformLocator {
 private:
-  static Uniform::GameUniform *uniform;
-public:
-  UniformLocator() = delete;
-  static void provide(Uniform::GameUniform* uniform);
-  static Uniform::GameUniform* get();
+  static Uniform::GameUniform *gameUniform;
+  static Uniform::LightingUniform *lightingUniform;
+
+  public : UniformLocator() = delete;
+
+  static void provideGame(Uniform::GameUniform *uniform);
+  static void provideLighting(Uniform::LightingUniform *uniform);
+  static Uniform::GameUniform *getGame();
+  static Uniform::LightingUniform* getLighting();
 };
 
 #endif // VOXELIO_UNIFORM_H

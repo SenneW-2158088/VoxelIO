@@ -33,7 +33,10 @@ private:
   InputManager *inputManager;
 
   std::optional<Camera *> camera;
-  Uniform::GameUniform *uniform;
+
+  // Graphics data objects
+  Uniform::GameUniform *gameUniform;
+  Uniform::LightingUniform *lightingUniform;
 
   // Core objects
   std::vector<Entity *> entities{};

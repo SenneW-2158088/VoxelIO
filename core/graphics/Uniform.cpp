@@ -4,6 +4,8 @@
 
 #include "Uniform.h"
 #include "game/Game.h"
+#include "glm/gtx/string_cast.hpp"
+#include "graphics/Lighting.h"
 #include <exception>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -53,18 +55,97 @@ void Uniform::GameUniform::setViewPos(glm::vec4 viewPos) {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-Uniform::GameUniform *UniformLocator::uniform = nullptr;
+Uniform::LightingUniform::LightingUniform(lighting::DirectionalLight light){
+    glGenBuffers(1, &UBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 
-void UniformLocator::provide(Uniform::GameUniform* uniform){
+    const unsigned int size = sizeof(int) + sizeof(glm::vec4) * 4;
+
+    glBufferData(GL_UNIFORM_BUFFER, size, 0, GL_STATIC_DRAW);
+    // glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    // Bind buffer to shader layout 1
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, UBO);
+
+    setActive(light.isActive());
+    setAmbient(light.getAmbient());
+    setDiffuse(light.getDiffuse());
+    setSpecular(light.getSpecular());
+    setDirection(light.getDirection());
+}
+
+Uniform::LightingUniform::~LightingUniform() {
+    std::cout << "Destroying LightinUniform" << std::endl;
+    glDeleteBuffers(1, &UBO);
+}
+
+void Uniform::LightingUniform::setActive(bool active) {
+    this->active = (int) active;
+    std::cout << "Uniform active: " << this->active << std::endl;
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 4, sizeof(int), &this->active);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Uniform::LightingUniform::setAmbient(glm::vec3 ambient) {
+    this->ambient = glm::vec4{ambient, 1.f};
+    std::cout << "Uniform ambient: " << glm::to_string(this->ambient) << std::endl;
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec4), glm::value_ptr(this->ambient));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Uniform::LightingUniform::setDiffuse(glm::vec3 diffuse) {
+    this->diffuse= glm::vec4{diffuse, 1.f};
+    std::cout << "Uniform diffuse: " << glm::to_string(this->diffuse) << std::endl;
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec4), glm::value_ptr(this->diffuse));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Uniform::LightingUniform::setSpecular(glm::vec3 specular) {
+    this->specular= glm::vec4{specular, 1.f};
+    std::cout << "Uniform specular: " << glm::to_string(this->specular) << std::endl;
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec4), glm::value_ptr(this->specular));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Uniform::LightingUniform::setDirection(glm::vec3 direction) {
+    this->direction= glm::vec4{direction, 1.f};
+    std::cout << "Uniform direction: " << glm::to_string(this->direction) << std::endl;
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 3, sizeof(glm::vec4), glm::value_ptr(this->direction));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+// Static uniform objects
+Uniform::GameUniform *UniformLocator::gameUniform = nullptr;
+Uniform::LightingUniform *UniformLocator::lightingUniform = nullptr;
+
+void UniformLocator::provideGame(Uniform::GameUniform* uniform){
     Uniform::GameUniform* gameUniform = uniform;
     if (!gameUniform){
         // Todo implement null uniform class
     }
 
-    UniformLocator::uniform = gameUniform;
+    UniformLocator::gameUniform = gameUniform;
 
 }
 
-Uniform::GameUniform* UniformLocator::get(){
-    return uniform;
+void UniformLocator::provideLighting(Uniform::LightingUniform* uniform) {
+    Uniform::LightingUniform* lightingUniform = uniform;
+    if (!lightingUniform){
+        // Todo implement null uniform class
+    }
+
+    UniformLocator::lightingUniform= lightingUniform;
+}
+
+Uniform::GameUniform* UniformLocator::getGame(){
+    return gameUniform;
+}
+
+Uniform::LightingUniform* UniformLocator::getLighting(){
+    return lightingUniform;
 }

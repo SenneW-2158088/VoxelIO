@@ -47,6 +47,9 @@ add_library(graphics STATIC
 
         graphics/Material.h
         graphics/Material.cpp
+
+        graphics/Lighting.h
+        graphics/Lighting.cpp
         )
 
 add_library(gameplay STATIC

@@ -7,12 +7,13 @@ in vec3 Normal;
 in vec3 FragPos;
 in vec3 ViewPos;
 
-// struct Material {
-//     vec3 ambient;
-//     vec3 diffuse;
-//     vec3 specular;
-//     float shininess;
-// }; 
+layout(std140) uniform DirectionalLightData {
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+    vec4 direction;
+    int isActive;
+} DirLight;
   
 struct Material {
     sampler2D diffuse;
@@ -22,26 +23,34 @@ struct Material {
 
 uniform Material material;
 
-void main(){
-    vec3 lightPos = vec3(1.0, 1.0, 1.0);
+vec3 calculateDirLight(vec3 normal, vec3 view){
+    if(DirLight.isActive != 0){
+        // ambient
+        vec3 ambient = vec3(DirLight.ambient) * texture(material.diffuse, TexCoord).rgb;
+        
+        // diffuse        
+        vec3 lightDir = normalize(-vec3(DirLight.direction));
+        float diff = max(dot(normal, lightDir), 0.0);
 
-    vec3 norm = normalize(Normal);
+        vec3 diffuse = vec3(DirLight.diffuse) * diff * texture(material.diffuse, TexCoord).rgb;
+
+        // specular
+        vec3 reflectDir = reflect(-lightDir, normal);
+        float spec = pow(max(dot(view, reflectDir), 0.0), material.shininess);
+
+        vec3 specular = vec3(DirLight.specular) * spec * texture(material.specular, TexCoord).rgb;
+
+
+        return (ambient + diffuse + specular);
+    }
+
+    return vec3(0);
+}
+
+void main(){
+
+    vec3 normal = normalize(Normal);
     vec3 view = normalize(ViewPos - FragPos);
 
-    vec3 light_color = vec3(1, 1, 1);
-
-    // diffuse
-    vec3 lightDir = normalize(lightPos - FragPos);  
-    float diff = max(dot(norm, lightDir), 0.0);
-
-    // specular
-    vec3 viewDir = normalize(ViewPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-
-    vec3 ambient  = light_color * texture(material.diffuse, TexCoord).rgb;
-    vec3 diffuse  = light_color * diff * vec3(texture(material.diffuse, TexCoord));  
-    vec3 specular = light_color * spec * vec3(texture(material.specular, TexCoord));
-
-    FragColor = vec4(ambient + diffuse + specular, 1.0);
+    FragColor = vec4(calculateDirLight(normal, view), 1.0);
 }

@@ -11,6 +11,9 @@ Box::Box(glm::vec3 position) : shader{AssetManager::getShader("box")} {
   this->mesh->move(this->position);
   this->mesh->scale(glm::vec3{1.f});
 
+  this->shader->setBlockBinding("Matrices", 0);
+  this->shader->setBlockBinding("DirectionalLightData", 1);
+
   // this->material = new ColouredMaterial{
   //   {1, 1, 1},
   //   {1, 1, 1},
