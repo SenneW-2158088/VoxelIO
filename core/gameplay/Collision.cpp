@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include "glm/common.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/string_cast.hpp"
 #include "graphics/Mesh.h"
@@ -30,7 +31,7 @@ void Collisionable::collide(Collisionable &other) {
   for (const auto &own_col : collisioners) {
     for (const auto &other_col : other.getCollisioners()) {
       if (collide(*own_col, *other_col)) {
-        onCollide(*other_col);
+        onCollide(*own_col, *other_col);
       }
     }
   }
@@ -83,6 +84,14 @@ bool AABoundingBox::collideWith(const AABoundingBox &other) const {
           this->getMax().y >= other.getMin().y &&
           this->getMin().z <= other.getMax().z &&
           this->getMax().z >= other.getMin().z);
+}
+
+glm::vec3 AABoundingBox::calculatePenetration(const BoundingBox &other) const {
+  return other.calculatePenetrationFor(*this);
+}
+
+glm::vec3 AABoundingBox::calculatePenetrationFor(const AABoundingBox &other) const {
+  return glm::min(other.getMax() - getMin(), getMax() - other.getMin());
 }
 
 bool AABBCollisionerOctreeNode::insert(Collisioner const *collisioner) {

@@ -22,6 +22,9 @@ public:
   virtual bool collides(const BoundingBox &other) const { return false; };
   virtual bool collideWith(const AABoundingBox &other) const { return false; };
 
+  virtual glm::vec3 calculatePenetration(const BoundingBox &other) const { return {0, 0 ,0}; };
+  virtual glm::vec3 calculatePenetrationFor(const AABoundingBox &other) const { return {0, 0, 0}; };
+
 public:
   inline void setPosition(glm::vec3 position) { this->position = position; };
   inline glm::vec3 getPosition() const { return position; }
@@ -40,6 +43,11 @@ public:
   AABoundingBox(glm::vec3 position, glm::vec3 size);
   bool collides(const BoundingBox &other) const override;
   bool collideWith(const AABoundingBox &other) const override;
+
+  // Vec3 containing how much to object penetrated by other in each direction
+  glm::vec3 calculatePenetration(const BoundingBox &other) const override;
+  glm::vec3 calculatePenetrationFor(const AABoundingBox &other) const override;
+  
 
 public:
   glm::vec3 getMin() const { return min + position; };
@@ -84,7 +92,7 @@ public:
 
 public:
   virtual void collide(Collisionable &other);
-  virtual void onCollide(const Collisioner &other){};
+  virtual void onCollide(const Collisioner& own, const Collisioner &other){};
 };
 
 class AABBCollisionerOctreeNode {

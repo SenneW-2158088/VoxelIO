@@ -72,8 +72,8 @@ public:
 
   void draw() override;
 
-  void onCollide(const Collision::Collisioner &other) override;
 
+  void onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) override;
 };
 
 class InstancedVoxel : public Entity, public Collision::Collisionable {
@@ -133,6 +133,6 @@ public:
   void draw() override;
   void update(float dt) override;
   void collide(Collisionable &other) override;
-  void onCollide(const Collision::Collisioner &other) override;
+  void onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) override;
 };
 #endif // VOXELIO_VOXEL_H

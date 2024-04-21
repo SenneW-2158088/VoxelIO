@@ -40,7 +40,7 @@ void Voxel::draw() {
   mesh->draw(shader);
 }
 
-void Voxel::onCollide(const Collision::Collisioner &other) {
+void Voxel::onCollide(const Collision::Collisioner& own, const Collision::Collisioner &other) {
   std::cout << getName() << " collided with"
             << other.getEntity().value()->getName() << std::endl;
 }
@@ -94,7 +94,7 @@ void InstancedVoxel::collide(Collisionable &other) {
   }
 }
 
-void InstancedVoxel::onCollide(const Collision::Collisioner &other) {
+void InstancedVoxel::onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) {
 
   std::cout << "Player collided with block" << std::endl;
 }
