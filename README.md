@@ -30,13 +30,13 @@ Shader struct that defines a pointlight.
 
 ```c
 struct PointLight {
-    vec3 position;
     float constant;
     float linear;
     float quadratic;
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+    vec4 position;
 };
 ```
 
@@ -45,7 +45,7 @@ Accessing the SSBO buffer inside the shader.
 ```c
 layout(std430) buffer PointLights {
     PointLight pointLights[];
-};
+} pointLightBuffer;
 ```
 
 > Make sure u bind the buffer to the correct index using the `shader->setResourceBlockBinding()`

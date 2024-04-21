@@ -27,6 +27,9 @@ add_library(model STATIC
 
         model/Box.h
         model/Box.cpp
+
+        model/PointLightBuffer.h
+        model/PointLightBuffer.cpp
         )
 
 add_library(graphics STATIC
@@ -50,6 +53,9 @@ add_library(graphics STATIC
 
         graphics/Lighting.h
         graphics/Lighting.cpp
+
+        graphics/SSBO.h
+        graphics/SSBO.cpp
         )
 
 add_library(gameplay STATIC

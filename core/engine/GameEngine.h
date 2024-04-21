@@ -8,6 +8,7 @@
 #include "gameplay/Chunk.h"
 #include "gameplay/Collision.h"
 #include "manager/CameraHandler.h"
+#include "model/PointLightBuffer.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <graphics/Uniform.h>

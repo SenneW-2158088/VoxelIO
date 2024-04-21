@@ -48,4 +48,5 @@ void main(){
 
     // FragColor = vec4(calculateLighting(lightPos, ViewPos, FragPos, norm), 1.0) * texture(blockTexture, TexCoord);
     FragColor = vec4(calculateDirLight(norm, view), 1.0);
+    // FragColor = pointLightBuffer.pointLights[0].ambient;
 }

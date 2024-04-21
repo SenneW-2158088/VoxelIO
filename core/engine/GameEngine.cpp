@@ -12,6 +12,7 @@
 #include "manager/InputManager.h"
 #include "model/Entity.h"
 #include "model/Player.h"
+#include "model/PointLightBuffer.h"
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
