@@ -30,6 +30,7 @@ public:
   virtual void backward() = 0;
   virtual void left() = 0;
   virtual void right() = 0;
+  virtual void jump() = 0;
 };
 
 /**
@@ -127,6 +128,7 @@ public:
   void backward() override;
   void left() override;
   void right() override;
+  void jump() override;
 
 
 public:

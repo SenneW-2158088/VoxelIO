@@ -7,6 +7,7 @@
 #include "gameplay/Collision.h"
 #include "gameplay/State.h"
 #include "glm/geometric.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "manager/InputManager.h"
 #include "model/Camera.h"
 #include <glm/gtx/string_cast.hpp>
@@ -41,6 +42,8 @@ PlayerStates::WalkingState::handleInput(InputKeymap map) {
     entity->backward();
   if (map.right == GLFW_PRESS)
     entity->right();
+  if (map.space == GLFW_PRESS)
+    entity->jump();
 
   if (walking) {
     return std::nullopt;
@@ -100,9 +103,9 @@ void PlayerImplementation::transition(
 void PlayerImplementation::update(float dt) {
 
   // position += correction;
-  std::cout << "Correction: "<< glm::to_string(correction) << std::endl;
-  std::cout << "Max Dots: "<< glm::to_string(max_dots) << std::endl;
-  std::cout << "Min Dots: "<< glm::to_string(min_dots) << std::endl;
+  std::cout << "Correction: " << glm::to_string(correction) << std::endl;
+  std::cout << "Max Dots: " << glm::to_string(max_dots) << std::endl;
+  std::cout << "Min Dots: " << glm::to_string(min_dots) << std::endl;
   std::cout << "Dots: " << glm::to_string(dots) << std::endl;
 
   // We use the sign of x
@@ -127,25 +130,24 @@ void PlayerImplementation::update(float dt) {
   correction.x *= signx;
   correction.z *= signz;
 
-  if(abs_x >= abs_z) {
+  if (abs_x >= abs_z) {
     std::cout << "use x" << std::endl;
     // apply x-correction
     position += glm::vec3{correction.x, 0, 0};
-    if(sign_x < 0){
+    if (sign_x < 0) {
       std::cout << "and z" << std::endl;
       position += glm::vec3{0, 0, correction.z};
     }
-  }
-  else {
+  } else {
     std::cout << "use z" << std::endl;
     // apply z-correction
     position += glm::vec3{0, 0, correction.z};
-    if(sign_z < 0){
+    if (sign_z < 0) {
       std::cout << "and x" << std::endl;
-       position += glm::vec3{correction.x, 0, 0};
+      position += glm::vec3{correction.x, 0, 0};
     }
   }
-  
+
   // if(abs(dots.x) > abs(dots.z)) {
   //   auto sign = (dots.x > 0) ? 1.f : -1.f;
   //   position += sign * glm::vec3{correction.x, 0, 0};
@@ -166,15 +168,13 @@ void PlayerImplementation::update(float dt) {
   this->max_dots = glm::vec3{0};
   this->min_dots = glm::vec3{0};
 
-  const glm::vec3 cameraPos = glm::vec3{position.x, height, position.z};
+  const glm::vec3 cameraPos = glm::vec3{position.x, position.y + height, position.z};
   camera->setPosition(cameraPos);
 
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);
   }
-
 }
-
 
 // Todo normalize with camera direction
 void PlayerImplementation::forward() {
@@ -217,23 +217,34 @@ void PlayerImplementation::right() {
   }
 }
 
+void PlayerImplementation::jump() {
+  std::cout << "Jumping" << std::endl;
+  position += glm::vec3{0.f, 1.f, 0.1} * speed;
+  for (auto collisioner : getCollisioners()) {
+    collisioner->getBoundingBox()->setPosition(position);
+  }
+}
+
 void PlayerImplementation::draw() {}
 
 void PlayerImplementation::onCollide(const Collision::Collisioner &own,
                                      const Collision::Collisioner &other) {
 
   auto p = own.getBoundingBox()->calculatePenetration(*other.getBoundingBox());
-  auto dotx = glm::dot(own.getBoundingBox()->getCenter() - other.getBoundingBox()->getCenter(), {1, 0, 0});
-  auto dotz = glm::dot(own.getBoundingBox()->getCenter() - other.getBoundingBox()->getCenter(), {0, 0, 1});
+  auto dotx = glm::dot(own.getBoundingBox()->getCenter() -
+                           other.getBoundingBox()->getCenter(),
+                       {1, 0, 0});
+  auto dotz = glm::dot(own.getBoundingBox()->getCenter() -
+                           other.getBoundingBox()->getCenter(),
+                       {0, 0, 1});
 
   dots += glm::vec3{dotx, 0, dotz};
   max_dots = glm::max({dotx, 0, dotz}, max_dots);
   min_dots = glm::min({dotx, 0, dotz}, min_dots);
 
-  if(abs(dotx) > abs(dotz)){
+  if (abs(dotx) > abs(dotz)) {
     correction = glm::max(glm::vec3{p.x, 0, 0}, correction);
-  }
-  else{
+  } else {
     correction = glm::max(glm::vec3{0, 0, p.z}, correction);
   }
 
