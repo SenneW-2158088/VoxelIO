@@ -105,6 +105,11 @@ private:
   const float height = 1.8f;
   const float speed = 0.05f;
 
+  glm::vec3 dots{};
+  glm::vec3 max_dots{};
+  glm::vec3 min_dots{};
+  glm::vec3 correction{};
+
   Camera *camera;
   PlayerStates::PlayerState *state;
 

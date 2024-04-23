@@ -41,8 +41,8 @@ void Voxel::draw() {
 }
 
 void Voxel::onCollide(const Collision::Collisioner& own, const Collision::Collisioner &other) {
-  std::cout << getName() << " collided with"
-            << other.getEntity().value()->getName() << std::endl;
+  // std::cout << getName() << " collided with"
+            // << other.getEntity().value()->getName() << std::endl;
 }
 
 InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 position)

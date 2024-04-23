@@ -98,12 +98,83 @@ void PlayerImplementation::transition(
 }
 
 void PlayerImplementation::update(float dt) {
+
+  // position += correction;
+  std::cout << "Correction: "<< glm::to_string(correction) << std::endl;
+  std::cout << "Max Dots: "<< glm::to_string(max_dots) << std::endl;
+  std::cout << "Min Dots: "<< glm::to_string(min_dots) << std::endl;
+  std::cout << "Dots: " << glm::to_string(dots) << std::endl;
+
+  // We use the sign of x
+  auto abs_x = abs(dots.x);
+  auto abs_z = abs(dots.z);
+
+  std::cout << "Absx: " << abs_x << std::endl;
+  std::cout << "Absz: " << abs_z << std::endl;
+
+  auto sign_x = (min_dots.x * max_dots.x) < 0 ? -1 : 1;
+  auto sign_z = (min_dots.z * max_dots.z) < 0 ? -1 : 1;
+
+  std::cout << "Signx: " << sign_x << std::endl;
+  std::cout << "Signz: " << sign_z << std::endl;
+
+  auto use_x = (min_dots.x * max_dots.x) >= 0 ? true : false;
+  auto use_z = (min_dots.z * max_dots.z) >= 0 ? true : false;
+
+  auto signx = (dots.x > 0) ? 1.f : -1.f;
+  auto signz = (dots.z > 0) ? 1.f : -1.f;
+
+  correction.x *= signx;
+  correction.z *= signz;
+
+  if(abs_x >= abs_z) {
+    std::cout << "use x" << std::endl;
+    // apply x-correction
+    position += glm::vec3{correction.x, 0, 0};
+    if(sign_x < 0){
+      std::cout << "and z" << std::endl;
+      position += glm::vec3{0, 0, correction.z};
+    }
+  }
+  else {
+    std::cout << "use z" << std::endl;
+    // apply z-correction
+    position += glm::vec3{0, 0, correction.z};
+    if(sign_z < 0){
+      std::cout << "and x" << std::endl;
+       position += glm::vec3{correction.x, 0, 0};
+    }
+  }
+  
+  // if(abs(dots.x) > abs(dots.z)) {
+  //   auto sign = (dots.x > 0) ? 1.f : -1.f;
+  //   position += sign * glm::vec3{correction.x, 0, 0};
+  // }
+  // else {
+  //   auto sign = (dots.z > 0) ? 1.f : -1.f;
+  //   position += sign * glm::vec3{0, 0, correction.z};
+  // }
+
+  // auto signx = (dots.x > 0) ? 1.f : -1.f;
+  // position += signx * glm::vec3{correction.x, 0, 0};
+
+  // auto signz = (dots.z > 0) ? 1.f : -1.f;
+  // position += signz * glm::vec3{0, 0, correction.z};
+
+  this->correction = glm::vec3{0, 0, 0};
+  this->dots = glm::vec3{0};
+  this->max_dots = glm::vec3{0};
+  this->min_dots = glm::vec3{0};
+
   const glm::vec3 cameraPos = glm::vec3{position.x, height, position.z};
   camera->setPosition(cameraPos);
+
   for (auto collisioner : getCollisioners()) {
-    collisioner->getBoundingBox()->setPosition(this->position);
+    collisioner->getBoundingBox()->setPosition(position);
   }
+
 }
+
 
 // Todo normalize with camera direction
 void PlayerImplementation::forward() {
@@ -111,12 +182,19 @@ void PlayerImplementation::forward() {
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
   position += newPos;
+
+  for (auto collisioner : getCollisioners()) {
+    collisioner->getBoundingBox()->setPosition(position);
+  }
 }
 void PlayerImplementation::backward() {
   auto newDir =
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
   position -= newPos;
+  for (auto collisioner : getCollisioners()) {
+    collisioner->getBoundingBox()->setPosition(position);
+  }
 }
 void PlayerImplementation::left() {
   auto newDir =
@@ -124,6 +202,9 @@ void PlayerImplementation::left() {
   auto newPos =
       glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
   position -= newPos;
+  for (auto collisioner : getCollisioners()) {
+    collisioner->getBoundingBox()->setPosition(position);
+  }
 }
 void PlayerImplementation::right() {
   auto newDir =
@@ -131,6 +212,9 @@ void PlayerImplementation::right() {
   auto newPos =
       glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
   position += newPos;
+  for (auto collisioner : getCollisioners()) {
+    collisioner->getBoundingBox()->setPosition(position);
+  }
 }
 
 void PlayerImplementation::draw() {}
@@ -138,31 +222,19 @@ void PlayerImplementation::draw() {}
 void PlayerImplementation::onCollide(const Collision::Collisioner &own,
                                      const Collision::Collisioner &other) {
 
-  std::cout << "Player bounding box: " << own.getTag() << " collided with" << other.getTag() << std::endl;
-
   auto p = own.getBoundingBox()->calculatePenetration(*other.getBoundingBox());
-
-  std::cout << glm::to_string(p) << std::endl;
-
-  // calculate penetration
-
   auto dotx = glm::dot(own.getBoundingBox()->getCenter() - other.getBoundingBox()->getCenter(), {1, 0, 0});
-
   auto dotz = glm::dot(own.getBoundingBox()->getCenter() - other.getBoundingBox()->getCenter(), {0, 0, 1});
 
-  std::cout << "DotX: " << glm::dot(own.getBoundingBox()->getCenter() - other.getBoundingBox()->getCenter(), {1, 0, 0}) << std::endl;
-  std::cout << "DotY: " << glm::dot(own.getBoundingBox()->getCenter() - other.getBoundingBox()->getCenter(), {0, 1, 0}) << std::endl;
-  std::cout << "DotZ: " << glm::dot(own.getBoundingBox()->getCenter() - other.getBoundingBox()->getCenter(), {0, 0, 1}) << std::endl;
+  dots += glm::vec3{dotx, 0, dotz};
+  max_dots = glm::max({dotx, 0, dotz}, max_dots);
+  min_dots = glm::min({dotx, 0, dotz}, min_dots);
 
-  if(abs(dotx) > abs(dotz)) {
-    auto sign = (dotx > 0) ? 1.f : -1.f;
-    std::cout << "Apply: " << glm::to_string(sign * glm::vec3{p.x, 0, 0}) << std::endl;
-    position += sign * glm::vec3{p.x, 0, 0};
+  if(abs(dotx) > abs(dotz)){
+    correction = glm::max(glm::vec3{p.x, 0, 0}, correction);
   }
   else{
-    auto sign = (dotz > 0) ? 1.f : -1.f;
-    std::cout << "Apply: " << glm::to_string(sign * glm::vec3{0, 0, p.z}) << std::endl;
-    position += sign * glm::vec3{0, 0, p.z};
+    correction = glm::max(glm::vec3{0, 0, p.z}, correction);
   }
 
   // apply inverse force to player

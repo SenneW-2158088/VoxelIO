@@ -13,6 +13,7 @@
 - [ ] Refactor voxels, and chunks
 - [ ] Load multiple types of textures like, png, jpg (currently only jpg supported)
 - [ ] Create a debug camera that can fly around the world
+- [ ] Refactor collision resolution
 
 ## Noise generation
 
@@ -36,7 +37,7 @@
 
 ## Collision resolution
 
-- [ ] Player can collide with voxels
+- [x] Player can collide with voxels
 - [ ] Player can jump
 
 ## Skybox

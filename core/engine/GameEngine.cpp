@@ -73,11 +73,13 @@ void GameEngine::start() { this->gameLoop(); }
 
 void GameEngine::gameLoop() {
   while (!windowManager->shouldClose()) {
+
     inputManager->handleInput();
 
     handleCollisions();
 
     update(windowManager->getDelta());
+
 
     render();
   }
