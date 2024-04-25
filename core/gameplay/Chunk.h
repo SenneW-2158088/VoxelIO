@@ -1,8 +1,6 @@
 #pragma once
 
-#include "gameplay/Collision.h"
 #include "gameplay/Noise.h"
-#include "graphics/Mesh.h"
 #include "model/Entity.h"
 #include "model/Voxel.h"
 #include <vector>

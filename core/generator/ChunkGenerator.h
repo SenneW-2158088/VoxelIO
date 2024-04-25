@@ -5,6 +5,7 @@
 #include <gameplay/Noise.h>
 #include <generator/Generator.hpp>
 
+template class Generator<Chunk, glm::vec2>;
 
 class BasicChunkGenerator : public Generator<Chunk, glm::vec2> {
 private:

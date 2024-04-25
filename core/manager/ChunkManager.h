@@ -6,6 +6,8 @@
 #include "generator/Generator.hpp"
 #include "manager/Cache.h"
 
+template class Generator<Chunk, glm::vec3>;
+
 class ChunkManager {
 private:
   const size_t cacheCapacity = 1 << 13;

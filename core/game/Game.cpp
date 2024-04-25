@@ -39,25 +39,25 @@ void Game::start() {
     engine->addEntity(skybox);
 
     // Add terain
-    // Terrain* voxelTerrain = new VoxelTerrain();
-    // engine->addTerrain(voxelTerrain);
+    Terrain* voxelTerrain = new VoxelTerrain();
+    engine->addTerrain(voxelTerrain);
 
     // Basic voxel for testing
-    Voxel* voxel = new Voxel(glm::vec3 {0.f, 0.f, 0.f});
-    Voxel* voxel2 = new Voxel(glm::vec3 {0.f, 0.f, 1.f});
-    Voxel* voxel3 = new Voxel(glm::vec3 {1.f, 0.f, 0.f});
-    engine->addEntity(voxel);
-    engine->addEntity(voxel2);
-    engine->addEntity(voxel3);
+    // Voxel* voxel = new Voxel(glm::vec3 {0.f, 0.f, 0.f});
+    // Voxel* voxel2 = new Voxel(glm::vec3 {0.f, 0.f, 1.f});
+    // Voxel* voxel3 = new Voxel(glm::vec3 {1.f, 0.f, 0.f});
+    // engine->addEntity(voxel);
+    // engine->addEntity(voxel2);
+    // engine->addEntity(voxel3);
 
     Voxel* voxel4 = new Voxel(glm::vec3 {3.f, 0.f, 0.f});
     Voxel* voxel5 = new Voxel(glm::vec3 {3.f, 0.f, 1.f});
-    engine->addEntity(voxel4);
-    engine->addEntity(voxel5);
+    // engine->addEntity(voxel4);
+    // engine->addEntity(voxel5);
 
     // Box
-    Box *box = new Box(glm::vec3 {0.f, 0.f, 2.f});
-    engine->addEntity(box);
+    // Box *box = new Box(glm::vec3 {0.f, 0.f, 2.f});
+    // engine->addEntity(box);
 
     // Start engine
     engine->start();

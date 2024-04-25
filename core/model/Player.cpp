@@ -7,7 +7,6 @@
 #include "gameplay/Collision.h"
 #include "gameplay/State.h"
 #include "glm/geometric.hpp"
-#include "glm/gtc/type_ptr.hpp"
 #include "manager/InputManager.h"
 #include "model/Camera.h"
 #include <glm/gtx/string_cast.hpp>
@@ -109,8 +108,8 @@ void PlayerImplementation::update(float dt) {
   std::cout << "Dots: " << glm::to_string(dots) << std::endl;
 
   // We use the sign of x
-  auto abs_x = abs(dots.x);
-  auto abs_z = abs(dots.z);
+  auto abs_x = std::abs(dots.x);
+  auto abs_z = std::abs(dots.z);
 
   std::cout << "Absx: " << abs_x << std::endl;
   std::cout << "Absz: " << abs_z << std::endl;
@@ -126,6 +125,18 @@ void PlayerImplementation::update(float dt) {
 
   auto signx = (dots.x > 0) ? 1.f : -1.f;
   auto signz = (dots.z > 0) ? 1.f : -1.f;
+
+  if(position.y <= 0){
+    position.y = 0;
+    this->acceleration= glm::vec3{0};
+  }
+  else {
+    acceleration.y -= 9.81 * dt;
+    velocity.y = acceleration.y;
+  }
+
+  position += velocity * dt;
+
 
   correction.x *= signx;
   correction.z *= signz;
@@ -148,26 +159,16 @@ void PlayerImplementation::update(float dt) {
     }
   }
 
-  // if(abs(dots.x) > abs(dots.z)) {
-  //   auto sign = (dots.x > 0) ? 1.f : -1.f;
-  //   position += sign * glm::vec3{correction.x, 0, 0};
-  // }
-  // else {
-  //   auto sign = (dots.z > 0) ? 1.f : -1.f;
-  //   position += sign * glm::vec3{0, 0, correction.z};
-  // }
-
-  // auto signx = (dots.x > 0) ? 1.f : -1.f;
-  // position += signx * glm::vec3{correction.x, 0, 0};
-
-  // auto signz = (dots.z > 0) ? 1.f : -1.f;
-  // position += signz * glm::vec3{0, 0, correction.z};
-
+  // Collision garbage
   this->correction = glm::vec3{0, 0, 0};
   this->dots = glm::vec3{0};
   this->max_dots = glm::vec3{0};
   this->min_dots = glm::vec3{0};
 
+  // Physics garbage
+  this->velocity = glm::vec3{0};
+  // this->acceleration= glm::vec3{0};
+  
   const glm::vec3 cameraPos = glm::vec3{position.x, position.y + height, position.z};
   camera->setPosition(cameraPos);
 
@@ -181,7 +182,7 @@ void PlayerImplementation::forward() {
   auto newDir =
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
-  position += newPos;
+  velocity += newPos;
 
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);
@@ -191,7 +192,7 @@ void PlayerImplementation::backward() {
   auto newDir =
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
-  position -= newPos;
+  velocity -= newPos;
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);
   }
@@ -201,7 +202,7 @@ void PlayerImplementation::left() {
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos =
       glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
-  position -= newPos;
+  velocity -= newPos;
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);
   }
@@ -211,7 +212,7 @@ void PlayerImplementation::right() {
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos =
       glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
-  position += newPos;
+  velocity += newPos;
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);
   }
@@ -219,7 +220,7 @@ void PlayerImplementation::right() {
 
 void PlayerImplementation::jump() {
   std::cout << "Jumping" << std::endl;
-  position += glm::vec3{0.f, 1.f, 0.1} * speed;
+  velocity += glm::vec3{0.f, 10.f, 0.1} * speed;
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);
   }
@@ -242,7 +243,7 @@ void PlayerImplementation::onCollide(const Collision::Collisioner &own,
   max_dots = glm::max({dotx, 0, dotz}, max_dots);
   min_dots = glm::min({dotx, 0, dotz}, min_dots);
 
-  if (abs(dotx) > abs(dotz)) {
+  if (std::abs(dotx) > std::abs(dotz)) {
     correction = glm::max(glm::vec3{p.x, 0, 0}, correction);
   } else {
     correction = glm::max(glm::vec3{0, 0, p.z}, correction);

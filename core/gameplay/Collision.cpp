@@ -1,6 +1,5 @@
 #include "Collision.h"
 #include "glm/common.hpp"
-#include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/string_cast.hpp"
 #include "graphics/Mesh.h"
 #include <iostream>

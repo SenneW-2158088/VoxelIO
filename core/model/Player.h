@@ -104,12 +104,18 @@ public:
 class PlayerImplementation : public Player {
 private:
   const float height = 1.8f;
-  const float speed = 0.05f;
+  const float speed = 5.f;
 
+  // collision TODO: refactor
   glm::vec3 dots{};
   glm::vec3 max_dots{};
   glm::vec3 min_dots{};
   glm::vec3 correction{};
+
+  // physics TODO: refactor
+  glm::vec3 velocity{};
+  glm::vec3 acceleration{};
+  
 
   Camera *camera;
   PlayerStates::PlayerState *state;

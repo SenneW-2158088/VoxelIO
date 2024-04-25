@@ -80,7 +80,6 @@ void GameEngine::gameLoop() {
 
     update(windowManager->getDelta());
 
-
     render();
   }
 }

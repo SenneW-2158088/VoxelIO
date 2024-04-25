@@ -1,7 +1,7 @@
 #include "ChunkManager.h"
 #include "gameplay/Chunk.h"
-#include "generator/ChunkGenerator.h"
 #include <memory>
+
 
 ChunkManager::ChunkManager(Generator<Chunk, glm::vec2> &generator)
     : LRU{cacheCapacity}, generator{&generator} {}
