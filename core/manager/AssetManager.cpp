@@ -7,6 +7,7 @@
 #include "graphics/Mesh.h"
 #include "graphics/Texture.h"
 #include "graphics/model.h"
+#include <assimp/material.h>
 #include <filesystem>
 #include <iostream>
 
@@ -55,9 +56,12 @@ void AssetManager::loadTextures() {
 
       std::cout << "Loading " << entry.path().string() << std::endl;
 
-      Texture::Format format = (entry.path().extension().string() == ".png" ) ? Texture::Format::PNG: Texture::Format::JPG;
+      Texture::Format format = (entry.path().extension().string() == ".png")
+                                   ? Texture::Format::PNG
+                                   : Texture::Format::JPG;
 
-      std::cout << "Detected format " << entry.path().extension().string() << std::endl;
+      std::cout << "Detected format " << entry.path().extension().string()
+                << std::endl;
 
       Texture *texture = loadTexture(entry.path().string(), format);
       textures.emplace(name, std::shared_ptr<Texture>(texture));
@@ -66,7 +70,8 @@ void AssetManager::loadTextures() {
   }
 }
 
-Texture *AssetManager::loadTexture(const std::string &filename, Texture::Format format) {
+Texture *AssetManager::loadTexture(const std::string &filename,
+                                   Texture::Format format) {
   return new Texture(filename, format);
 }
 
@@ -116,77 +121,136 @@ Cubemap *AssetManager::getCubemap(const std::string &name) {
   return cubemaps.at(name).get();
 }
 
-
-void AssetManager::loadModels(){
+void AssetManager::loadModels() {
   // list all the models
 }
 
-
 graphics::Model *AssetManager::loadModel(const std::string &filename) {
   Assimp::Importer import;
-  const aiScene *scene = import.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);	
-	
-  if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
-  {
-      std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
-      return nullptr;
+  const aiScene *scene =
+      import.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
+      !scene->mRootNode) {
+    std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+    return nullptr;
   }
 
-  std::vector<Mesh::Mesh> meshes;
-  std::vector<Material> materials;
+  std::vector<Mesh::Mesh *> meshes;
+  std::vector<Material *> materials;
 
-  // AssetManager::processModelNode();
+  // process the model
+  AssetManager::processModelNode(scene->mRootNode, scene, meshes, materials);
+
+  return new graphics::Model(meshes, materials);
 }
 
-
-void AssetManager::processModelNode(aiNode *node, const aiScene *scene){
+void AssetManager::processModelNode(aiNode *node, const aiScene *scene,
+                                    std::vector<Mesh::Mesh *> &meshes,
+                                    std::vector<Material *> &materials) {
   // iterate over each node an process each mesh
-  
   // process all the node's meshes (if any)
-    // for(unsigned int i = 0; i < node->mNumMeshes; i++)
-    // {
-    //     aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
-    //     meshes.push_back(processMesh(mesh, scene));			
-    // }
-    // // then do the same for each of its children
-    // for(unsigned int i = 0; i < node->mNumChildren; i++)
-    // {
-    //     processNode(node->mChildren[i], scene);
-    // }
+  for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+    aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+    AssetManager::processModelMesh(mesh, scene, meshes, materials);
+  }
+
+  // then do the same for each of its children
+  for(unsigned int i = 0; i < node->mNumChildren; i++)
+  {
+      AssetManager::processModelNode(node->mChildren[i], scene, meshes, materials);
+  }
 }
 
-void AssetManager::processModelMesh(aiMesh *mesh, const aiScene *scene){
+void AssetManager::processModelMesh(aiMesh *mesh, const aiScene *scene,
+                               std::vector<Mesh::Mesh *> &meshes,
+                               std::vector<Material *> &materials) {
   // process the mesh
-  // find a way to to correctly set the texture id's
-    // vector<Vertex> vertices;
-    // vector<unsigned int> indices;
-    // vector<Texture> textures;
+  std::vector<Mesh::Vertex> vertices;
+  std::vector<unsigned int> indices;
 
-    // for(unsigned int i = 0; i < mesh->mNumVertices; i++)
-    // {
-    //     Vertex vertex;
-    //     // process vertex positions, normals and texture coordinates
-    //     [...]
-    //     vertices.push_back(vertex);
-    // }
-    // // process indices
-    // for(unsigned int i = 0; i < mesh->mNumFaces; i++)
-    // {
-    //     aiFace face = mesh->mFaces[i];
-    //     for(unsigned int j = 0; j < face.mNumIndices; j++)
-    //         indices.push_back(face.mIndices[j]);
-    // } 
-    // // process material
-    // if(mesh->mMaterialIndex >= 0)
-    // {
-    //     [...]
-    // }
+  for(unsigned int i = 0; i < mesh->mNumVertices; i++)
+  {
+      Mesh::Vertex vertex;
 
-    // return Mesh(vertices, indices, textures);
-  
+      // process vertex positions, normals and texture coordinates
+      glm::vec3 vector; 
+      vector.x = mesh->mVertices[i].x;
+      vector.y = mesh->mVertices[i].y;
+      vector.z = mesh->mVertices[i].z; 
+      vertex.position = vector;
+
+      // process normals
+      vector.x = mesh->mNormals[i].x;
+      vector.y = mesh->mNormals[i].y;
+      vector.z = mesh->mNormals[i].z;
+      vertex.normal = vector; 
+
+      // process textures coords
+      if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+      {
+          glm::vec2 vec;
+          vec.x = mesh->mTextureCoords[0][i].x; 
+          vec.y = mesh->mTextureCoords[0][i].y;
+          vertex.uv= vec;
+      }
+      else {
+        vertex.uv = glm::vec2(0.0f, 0.0f); 
+      }
+
+      vertices.push_back(vertex);
+  }
+
+  // process indices
+  for(unsigned int i = 0; i < mesh->mNumFaces; i++)
+  {
+      aiFace face = mesh->mFaces[i];
+      for(unsigned int j = 0; j < face.mNumIndices; j++){
+        indices.push_back(face.mIndices[j]);
+      }
+  }
+
+  // process material
+  Material* material;
+
+  if(mesh->mMaterialIndex >= 0)
+  {
+      auto *m = scene->mMaterials[mesh->mMaterialIndex];
+      material = AssetManager::processModelMaterial(m, scene);
+  } 
+
+  Mesh::Mesh *newMesh = new Mesh::Mesh(vertices, indices, material);
+
+  meshes.push_back(newMesh);
+  materials.push_back(material);
 }
 
-void AssetManager::processModelTexture(aiMesh *mesh, const aiScene *scene){
+Material *AssetManager::processModelMaterial(aiMaterial *material, const aiScene *scene) {
   // process the textures
+   std::vector<Texture*> diffuse;
+   std::vector<Texture*> specular;
+
+   for(unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++){
+     aiString filename;
+     material->GetTexture(aiTextureType_DIFFUSE, i, &filename);
+     Texture* texture = AssetManager::loadTexture(filename.C_Str(), Texture::Format::PNG);
+
+     diffuse.push_back(texture);
+   }
+
+   for(unsigned int i = 0; i < material->GetTextureCount(aiTextureType_SPECULAR); i++){
+     aiString filename;
+     material->GetTexture(aiTextureType_SPECULAR, i, &filename);
+     Texture* texture = AssetManager::loadTexture(filename.C_Str(), Texture::Format::PNG);
+
+     specular.push_back(texture);
+   }
+
+   Material *m = new TexturedMaterial(diffuse, specular, 32.f);
+
+   return m;
 }
 
+graphics::Model* AssetManager::getModel(const std::string &filename){
+  return models.at(filename).get();
+}

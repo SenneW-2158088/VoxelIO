@@ -13,6 +13,8 @@ class Model {
     std::vector<Material*> materials;
   public:
     Model(std::vector<Mesh::Mesh*> meshes, std::vector<Material*> materials);
+    void draw(Shader *shader) const;
+    
     ~Model();
 };
 

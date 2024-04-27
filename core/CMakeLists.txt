@@ -56,6 +56,9 @@ add_library(graphics STATIC
 
         graphics/SSBO.h
         graphics/SSBO.cpp
+
+        graphics/Model.h
+        graphics/Model.cpp
         )
 
 add_library(gameplay STATIC
