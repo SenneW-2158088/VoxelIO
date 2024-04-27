@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graphics/Material.h"
 #include <vector>
 
 #include <graphics/Mesh.h>
@@ -9,8 +10,9 @@ namespace graphics {
 class Model {
   private:  
     std::vector<Mesh::Mesh*> meshes;
+    std::vector<Material*> materials;
   public:
-    Model();
+    Model(std::vector<Mesh::Mesh*> meshes, std::vector<Material*> materials);
     ~Model();
 };
 

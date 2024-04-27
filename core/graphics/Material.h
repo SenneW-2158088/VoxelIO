@@ -3,10 +3,14 @@
 #include "graphics/Shader.h"
 #include "graphics/Texture.h"
 #include <glm/glm.hpp>
+#include <vector>
 
 class Material {
 public:
+  static const int MAX_TEXTURES = 8;
+
   Material() = default;
+
   // Apply material to shader
   virtual void apply(Shader &shader) const = 0;
 };
@@ -24,14 +28,16 @@ public:
 };
 
 class TexturedMaterial : public Material {
-  Texture &diffuse;
-  Texture &specular;
+  std::vector<Texture *> diffuse_textures;
+  std::vector<Texture *> specular_textures;
   float shininess;
+
 public:
-  TexturedMaterial(Texture &diffuse, Texture &specular, float shininess);
+  TexturedMaterial(std::vector<Texture *> diffuse,
+                   std::vector<Texture *> specular, float shininess);
   void apply(Shader &shader) const override;
   void use() const;
 };
 
-static Material* MetalMaterial = new ColouredMaterial({}, {}, {}, .9f);
-static Material* WoodMaterial = new ColouredMaterial({}, {}, {}, .9f);
+static Material *MetalMaterial = new ColouredMaterial({}, {}, {}, .9f);
+static Material *WoodMaterial = new ColouredMaterial({}, {}, {}, .9f);

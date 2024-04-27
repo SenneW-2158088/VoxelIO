@@ -1,4 +1,5 @@
 #include "Material.h"
+#include "glad/glad.h"
 #include <iostream>
 
 ColouredMaterial::ColouredMaterial(glm::vec3 ambient, glm::vec3 diffuse,
@@ -14,19 +15,50 @@ void ColouredMaterial::apply(Shader &shader) const {
   shader.setFloat("material.shininess", shininess);
 }
 
-TexturedMaterial::TexturedMaterial(Texture &diffuse, Texture &specular, float shininess)
-    : diffuse{diffuse}, specular{specular}, shininess{shininess} {}
+//NOTE: Maybe need to 
+TexturedMaterial::TexturedMaterial(std::vector<Texture*> diffuse, std::vector<Texture*> specular, float shininess)
+    : diffuse_textures{diffuse}, specular_textures{specular}, shininess{shininess} {
+
+      std::cout << "starting" << std::endl;
+      for(int i = 0; i < diffuse.size() && i < MAX_TEXTURES; i++){
+        std::cout << "settings diffuse id: " << i << std::endl;
+        diffuse_textures[i]->setTextureId(GL_TEXTURE0 + i);
+      }
+
+      for(int i = 0; i < specular.size() && i < MAX_TEXTURES; i++){
+        std::cout << "settings specular id: " << i + diffuse_textures.size() << std::endl;
+        specular_textures[i]->setTextureId(GL_TEXTURE0 + i + diffuse_textures.size());
+      }
+      std::cout << "initialized" << std::endl;
+    }
 
 void TexturedMaterial::apply(Shader &shader) const {
   shader.use();
-  shader.setInt("material.diffuse", diffuse.getId());
-  std::cout << "binded material.diffuse to texture " << diffuse.getId() << std::endl;
-  shader.setInt("material.specular", specular.getId());
-  std::cout << "binded material.specular to texture " << specular.getId() << std::endl;
+
+  for(unsigned int i = 0; i < diffuse_textures.size(); i++){
+    std::string name = "material.diffuse[" + std::to_string(i) + "]";
+    std::cout << "added: " << name << " binded to texture "<< diffuse_textures[i]->getId() << std::endl;
+    shader.setInt(name, diffuse_textures[i]->getId());
+  }
+
+  shader.setInt("material.diffuse_texture_count", diffuse_textures.size());
+
+  for(unsigned int i = 0; i < specular_textures.size(); i++){
+    std::string name = "material.specular[" + std::to_string(i) + "]";
+    std::cout << "added: " << name << " binded to texture "<< specular_textures[i]->getId() << std::endl;
+    shader.setInt(name, specular_textures[i]->getId());
+  }
+
+  shader.setInt("material.specular_texture_count", diffuse_textures.size());
+
   shader.setFloat("material.shininess", shininess);
 }
 
 void TexturedMaterial::use() const {
-  diffuse.use();
-  specular.use();
+  for(const auto& diffuse : diffuse_textures){
+    diffuse->use();
+  }
+  for(const auto& specular: specular_textures){
+    specular->use();
+  }
 }

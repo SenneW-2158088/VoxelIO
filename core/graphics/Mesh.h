@@ -5,6 +5,7 @@
 #ifndef VOXELIO_MESH_H
 #define VOXELIO_MESH_H
 
+#include "graphics/Material.h"
 #include <glm/glm.hpp>
 #include <vector>
 #include <graphics/Shader.h>
@@ -26,11 +27,11 @@ namespace Mesh {
 
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
-            std::vector<unsigned int> textures;
+            Material* material;
 
         public:
             BaseMesh();
-            BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures);
+            BaseMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material* material);
 
             // Simple Mesh operations
             virtual void move(const glm::vec3 position);
@@ -45,7 +46,7 @@ namespace Mesh {
 //    Standard Mesh class for basic objects
     class Mesh : public BaseMesh{
     public:
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures);
+        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material* material);
     };
 
 //    Instanced Mesh class for instanced objects
@@ -54,7 +55,7 @@ namespace Mesh {
         unsigned int VBO_INSTANCED{};
         std::vector<glm::mat4> models;
     public:
-        InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> textures, std::vector<glm::vec3> positions, glm::vec3 position);
+        InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material *material, std::vector<glm::vec3> positions, glm::vec3 position);
         void draw(Shader *shader) override;
         void move(const glm::vec3 position) override;
     };

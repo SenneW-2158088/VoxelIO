@@ -39,8 +39,8 @@ void Game::start() {
     engine->addEntity(skybox);
 
     // Add terain
-    Terrain* voxelTerrain = new VoxelTerrain();
-    engine->addTerrain(voxelTerrain);
+    // Terrain* voxelTerrain = new VoxelTerrain();
+    // engine->addTerrain(voxelTerrain);
 
     // Basic voxel for testing
     // Voxel* voxel = new Voxel(glm::vec3 {0.f, 0.f, 0.f});
@@ -56,8 +56,8 @@ void Game::start() {
     // engine->addEntity(voxel5);
 
     // Box
-    // Box *box = new Box(glm::vec3 {0.f, 0.f, 2.f});
-    // engine->addEntity(box);
+    Box *box = new Box(glm::vec3 {0.f, 0.f, 2.f});
+    engine->addEntity(box);
 
     // Start engine
     engine->start();

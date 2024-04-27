@@ -15,9 +15,12 @@ layout(std140) uniform DirectionalLightData {
     bool isActive;
 } DirLight;
   
+#define MAX_TEXTURES 8
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
+    sampler2D diffuse_textures[MAX_TEXTURES];
+    int diffuse_texture_count;
+    sampler2D specular_textures[MAX_TEXTURES];
+    int specular_texture_count;
     float shininess;
 };
 
@@ -26,19 +29,19 @@ uniform Material material;
 vec3 calculateDirLight(vec3 normal, vec3 view){
     if(DirLight.isActive){
         // ambient
-        vec3 ambient = vec3(DirLight.ambient) * texture(material.diffuse, TexCoord).rgb;
+        vec3 ambient = vec3(DirLight.ambient) * texture(material.diffuse_textures[0], TexCoord).rgb;
         
         // diffuse        
         vec3 lightDir = normalize(-vec3(DirLight.direction));
         float diff = max(dot(normal, lightDir), 0.0);
 
-        vec3 diffuse = vec3(DirLight.diffuse) * diff * texture(material.diffuse, TexCoord).rgb;
+        vec3 diffuse = vec3(DirLight.diffuse) * diff * texture(material.diffuse_textures[0], TexCoord).rgb;
 
         // specular
         vec3 reflectDir = reflect(-lightDir, normal);
         float spec = pow(max(dot(view, reflectDir), 0.0), material.shininess);
 
-        vec3 specular = vec3(DirLight.specular) * spec * texture(material.specular, TexCoord).rgb;
+        vec3 specular = vec3(DirLight.specular) * spec * texture(material.specular_textures[0], TexCoord).rgb;
 
 
         return (ambient + diffuse + specular);

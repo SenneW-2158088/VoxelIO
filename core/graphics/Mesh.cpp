@@ -10,8 +10,8 @@
 
 Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices,
                          std::vector<unsigned int> indices,
-                         std::vector<unsigned int> textures)
-    : vertices(vertices), indices(indices), textures(textures), model{1.f} {
+                         Material* material)
+    : vertices(vertices), indices(indices), material(material), model{1.f} {
   // Bind VAO
   glGenVertexArrays(1, &VAO);
   glBindVertexArray(VAO);
@@ -49,8 +49,11 @@ Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices,
 
 void Mesh::BaseMesh::draw(Shader *shader) {
 
+  if(material){
+    material->apply(*shader);
+  }
+
   shader->use();
-  //    shader->setBlockBinding("Matrices", 0);
   shader->setMat4("model", model);
 
   // Bind buffers
@@ -87,14 +90,14 @@ void Mesh::BaseMesh::scale(const glm::vec3 scale) {
 
 Mesh::Mesh::Mesh(std::vector<Vertex> vertices,
                  std::vector<unsigned int> indices,
-                 std::vector<unsigned int> textures)
-    : BaseMesh{vertices, indices, textures} {}
+                 Material* material)
+    : BaseMesh{vertices, indices, material} {}
 
 Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
                                    std::vector<unsigned int> indices,
-                                   std::vector<unsigned int> textures,
+                                   Material* material,
                                    std::vector<glm::vec3> positions, glm::vec3 position)
-    : BaseMesh{vertices, indices, textures} {
+    : BaseMesh{vertices, indices, material} {
   // Bind vertex array
   glBindVertexArray(VAO);
 

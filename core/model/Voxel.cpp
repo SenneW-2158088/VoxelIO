@@ -18,7 +18,7 @@ Voxel::Voxel(glm::vec3 position)
       Collision::Collisionable{} {
 
   this->position = position;
-  this->mesh = new Mesh::Mesh(vertices, indices, {});
+  this->mesh = new Mesh::Mesh(vertices, indices, nullptr);
   this->shader->setBlockBinding("Matrices", 0);
   this->shader->setBlockBinding("DirectionalLightData", 1);
   this->mesh->move(this->position);
@@ -56,7 +56,7 @@ InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 posit
   this->shader->setBlockBinding("Matrices", 0);
   // this->mesh->move(this->position);
   // this->mesh->scale(glm::vec3{1.f});
-  std::cout << "created mesh" << glm::to_string(position) << std::endl;
+  // std::cout << "created mesh" << glm::to_string(position) << std::endl;
 
   const auto bb =
       Collision::AABoundingBox(position, glm::vec3{0.f, 0.f, 0.f},glm::vec3{16.f, 16.f, 16.f});
@@ -89,6 +89,7 @@ void InstancedVoxel::collide(Collisionable &other) {
       if(Collisionable::collide(*own_col, *other_col)) {
           // tempCollide(*own_col, *other_col);
          // onCollide(*other_col);
+         onCollide(*own_col, *other_col);
 
       }
     }

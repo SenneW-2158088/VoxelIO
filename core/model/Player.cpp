@@ -102,23 +102,23 @@ void PlayerImplementation::transition(
 void PlayerImplementation::update(float dt) {
 
   // position += correction;
-  std::cout << "Correction: " << glm::to_string(correction) << std::endl;
-  std::cout << "Max Dots: " << glm::to_string(max_dots) << std::endl;
-  std::cout << "Min Dots: " << glm::to_string(min_dots) << std::endl;
-  std::cout << "Dots: " << glm::to_string(dots) << std::endl;
+  // std::cout << "Correction: " << glm::to_string(correction) << std::endl;
+  // std::cout << "Max Dots: " << glm::to_string(max_dots) << std::endl;
+  // std::cout << "Min Dots: " << glm::to_string(min_dots) << std::endl;
+  // std::cout << "Dots: " << glm::to_string(dots) << std::endl;
 
   // We use the sign of x
   auto abs_x = std::abs(dots.x);
   auto abs_z = std::abs(dots.z);
 
-  std::cout << "Absx: " << abs_x << std::endl;
-  std::cout << "Absz: " << abs_z << std::endl;
+  // std::cout << "Absx: " << abs_x << std::endl;
+  // std::cout << "Absz: " << abs_z << std::endl;
 
   auto sign_x = (min_dots.x * max_dots.x) < 0 ? -1 : 1;
   auto sign_z = (min_dots.z * max_dots.z) < 0 ? -1 : 1;
 
-  std::cout << "Signx: " << sign_x << std::endl;
-  std::cout << "Signz: " << sign_z << std::endl;
+  // std::cout << "Signx: " << sign_x << std::endl;
+  // std::cout << "Signz: " << sign_z << std::endl;
 
   auto use_x = (min_dots.x * max_dots.x) >= 0 ? true : false;
   auto use_z = (min_dots.z * max_dots.z) >= 0 ? true : false;
@@ -142,19 +142,19 @@ void PlayerImplementation::update(float dt) {
   correction.z *= signz;
 
   if (abs_x >= abs_z) {
-    std::cout << "use x" << std::endl;
+    // std::cout << "use x" << std::endl;
     // apply x-correction
     position += glm::vec3{correction.x, 0, 0};
     if (sign_x < 0) {
-      std::cout << "and z" << std::endl;
+      // std::cout << "and z" << std::endl;
       position += glm::vec3{0, 0, correction.z};
     }
   } else {
-    std::cout << "use z" << std::endl;
+    // std::cout << "use z" << std::endl;
     // apply z-correction
     position += glm::vec3{0, 0, correction.z};
     if (sign_z < 0) {
-      std::cout << "and x" << std::endl;
+      // std::cout << "and x" << std::endl;
       position += glm::vec3{correction.x, 0, 0};
     }
   }

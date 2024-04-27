@@ -75,17 +75,24 @@ To use the colored material, the following struct is required inside the shader
 ```
 
 **Textured material**
-To use the textured material, the following struct is required inside the shader
+To use the textured material, the following struct is required inside the shader, this struct allows multiple textures for diffuse and specular
 
 ```c
-  struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
+#define MAX_TEXTURES 8
+
+struct Material {
+    sampler2D diffuse_textures[MAX_TEXTURES];
+    int diffuse_texture_count;
+    sampler2D specular_textures[MAX_TEXTURES];
+    int specular_texture_count;
     float shininess;
 };
 ```
 
 > Note: When using textured materials, the material is required to be used on each draw call! `material->use()`.
+
+> Note: The max textures is set to 8 since opengl should minimally support 16 texture bindings. Thus 8 for each type of texture.
+> You can adjust this to whatever you want I don't care, this is stable.
 
 ### Lighting
 
@@ -100,7 +107,7 @@ The struct is stored inside a uniform because this data is mostly accessed in ev
 ```c
 struct DirLight {
     vec3 direction;
-  
+
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -113,7 +120,7 @@ Hey, don't be scared in the dark... use a pointlight. Pointlights can be accesse
 
 ```c
 struct PointLight {
-  vec3 position;  
+  vec3 position;
 
   vec3 ambient;
   vec3 diffuse;
@@ -157,7 +164,7 @@ vec3 view = normalize(ViewPos - FragPos);
 vec3 light_color = vec3(1, 1, 1);
 
 // diffuse
-vec3 lightDir = normalize(lightPos - FragPos);  
+vec3 lightDir = normalize(lightPos - FragPos);
 float diff = max(dot(norm, lightDir), 0.0);
 
 // specular
@@ -166,6 +173,6 @@ vec3 reflectDir = reflect(-lightDir, norm);
 float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 
 vec3 ambient  = light_color * texture(material.diffuse, TexCoord).rgb;
-vec3 diffuse  = light_color * diff * vec3(texture(material.diffuse, TexCoord));  
+vec3 diffuse  = light_color * diff * vec3(texture(material.diffuse, TexCoord));
 vec3 specular = light_color * spec * vec3(texture(material.specular, TexCoord));
 ```

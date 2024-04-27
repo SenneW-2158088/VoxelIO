@@ -1,9 +1,8 @@
 # Todo
 
-- [x] Add custom octree constructor
-- [x] Add octree collision to voxel
-- [x] Terrain interface
-- [x] Chunk manager
+- Material class contains multiple textures
+- Model class contains meshes and materials
+- Meshes should have a reference to a texture or multiple materials
 
 ## Refactor day
 
@@ -15,35 +14,31 @@
 - [ ] Create a debug camera that can fly around the world
 - [ ] Refactor collision resolution
 
+## Model loading
+
+- [ ] Load basic model
+- [ ] Model animations
+
+## Collision
+
+- [ ] Vertical collisioning + resolution
+
+# Extra
+
 ## Noise generation
 
 - [ ] create a better noise generation function for realistic terrain
+
+## Lighting
+
+- [ ] Shadow mapping
+- [ ] Bloom effect
 - [ ] Add different types of voxels
 
 ## Particles
 
 - [ ] Add basic particles when player is running.
 
-## Lighting
-
-- [x] Basic lighting, multiple point lights
-- [ ] Shadow mapping
-- [ ] Bloom effect
-
 ## Model loading
 
-- [ ] Load basic model
 - [ ] Model animations
-
-## Collision resolution
-
-- [x] Player can collide with voxels
-- [ ] Player can jump
-
-## Skybox
-
-- [x] Create and load skybox
-
-## Materials
-
-- Support to add textures and materials to shaders
