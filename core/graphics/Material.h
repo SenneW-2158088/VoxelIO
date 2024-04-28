@@ -14,6 +14,7 @@ public:
 
   // Apply material to shader
   virtual void apply(Shader &shader) const = 0;
+  virtual void use() const = 0;
 };
 
 class ColouredMaterial : public Material {
@@ -27,6 +28,7 @@ public:
   ~ColouredMaterial() = default;
   // Apply material to shader
   virtual void apply(Shader &shader) const override;
+  virtual void use() const override {};
 };
 
 class TexturedMaterial : public Material {
@@ -39,7 +41,7 @@ public:
                    std::vector<Texture *> specular, float shininess);
   ~TexturedMaterial() = default;
   void apply(Shader &shader) const override;
-  void use() const;
+  void use() const override;
 };
 
 static Material *MetalMaterial = new ColouredMaterial({}, {}, {}, .9f);

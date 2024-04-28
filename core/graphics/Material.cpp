@@ -15,28 +15,25 @@ void ColouredMaterial::apply(Shader &shader) const {
   shader.setFloat("material.shininess", shininess);
 }
 
-//NOTE: Maybe need to 
 TexturedMaterial::TexturedMaterial(std::vector<Texture*> diffuse, std::vector<Texture*> specular, float shininess)
     : diffuse_textures{diffuse}, specular_textures{specular}, shininess{shininess} {
 
-      std::cout << "starting" << std::endl;
       for(int i = 0; i < diffuse.size() && i < MAX_TEXTURES; i++){
-        std::cout << "settings diffuse id: " << i << std::endl;
+        // std::cout << "settings diffuse id: " << i << std::endl;
         diffuse_textures[i]->setTextureId(GL_TEXTURE0 + i);
       }
 
       for(int i = 0; i < specular.size() && i < MAX_TEXTURES; i++){
-        std::cout << "settings specular id: " << i + diffuse_textures.size() << std::endl;
+        // std::cout << "settings specular id: " << i + diffuse_textures.size() << std::endl;
         specular_textures[i]->setTextureId(GL_TEXTURE0 + i + diffuse_textures.size());
       }
-      std::cout << "initialized" << std::endl;
     }
 
 void TexturedMaterial::apply(Shader &shader) const {
   shader.use();
 
   for(unsigned int i = 0; i < diffuse_textures.size(); i++){
-    std::string name = "material.diffuse[" + std::to_string(i) + "]";
+    std::string name = "material.diffuse_textures[" + std::to_string(i) + "]";
     std::cout << "added: " << name << " binded to texture "<< diffuse_textures[i]->getId() << std::endl;
     shader.setInt(name, diffuse_textures[i]->getId());
   }
@@ -44,12 +41,12 @@ void TexturedMaterial::apply(Shader &shader) const {
   shader.setInt("material.diffuse_texture_count", diffuse_textures.size());
 
   for(unsigned int i = 0; i < specular_textures.size(); i++){
-    std::string name = "material.specular[" + std::to_string(i) + "]";
+    std::string name = "material.specular_textures[" + std::to_string(i) + "]";
     std::cout << "added: " << name << " binded to texture "<< specular_textures[i]->getId() << std::endl;
     shader.setInt(name, specular_textures[i]->getId());
   }
 
-  shader.setInt("material.specular_texture_count", diffuse_textures.size());
+  shader.setInt("material.specular_texture_count", specular_textures.size());
 
   shader.setFloat("material.shininess", shininess);
 }

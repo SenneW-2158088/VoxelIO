@@ -1,0 +1,11 @@
+Model Information:
+* title:	Kermit The Frog
+* source:	https://sketchfab.com/3d-models/kermit-the-frog-d8f1fd3e21c44231a9a04c1d760de6b6
+* author:	supernovalabs (https://sketchfab.com/supernovalabs)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Kermit The Frog" (https://sketchfab.com/3d-models/kermit-the-frog-d8f1fd3e21c44231a9a04c1d760de6b6) by supernovalabs (https://sketchfab.com/supernovalabs) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)

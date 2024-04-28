@@ -1,0 +1,8 @@
+Model Information:
+* title:	Gnome (Gnomus Eggington)
+* source:	https://sketchfab.com/3d-models/gnome-gnomus-eggington-4dc7dd5f879640589f206cd79ca78884
+* author:	jjarhead24 (https://sketchfab.com/jjarhead24)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

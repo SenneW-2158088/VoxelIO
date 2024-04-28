@@ -5,8 +5,12 @@
 #include "Game.h"
 #include "gameplay/Terrain.hpp"
 #include "model/Box.h"
+#include "model/Gnome.hpp"
+#include "model/Kermit.hpp"
 #include "model/Skybox.h"
 #include "model/Triangle.h"
+#include "model/Waifu.h"
+#include "model/Gnome.hpp"
 #include <model/VoxelTerrain.h>
 #include <model/Voxel.h>
 #include <model/Camera.h>
@@ -54,6 +58,15 @@ void Game::start() {
     Voxel* voxel5 = new Voxel(glm::vec3 {3.f, 0.f, 1.f});
     // engine->addEntity(voxel4);
     // engine->addEntity(voxel5);
+
+    Waifu* waifu = new Waifu(glm::vec3{0.f, 0.f, 0.f});
+    // engine->addEntity(waifu);
+
+    Kermit* kermit = new Kermit(glm::vec3{2.f, 2.f, 2.f});
+    // engine->addEntity(kermit);
+
+    Gnome *gnome = new Gnome(glm::vec3{4.f, 0.f, -4.f});
+    engine->addEntity(gnome);
 
     // Box
     Box *box = new Box(glm::vec3 {0.f, 0.f, 2.f});

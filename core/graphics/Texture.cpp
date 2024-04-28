@@ -6,12 +6,10 @@
 #include <stb/stb_image.h>
 
 Texture::Texture(const std::string &texturePath, Format format) : id{GL_TEXTURE0}{
-  std::cout << "creating a texture" << std::endl;
   glGenTextures(1, &texture);
 
-  std::cout << "loading texture data" << std::endl;
   int width, height, nrChannels;
-  stbi_set_flip_vertically_on_load(true);
+  stbi_set_flip_vertically_on_load(false);
   unsigned char *data =
       stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
   
@@ -24,13 +22,11 @@ Texture::Texture(const std::string &texturePath, Format format) : id{GL_TEXTURE0
 
 
   if (data) {
-    std::cout << "uploading texture to gpu" << std::endl;
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, gl_format, width, height, 0, gl_format,
                  GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    std::cout << "setting texture options" << std::endl;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,

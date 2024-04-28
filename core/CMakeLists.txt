@@ -30,6 +30,11 @@ add_library(model STATIC
 
         model/PointLightBuffer.h
         model/PointLightBuffer.cpp
+
+        model/Waifu.h
+        model/Waifu.cpp
+
+        model/Gnome.hpp
         )
 
 add_library(graphics STATIC

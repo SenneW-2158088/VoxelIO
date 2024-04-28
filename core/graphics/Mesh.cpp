@@ -51,6 +51,7 @@ void Mesh::BaseMesh::draw(Shader *shader) {
 
   if(material){
     material->apply(*shader);
+    material->use();
   }
 
   shader->use();
