@@ -10,6 +10,7 @@ public:
   static const int MAX_TEXTURES = 8;
 
   Material() = default;
+  virtual ~Material() = default;
 
   // Apply material to shader
   virtual void apply(Shader &shader) const = 0;
@@ -23,6 +24,7 @@ private:
 public:
   ColouredMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
                    float shininess);
+  ~ColouredMaterial() = default;
   // Apply material to shader
   virtual void apply(Shader &shader) const override;
 };
@@ -35,6 +37,7 @@ class TexturedMaterial : public Material {
 public:
   TexturedMaterial(std::vector<Texture *> diffuse,
                    std::vector<Texture *> specular, float shininess);
+  ~TexturedMaterial() = default;
   void apply(Shader &shader) const override;
   void use() const;
 };

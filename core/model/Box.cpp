@@ -28,8 +28,8 @@ Box::Box(glm::vec3 position) : shader{AssetManager::getShader("box")} {
   specular->setTextureId(GL_TEXTURE1);
 
   this->material = new TexturedMaterial{
-    {diffuse,diffuse, diffuse, diffuse },
-    {specular, specular, specular},
+    {diffuse,},
+    {specular},
     32.0
   };
 
@@ -38,6 +38,7 @@ Box::Box(glm::vec3 position) : shader{AssetManager::getShader("box")} {
 }
 
 void Box::draw() {
+  material->apply(*shader);
   material->use();
   mesh->draw(shader);
 }

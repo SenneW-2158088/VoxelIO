@@ -7,7 +7,7 @@
 
 #include "graphics/Cubemap.h"
 #include "graphics/Mesh.h"
-#include "graphics/model.h"
+#include "graphics/Model.h"
 #include <assimp/material.h>
 #include <assimp/mesh.h>
 #include <graphics/Shader.h>
@@ -21,16 +21,11 @@
 
 #define SOURCE_DIR _SOURCE_DIR
 
-static const std::string ASSET_PATH =
-    std::filesystem::path(SOURCE_DIR) / "assets";
-static const std::string SHADER_PATH =
-    std::filesystem::path(ASSET_PATH) / "shader";
-static const std::string TEXTURE_PATH =
-    std::filesystem::path(ASSET_PATH) / "texture";
-static const std::string CUBEMAP_PATH =
-    std::filesystem::path(ASSET_PATH) / "cubemap";
-static const std::string MODEL_PATH =
-    std::filesystem::path(ASSET_PATH) / "model";
+static const std::string ASSET_PATH = std::filesystem::path(SOURCE_DIR) / "assets";
+static const std::string SHADER_PATH = std::filesystem::path(ASSET_PATH) / "shader";
+static const std::string TEXTURE_PATH = std::filesystem::path(ASSET_PATH) / "texture";
+static const std::string CUBEMAP_PATH = std::filesystem::path(ASSET_PATH) / "cubemap";
+static const std::string MODEL_PATH = std::filesystem::path(ASSET_PATH) / "model";
 
 class AssetManager {
 private:
@@ -59,11 +54,11 @@ private:
   static graphics::Model *loadModel(const std::string &filename);
   static void processModelNode(aiNode *node, const aiScene *scene,
                                std::vector<Mesh::Mesh *> &meshes,
-                               std::vector<Material *> &materials);
+                               std::vector<Material *> &materials, std::filesystem::path& path);
   static void processModelMesh(aiMesh *mesh, const aiScene *scene,
                                std::vector<Mesh::Mesh *> &meshes,
-                               std::vector<Material *> &materials);
-  static Material* processModelMaterial(aiMaterial *material, const aiScene *scene);
+                               std::vector<Material *> &materials, std::filesystem::path& path);
+  static Material* processModelMaterial(aiMaterial *material, const aiScene *scene, std::filesystem::path& path);
 
 public:
   AssetManager() = default;

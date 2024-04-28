@@ -5,8 +5,8 @@
 #include "AssetManager.h"
 #include "graphics/Material.h"
 #include "graphics/Mesh.h"
+#include "graphics/Model.h"
 #include "graphics/Texture.h"
-#include "graphics/model.h"
 #include <assimp/material.h>
 #include <filesystem>
 #include <iostream>
@@ -16,17 +16,20 @@ namespace fs = std::filesystem;
 std::map<std::string, std::shared_ptr<Shader>> AssetManager::shaders{};
 std::map<std::string, std::shared_ptr<Texture>> AssetManager::textures{};
 std::map<std::string, std::shared_ptr<Cubemap>> AssetManager::cubemaps{};
+std::map<std::string, std::shared_ptr<graphics::Model>> AssetManager::models{};
 
 void AssetManager::initializeAssets() {
   loadShaders();
   loadTextures();
   loadCubemaps();
+  loadModels();
 }
 
 void AssetManager::clearAssets() {
   shaders.clear();
   textures.clear();
   cubemaps.clear();
+  models.clear();
 }
 
 void AssetManager::loadShaders() {
@@ -122,7 +125,14 @@ Cubemap *AssetManager::getCubemap(const std::string &name) {
 }
 
 void AssetManager::loadModels() {
-  // list all the models
+  if (fs::is_directory(MODEL_PATH)) {
+    for (const auto &entry : fs::directory_iterator(MODEL_PATH)) {
+      std::string name = entry.path().filename();
+      graphics::Model* model = AssetManager::loadModel(entry.path() / "scene.gltf");
+      models.emplace(name, std::shared_ptr<graphics::Model>(model));
+      std::cout << "Loaded model: " << name << std::endl;
+    }
+  }
 }
 
 graphics::Model *AssetManager::loadModel(const std::string &filename) {
@@ -140,35 +150,39 @@ graphics::Model *AssetManager::loadModel(const std::string &filename) {
   std::vector<Material *> materials;
 
   // process the model
-  AssetManager::processModelNode(scene->mRootNode, scene, meshes, materials);
+  auto dir  = std::filesystem::path{}.assign(filename).parent_path();
+  AssetManager::processModelNode(scene->mRootNode, scene, meshes, materials, dir);
 
   return new graphics::Model(meshes, materials);
 }
 
 void AssetManager::processModelNode(aiNode *node, const aiScene *scene,
                                     std::vector<Mesh::Mesh *> &meshes,
-                                    std::vector<Material *> &materials) {
+                                    std::vector<Material *> &materials, std::filesystem::path &path) {
   // iterate over each node an process each mesh
   // process all the node's meshes (if any)
+  std::cout << "Processing mesh" << std::endl;
   for (unsigned int i = 0; i < node->mNumMeshes; i++) {
     aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-    AssetManager::processModelMesh(mesh, scene, meshes, materials);
+    AssetManager::processModelMesh(mesh, scene, meshes, materials, path);
   }
 
   // then do the same for each of its children
+  std::cout << "Processing children" << std::endl;
   for(unsigned int i = 0; i < node->mNumChildren; i++)
   {
-      AssetManager::processModelNode(node->mChildren[i], scene, meshes, materials);
+      AssetManager::processModelNode(node->mChildren[i], scene, meshes, materials, path);
   }
 }
 
 void AssetManager::processModelMesh(aiMesh *mesh, const aiScene *scene,
                                std::vector<Mesh::Mesh *> &meshes,
-                               std::vector<Material *> &materials) {
+                               std::vector<Material *> &materials, std::filesystem::path &path) {
   // process the mesh
   std::vector<Mesh::Vertex> vertices;
   std::vector<unsigned int> indices;
 
+  std::cout << "loading vertices" << std::endl;
   for(unsigned int i = 0; i < mesh->mNumVertices; i++)
   {
       Mesh::Vertex vertex;
@@ -201,6 +215,7 @@ void AssetManager::processModelMesh(aiMesh *mesh, const aiScene *scene,
       vertices.push_back(vertex);
   }
 
+  std::cout << "loading indices" << std::endl;
   // process indices
   for(unsigned int i = 0; i < mesh->mNumFaces; i++)
   {
@@ -213,10 +228,11 @@ void AssetManager::processModelMesh(aiMesh *mesh, const aiScene *scene,
   // process material
   Material* material;
 
+  std::cout << "loading material" << std::endl;
   if(mesh->mMaterialIndex >= 0)
   {
       auto *m = scene->mMaterials[mesh->mMaterialIndex];
-      material = AssetManager::processModelMaterial(m, scene);
+      material = processModelMaterial(m, scene, path);
   } 
 
   Mesh::Mesh *newMesh = new Mesh::Mesh(vertices, indices, material);
@@ -225,7 +241,7 @@ void AssetManager::processModelMesh(aiMesh *mesh, const aiScene *scene,
   materials.push_back(material);
 }
 
-Material *AssetManager::processModelMaterial(aiMaterial *material, const aiScene *scene) {
+Material *AssetManager::processModelMaterial(aiMaterial *material, const aiScene *scene, std::filesystem::path &path) {
   // process the textures
    std::vector<Texture*> diffuse;
    std::vector<Texture*> specular;
@@ -233,7 +249,10 @@ Material *AssetManager::processModelMaterial(aiMaterial *material, const aiScene
    for(unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++){
      aiString filename;
      material->GetTexture(aiTextureType_DIFFUSE, i, &filename);
-     Texture* texture = AssetManager::loadTexture(filename.C_Str(), Texture::Format::PNG);
+
+     std::cout << "Trying to load texture from: " << path / filename.C_Str() << std::endl;
+
+     Texture* texture = loadTexture(path / filename.C_Str(), Texture::Format::PNG);
 
      diffuse.push_back(texture);
    }
@@ -241,7 +260,10 @@ Material *AssetManager::processModelMaterial(aiMaterial *material, const aiScene
    for(unsigned int i = 0; i < material->GetTextureCount(aiTextureType_SPECULAR); i++){
      aiString filename;
      material->GetTexture(aiTextureType_SPECULAR, i, &filename);
-     Texture* texture = AssetManager::loadTexture(filename.C_Str(), Texture::Format::PNG);
+
+     std::cout << "Trying to load texture from: " << path / filename.C_Str() << std::endl;
+
+     Texture* texture = loadTexture(path / filename.C_Str(), Texture::Format::PNG);
 
      specular.push_back(texture);
    }
@@ -251,6 +273,6 @@ Material *AssetManager::processModelMaterial(aiMaterial *material, const aiScene
    return m;
 }
 
-graphics::Model* AssetManager::getModel(const std::string &filename){
-  return models.at(filename).get();
+graphics::Model* AssetManager::getModel(const std::string &name){
+  return models.at(name).get();
 }

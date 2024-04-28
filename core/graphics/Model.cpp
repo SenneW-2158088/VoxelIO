@@ -11,3 +11,12 @@ void Model::draw(Shader *shader) const {
     mesh->draw(shader);
   }
 }
+
+Model::~Model() {
+  for(auto mesh : meshes){
+    delete mesh;
+  }
+  for(auto material : materials){
+    delete material;
+  }
+}
