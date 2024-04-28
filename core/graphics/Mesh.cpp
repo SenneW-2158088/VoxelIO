@@ -4,9 +4,11 @@
 
 #include "Mesh.h"
 #include "glm/ext/matrix_transform.hpp"
+#include "glm/fwd.hpp"
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <utility>
 
 Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices,
                          std::vector<unsigned int> indices,
@@ -87,6 +89,26 @@ void Mesh::BaseMesh::rotate(const float rotation, const glm::vec3 axis) {
 
 void Mesh::BaseMesh::scale(const glm::vec3 scale) {
   model = glm::scale(model, scale);
+}
+
+std::pair<glm::vec3, glm::vec3> getMeshMinMax(Mesh::BaseMesh* mesh){
+  glm::vec3 min{0}, max{0};
+
+  for(const auto& vertex : mesh->getVertices()){
+    min = glm::min(min, vertex.position);
+    max = glm::max(max, vertex.position);
+  }
+
+  return std::pair{min, max};
+}
+
+glm::vec3 getMeshSize(Mesh::BaseMesh* mesh){
+  auto minMax = getMeshMinMax(mesh);
+  return minMax.second - minMax.first;
+}
+
+void Mesh::BaseMesh::scaleToWorld(const glm::vec3 scale) {
+  model = glm::scale(model, scale / getMeshSize(this));
 }
 
 Mesh::Mesh::Mesh(std::vector<Vertex> vertices,

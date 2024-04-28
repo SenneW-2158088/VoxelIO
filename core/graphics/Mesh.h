@@ -37,6 +37,8 @@ namespace Mesh {
             virtual void move(const glm::vec3 position);
             virtual void rotate(const float rotation, const glm::vec3 axis);
             virtual void scale(const glm::vec3 scale);
+            virtual void scaleToWorld(const glm::vec3 scale);
+
 
             virtual void draw(Shader *shader);
         public:
