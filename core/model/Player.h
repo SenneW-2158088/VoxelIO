@@ -110,6 +110,7 @@ private:
   glm::vec3 dots{};
   glm::vec3 max_dots{};
   glm::vec3 min_dots{};
+
   glm::vec3 correction{};
 
   // physics TODO: refactor

@@ -4,8 +4,11 @@
 #include "gameplay/Noise.h"
 #include "generator/ChunkGenerator.h"
 #include "generator/Generator.hpp"
+#include "glm/gtx/string_cast.hpp"
 #include "manager/ChunkManager.h"
+#include <iostream>
 #include <memory>
+#include <ostream>
 
 VoxelTerrain::VoxelTerrain() {
   noise::Noise *noise = new noise::Perlin(16);
@@ -36,5 +39,20 @@ void VoxelTerrain::update(const float dt) {
 }
 
 void VoxelTerrain::collide(Collision::Collisionable &other){
-  // TODO implement collision
+  for(const auto &col : other.getCollisioners()){
+    auto new_pos = glm::vec3{
+        std::floor(col->getBoundingBox()->getPosition().x / 16),
+        0.f,
+        std::floor(col->getBoundingBox()->getPosition().z / 16),
+    };
+    std::cout << "Trying to collide with chunk: " << glm::to_string(new_pos) << std::endl;
+    Chunk* toCollide = chunkManager->load(new_pos).lock().get();
+    for(auto e : toCollide->getEntities()){
+      const auto c = dynamic_cast<Collision::Collisionable *>(e);
+      if(c){
+        std::cout << "Let player collide with" << e->getName() << std::endl;
+        c->collide(other);
+      }
+    }
+  }
 }

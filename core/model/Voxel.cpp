@@ -27,7 +27,7 @@ Voxel::Voxel(glm::vec3 position)
   // Setup collision
 
   Collision::Collisioner * collisioner = new Collision::Collisioner(
-      this, new Collision::AABoundingBox(this->position, mesh),
+      this, new Collision::AABoundingBox(this->position - mesh->getTranslation(), mesh),
       "Voxel bounding box");
 
   addCollsioner(collisioner);
@@ -64,7 +64,8 @@ InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 posit
 
   for (glm::vec3 &pos : positions) {
     Collision::Collisioner* collisioner = new Collision::Collisioner(
-        this, new Collision::AABoundingBox(position + pos, mesh), "Voxel Bounding Box");
+        this, new Collision::AABoundingBox(position + pos - mesh->getTranslation(), mesh), "Voxel Bounding Box");
+    std::cout << "Bounding box on: " << glm::to_string(position + pos) << std::endl;
     addCollsioner(collisioner);
     tree->insert(collisioner);
   }

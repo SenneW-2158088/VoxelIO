@@ -31,6 +31,7 @@ void Collisionable::collide(Collisionable &other) {
     for (const auto &other_col : other.getCollisioners()) {
       if (collide(*own_col, *other_col)) {
         onCollide(*own_col, *other_col);
+        other.onCollide(*other_col, *own_col);
       }
     }
   }
@@ -48,27 +49,10 @@ AABoundingBox::AABoundingBox(glm::vec3 position, glm::vec3 size)
     : BoundingBox{position, size}, min{0.f}, max{size}{}
 
 AABoundingBox::AABoundingBox(glm::vec3 position, Mesh::BaseMesh *mesh)
-    : BoundingBox{position} {
+    : BoundingBox{position}, min{}, max{} {
   for (const auto &vertex : mesh->getVertices()) {
-    if (vertex.position.x < min.x) {
-      min.x = vertex.position.x;
-    }
-    if (vertex.position.y < min.y) {
-      min.y = vertex.position.y;
-    }
-    if (vertex.position.z < min.z) {
-      min.z = vertex.position.z;
-    }
-
-    if (vertex.position.x > max.x) {
-      max.x = vertex.position.x;
-    }
-    if (vertex.position.y > max.y) {
-      max.y = vertex.position.y;
-    }
-    if (vertex.position.z > max.z) {
-      max.z = vertex.position.z;
-    }
+    min = glm::min(min, vertex.position);
+    max = glm::max(max, vertex.position);
   }
 }
 

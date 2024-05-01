@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
+#include "glm/gtx/string_cast.hpp"
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -13,7 +14,7 @@
 Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices,
                          std::vector<unsigned int> indices,
                          Material* material)
-    : vertices(vertices), indices(indices), material(material), model{1.f} {
+    : vertices(vertices), indices(indices), material(material), model{1.f}, translation{0.f} {
   // Bind VAO
   glGenVertexArrays(1, &VAO);
   glBindVertexArray(VAO);
@@ -47,6 +48,13 @@ Mesh::BaseMesh::BaseMesh(std::vector<Vertex> vertices,
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+  // calculate base translation
+  for(const auto &v : vertices){
+    translation = glm::min(translation, v.position);
+  }
+
+  model = glm::translate(model, -translation);
 }
 
 void Mesh::BaseMesh::draw(Shader *shader) {

@@ -25,6 +25,7 @@ namespace Mesh {
 
             glm::mat4 model;
 
+            glm::vec3 translation; // used to make mesh coordinates fit to world coordinates
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
             Material* material;
@@ -43,6 +44,7 @@ namespace Mesh {
             virtual void draw(Shader *shader);
         public:
             inline std::vector<Vertex> getVertices() const {return vertices;};
+            inline glm::vec3 getTranslation() const {return translation; };
     };
 
 //    Standard Mesh class for basic objects
