@@ -4,6 +4,7 @@
 
 #include "Game.h"
 #include "gameplay/Terrain.hpp"
+#include "manager/AssetManager.h"
 #include "model/Box.h"
 #include "model/Gnome.hpp"
 #include "model/Kermit.hpp"
@@ -14,6 +15,7 @@
 #include <model/Player.h>
 #include <model/Voxel.h>
 #include <model/VoxelTerrain.h>
+#include <irrKlang/irrKlang.h>
 
 #include <glm/glm.hpp>
 #include <graphics/Uniform.h>
@@ -42,8 +44,8 @@ void Game::start() {
   engine->addEntity(skybox);
 
   // Add terain
-  // Terrain* voxelTerrain = new VoxelTerrain();
-  // engine->addTerrain(voxelTerrain);
+  Terrain* voxelTerrain = new VoxelTerrain();
+  engine->addTerrain(voxelTerrain);
 
   // Basic voxel for testing
   Voxel *voxel = new Voxel(glm::vec3{0.f, -1.f, 0.f});
@@ -77,7 +79,11 @@ void Game::start() {
       },
       {0.f, 0.f, 0.f});
 
-  engine->addEntity(iv);
+  // engine->addEntity(iv);
+
+  irrklang::ISoundEngine *sound = irrklang::createIrrKlangDevice();
+  sound->play2D(SOUND_PATH.c_str(), true);
+  
 
   // Waifu* waifu = new Waifu(glm::vec3{10.f, 0.f, 10.f});
   // engine->addEntity(waifu);

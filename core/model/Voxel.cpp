@@ -36,8 +36,11 @@ Voxel::Voxel(glm::vec3 position)
 void Voxel::update(float dt) {}
 
 void Voxel::draw() {
+  shader->use();
+  shader->setBool("highlighted", isHighlighted);
   texture->use();
   mesh->draw(shader);
+  isHighlighted = false;
 }
 
 void Voxel::onCollide(const Collision::Collisioner& own, const Collision::Collisioner &other) {
@@ -84,14 +87,14 @@ void InstancedVoxel::collide(Collisionable &other) {
     return;
   }
 
-  for (const auto &other_col : other.getCollisioners()){
+  for (auto &other_col : other.getCollisioners()){
     const auto found = tree->query(*other_col);
     for (const auto &own_col : found) {
       if(Collisionable::collide(*own_col, *other_col)) {
           // tempCollide(*own_col, *other_col);
          // onCollide(*other_col);
          onCollide(*own_col, *other_col);
-
+         other.onCollide(*other_col, *own_col);
       }
     }
   }
@@ -99,5 +102,5 @@ void InstancedVoxel::collide(Collisionable &other) {
 
 void InstancedVoxel::onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) {
 
-  std::cout << "Player collided with block" << std::endl;
+  // std::cout << "Player collided with block" << std::endl;
 }

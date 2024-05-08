@@ -3,6 +3,7 @@
 //
 
 #include "Shader.h"
+#include <exception>
 #include <glad/glad.h>
 #include <iostream>
 #include <fstream>
@@ -74,6 +75,7 @@ unsigned int compileShader(const std::string &shaderSource, unsigned int shaderT
 
             std::cout << "Failed to compile " << (shaderType == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
             std::cout << message << std::endl;
+            throw new std::exception;
 
             return 0;
         }

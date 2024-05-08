@@ -1,5 +1,6 @@
 #include "Collision.h"
 #include "glm/common.hpp"
+#include "glm/geometric.hpp"
 #include "glm/gtx/string_cast.hpp"
 #include "graphics/Mesh.h"
 #include <iostream>
@@ -67,6 +68,11 @@ bool AABoundingBox::collideWith(const AABoundingBox &other) const {
           this->getMax().y >= other.getMin().y &&
           this->getMin().z <= other.getMax().z &&
           this->getMax().z >= other.getMin().z);
+}
+
+bool AABoundingBox::collideWith(const Ray &other) const {
+  // std::cout << "in here not good" << std::endl;
+  return false;
 }
 
 glm::vec3 AABoundingBox::calculatePenetration(const BoundingBox &other) const {
@@ -185,3 +191,62 @@ void AABBCollisionerOctreeNode::print_node(int index) {
   }
 
 }
+
+// Ray collision
+
+Ray::Ray(glm::vec3 position) : BoundingBox(position, glm::normalize(glm::vec3{1.f, 0.f, 0.f})), direction{1.f, 0.f, 0.f} {}
+Ray::Ray(glm::vec3 position, glm::vec3 direction) : BoundingBox(position, glm::normalize(direction)), direction{direction} {}
+
+bool Ray::collides(const BoundingBox& other) const {
+  // std::cout << "ray on: " << glm::to_string(this->position) << " dir: " << glm::to_string(direction) << std::endl;
+  return other.collideWith(*this);
+}
+
+bool Ray::collideWith(const AABoundingBox &other) const {
+    float tmin = (other.getMin().x - position.x) / direction.x; 
+    float tmax = (other.getMax().x - position.x) / direction.x; 
+
+    if (tmin > tmax) std::swap(tmin, tmax); 
+
+    float tymin = (other.getMin().y - position.y) / direction.y; 
+    float tymax = (other.getMax().y - position.y) / direction.y; 
+
+    if (tymin > tymax) std::swap(tymin, tymax); 
+
+    if ((tmin > tymax) || (tymin > tmax)) 
+        return false; 
+
+    if (tymin > tmin) tmin = tymin; 
+    if (tymax < tmax) tmax = tymax; 
+
+    float tzmin = (other.getMin().z - position.z) / direction.z; 
+    float tzmax = (other.getMax().z - position.z) / direction.z; 
+
+    if (tzmin > tzmax) std::swap(tzmin, tzmax); 
+
+    if ((tmin > tzmax) || (tzmin > tmax)) 
+        return false; 
+
+    if (tzmin > tmin) tmin = tzmin; 
+    if (tzmax < tmax) tmax = tzmax; 
+
+    return true;
+}
+
+bool Ray::collideWith(const Ray &other) const {
+  
+}
+
+glm::vec3 Ray::calculatePenetration(const BoundingBox &other) const {
+  
+}
+
+glm::vec3 Ray::calculatePenetrationFor(const AABoundingBox &other) const {
+  
+}
+
+glm::vec3 Ray::calculatePenetrationFor(const Ray &other) const {
+  
+}
+
+

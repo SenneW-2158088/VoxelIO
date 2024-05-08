@@ -16,6 +16,7 @@ layout(std140) uniform DirectionalLightData {
 } DirLight;
 
 uniform sampler2D blockTexture;
+uniform bool highlighted;
 
 vec3 calculateDirLight(vec3 normal, vec3 view){
     if(DirLight.isActive){
@@ -47,6 +48,10 @@ void main(){
     vec3 view = normalize(ViewPos - FragPos);
 
     // FragColor = vec4(calculateLighting(lightPos, ViewPos, FragPos, norm), 1.0) * texture(blockTexture, TexCoord);
-    FragColor = vec4(calculateDirLight(norm, view), 1.0);
+    vec3 color = calculateDirLight(norm, view);
+    if(highlighted){
+        color = color * vec3(0.2, 0.2, 0.2);
+    }
+    FragColor = vec4(color, 1.0);
     // FragColor = pointLightBuffer.pointLights[0].ambient;
 }

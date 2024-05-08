@@ -6,58 +6,49 @@
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, utils, ... }@inputs:
-    utils.lib.eachDefaultSystem (
-      system:
-let
-        p = import nixpkgs { 
-				inherit system;
-				config = { 
-					allowUnfree = true; 
-				}; 
-			};
-        llvm = p.llvmPackages_latest;
-      in{
-        devShell = p.mkShell.override { stdenv = p.clangStdenv; } rec {
-          packages = with p; [
-			# builder
-			gnumake
-			cmake
-			cmake-format
-			cmake-language-server
-			ninja
-			pkg-config
-
-			# debugger
-			llvm.lldb
-
-			# fix headers not found
-			clang-tools
-
-			# LSP and compiler
-			llvm.libstdcxxClang
-
-			# other tools
-			llvm.libllvm
-
-			# stdlib for cpp
-			llvm.libcxx
-				
-			# libs
-			libGL
-			libGLU
-			libglvnd
-			libvdpau-va-gl
-			faac
-			faad2
-			freeglut
-			glew
-			glfw
-			glm
-      assimp
-
+  outputs = { self, nixpkgs, utils, ... }:
+    utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+          };
+        };
+        llvm = pkgs.llvmPackages_latest;
+      in {
+        devShell = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } rec {
+          packages = with pkgs; [
+            gnumake
+            cmake
+            cmake-format
+            cmake-language-server
+            ninja
+            pkg-config
+            llvm.lldb
+            clang-tools
+            llvm.libstdcxxClang
+            llvm.libllvm
+            llvm.libcxx
+            libGL
+            libGLU
+            libglvnd
+            libvdpau-va-gl
+            faac
+            faad2
+            freeglut
+            glew
+            glfw
+            glm
+            assimp
+            alsaLib
+            alsa-lib
           ];
           name = "C";
+
+          shellHook = ''
+            export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [ pkgs.alsaLib ]}:$LD_LIBRARY_PATH
+          '';
         };
       }
     );

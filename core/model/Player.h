@@ -8,6 +8,7 @@
 #include "gameplay/Collision.h"
 #include "glm/fwd.hpp"
 #include "model/Camera.h"
+#include "model/CrossHair.hpp"
 #include <gameplay/Command.h>
 #include <gameplay/State.h>
 #include <manager/InputManager.h>
@@ -121,6 +122,15 @@ private:
   Camera *camera;
   PlayerStates::PlayerState *state;
 
+  Collision::AABoundingBox *boundingBox;
+  Collision::Ray *ray;
+
+  std::optional<Entity*> pickingobject{};
+  CrossHair *crosshair;
+
+private:
+  void handleBlockCollision(const Collision::Collisioner &own, const Collision::Collisioner &other);
+  void handleRayCollision(const Collision::Collisioner &own, const Collision::Collisioner &other);
 protected:
   void transition(std::optional<PlayerStates::PlayerState *> state);
 
@@ -136,7 +146,6 @@ public:
   void left() override;
   void right() override;
   void jump() override;
-
 
 public:
   Camera *getCamera() const override { return camera; };

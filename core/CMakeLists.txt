@@ -35,6 +35,7 @@ add_library(model STATIC
         model/Waifu.cpp
 
         model/Gnome.hpp
+        model/CrossHair.hpp
         )
 
 add_library(graphics STATIC

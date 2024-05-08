@@ -9,6 +9,8 @@
 #include <string>
 
 class Entity {
+private:
+    bool alive = true;
 protected:
     glm::vec3 position{};
 
@@ -22,6 +24,10 @@ public:
 public:
     virtual void update(float dt) = 0;
     virtual void draw() = 0;
+
+    inline bool isAlive() const { return alive; };
+    inline void destroy() { this->alive = false;};
+    
 };
 
 

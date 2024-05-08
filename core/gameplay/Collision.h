@@ -9,6 +9,7 @@
 
 namespace Collision {
 class AABoundingBox;
+class Ray;
 
 class BoundingBox {
 private:
@@ -21,9 +22,11 @@ public:
   BoundingBox(glm::vec3 position, glm::vec3 size);
   virtual bool collides(const BoundingBox &other) const { return false; };
   virtual bool collideWith(const AABoundingBox &other) const { return false; };
+  virtual bool collideWith(const Ray &other) const { return false; };
 
   virtual glm::vec3 calculatePenetration(const BoundingBox &other) const { return {0, 0 ,0}; };
   virtual glm::vec3 calculatePenetrationFor(const AABoundingBox &other) const { return {0, 0, 0}; };
+  virtual glm::vec3 calculatePenetrationFor(const Ray &other) const { return {0, 0, 0}; };
 
 public:
   inline void setPosition(glm::vec3 position) { this->position = position; };
@@ -43,6 +46,7 @@ public:
   AABoundingBox(glm::vec3 position, glm::vec3 size);
   bool collides(const BoundingBox &other) const override;
   bool collideWith(const AABoundingBox &other) const override;
+  bool collideWith(const Ray &other) const override;
 
   // Vec3 containing how much to object penetrated by other in each direction
   glm::vec3 calculatePenetration(const BoundingBox &other) const override;
@@ -54,6 +58,27 @@ public:
   glm::vec3 getMax() const { return max + position; };
   inline glm::vec3 getCenter() const override { return (getMin() + getMax()) * .5f; };
   inline glm::vec3 getSize() const override { return (getMax() - getMin()); }
+};
+
+class Ray : public BoundingBox {
+private:
+  glm::vec3 direction;
+
+public:
+  Ray(glm::vec3 position);
+  Ray(glm::vec3 position, glm::vec3 direction);
+
+  bool collides(const BoundingBox &other) const override;
+  bool collideWith(const AABoundingBox &other) const override;
+  bool collideWith(const Ray &other) const override;
+
+  glm::vec3 calculatePenetration(const BoundingBox &other) const override;
+  glm::vec3 calculatePenetrationFor(const AABoundingBox &other) const override;
+  glm::vec3 calculatePenetrationFor(const Ray &other) const override;
+public:
+  inline void setDirection(glm::vec3 direction) { this->direction = direction; };
+  inline glm::vec3 getDirection() const { return this->direction; };
+
 };
 
 class Collisioner {

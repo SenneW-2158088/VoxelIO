@@ -26,6 +26,7 @@ static const std::string SHADER_PATH = std::filesystem::path(ASSET_PATH) / "shad
 static const std::string TEXTURE_PATH = std::filesystem::path(ASSET_PATH) / "texture";
 static const std::string CUBEMAP_PATH = std::filesystem::path(ASSET_PATH) / "cubemap";
 static const std::string MODEL_PATH = std::filesystem::path(ASSET_PATH) / "model";
+static const std::string SOUND_PATH= std::filesystem::path(ASSET_PATH) / "sound" / "beat.mp3";
 
 class AssetManager {
 private:

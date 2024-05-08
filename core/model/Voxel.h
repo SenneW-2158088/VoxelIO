@@ -19,6 +19,8 @@ private:
   Mesh::Mesh *mesh;
   Texture *texture;
 
+  bool isHighlighted = false;
+
   // Todo use the asset manager to load the vertices and indices
   const std::vector<Mesh::Vertex> vertices = {
       // Front face
@@ -72,6 +74,7 @@ public:
 
   void draw() override;
 
+  inline void highlight() { isHighlighted = true;};
 
   void onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) override;
 };

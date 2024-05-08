@@ -7,10 +7,13 @@
 #include "gameplay/Collision.h"
 #include "gameplay/State.h"
 #include "glm/common.hpp"
+#include "glm/ext/quaternion_geometric.hpp"
 #include "glm/geometric.hpp"
 #include "glm/gtx/dual_quaternion.hpp"
 #include "manager/InputManager.h"
 #include "model/Camera.h"
+#include "model/CrossHair.hpp"
+#include "model/Voxel.h"
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
 #include <optional>
@@ -81,13 +84,25 @@ PlayerImplementation::PlayerImplementation() {
 
   state = new PlayerStates::IdleState(this);
 
-  Collision::Collisioner *collisioner = new Collision::Collisioner(
-      this,
-      new Collision::AABoundingBox(this->position, glm::vec3{-.2f, 0.f, -.2f},
-                                   glm::vec3{.2f, height, .2f}),
-      "Player bounding box");
+  this->boundingBox = new Collision::AABoundingBox(this->position, glm::vec3{-.2f, 0.f, -.2f}, glm::vec3{.2f, height, .2f});
+  this->ray = new Collision::Ray(camera->getPosition(), camera->getDirection());
 
-  addCollsioner(collisioner);
+  Collision::Collisioner *bb_collisioner = new Collision::Collisioner(
+      this,
+      boundingBox,
+      "boundingbox");
+
+  // Ray
+  Collision::Collisioner *ray_collisioner = new Collision::Collisioner(
+      this,
+      ray,
+      "ray");
+
+  
+  this->crosshair = new CrossHair();
+
+  addCollsioner(bb_collisioner);
+  addCollsioner(ray_collisioner);
 }
 
 void PlayerImplementation::onInput(InputKeymap map) {
@@ -103,6 +118,7 @@ void PlayerImplementation::transition(
 }
 
 void PlayerImplementation::update(float dt) {
+
 
   auto signx = (dots.x > 0) ? 1.f : -1.f;
   auto signy = (dots.y > 0) ? 1.f : -1.f;
@@ -122,11 +138,11 @@ void PlayerImplementation::update(float dt) {
   auto a = glm::abs(dots);
   auto sum = min_dots + max_dots;
 
-  std::cout << "Dots: " << glm::to_string(dots) << std::endl;
-  std::cout << "Max Dots: " << glm::to_string(max_dots) << std::endl;
-  std::cout << "Min Dots: " << glm::to_string(min_dots) << std::endl;
-  std::cout << "Sum Dots: " << glm::to_string(min_dots + max_dots) << std::endl;
-  std::cout << "Abs sum: " << glm::to_string(glm::abs(min_dots) + glm::abs(max_dots))  << std::endl;
+  // std::cout << "Dots: " << glm::to_string(dots) << std::endl;
+  // std::cout << "Max Dots: " << glm::to_string(max_dots) << std::endl;
+  // std::cout << "Min Dots: " << glm::to_string(min_dots) << std::endl;
+  // std::cout << "Sum Dots: " << glm::to_string(min_dots + max_dots) << std::endl;
+  // std::cout << "Abs sum: " << glm::to_string(glm::abs(min_dots) + glm::abs(max_dots))  << std::endl;
 
   auto diffx = (sum.x < 0 && dots.x < 0) && (sum.x < 0 && dots.x < 0);
   auto diffz = (sum.z < 0 && dots.z < 0) && (sum.z < 0 && dots.z < 0);
@@ -134,8 +150,8 @@ void PlayerImplementation::update(float dt) {
 
   auto ax = a.x / a.z;
   auto az = a.z / a.x;
-  std::cout << "ax: "<< ax << std::endl;
-  std::cout << "az: "<< az << std::endl;
+  // std::cout << "ax: "<< ax << std::endl;
+  // std::cout << "az: "<< az << std::endl;
 
   if(a.z > a.x && ax + 0.4f < 1.f && az + 0.4f > 1) {
     std::cout << "cx" << std::endl;
@@ -164,6 +180,14 @@ void PlayerImplementation::update(float dt) {
   // Physics garbage
   this->velocity = glm::vec3{0};
   // this->acceleration= glm::vec3{0};
+
+  if(pickingobject.has_value()){
+    auto v = dynamic_cast<Voxel*>(pickingobject.value());
+    if(v){
+      v->highlight();
+      // v->destroy();
+    }
+  }
   
   const glm::vec3 cameraPos = glm::vec3{position.x, position.y + height, position.z};
   camera->setPosition(cameraPos);
@@ -171,6 +195,11 @@ void PlayerImplementation::update(float dt) {
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);
   }
+
+  ray->setPosition(cameraPos);
+  ray->setDirection(glm::normalize(camera->getDirection()));
+
+  pickingobject.reset();
 
 }
 
@@ -180,19 +209,12 @@ void PlayerImplementation::forward() {
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
   velocity += newPos;
-
-  for (auto collisioner : getCollisioners()) {
-    collisioner->getBoundingBox()->setPosition(position);
-  }
 }
 void PlayerImplementation::backward() {
   auto newDir =
       glm::vec3(camera->getDirection().x, 0.f, camera->getDirection().z);
   auto newPos = glm::normalize(newDir) * speed;
   velocity -= newPos;
-  for (auto collisioner : getCollisioners()) {
-    collisioner->getBoundingBox()->setPosition(position);
-  }
 }
 void PlayerImplementation::left() {
   auto newDir =
@@ -200,9 +222,6 @@ void PlayerImplementation::left() {
   auto newPos =
       glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
   velocity -= newPos;
-  for (auto collisioner : getCollisioners()) {
-    collisioner->getBoundingBox()->setPosition(position);
-  }
 }
 void PlayerImplementation::right() {
   auto newDir =
@@ -210,9 +229,6 @@ void PlayerImplementation::right() {
   auto newPos =
       glm::normalize(glm::cross(newDir, glm::vec3{0.f, 1.f, 0.f})) * speed;
   velocity += newPos;
-  for (auto collisioner : getCollisioners()) {
-    collisioner->getBoundingBox()->setPosition(position);
-  }
 }
 
 void PlayerImplementation::jump() {
@@ -224,16 +240,25 @@ void PlayerImplementation::jump() {
   }
 }
 
-void PlayerImplementation::draw() {}
+void PlayerImplementation::draw() {
+  this->crosshair->draw();
+}
 
 void PlayerImplementation::onCollide(const Collision::Collisioner &own,
                                      const Collision::Collisioner &other) {
 
+  if(own.getTag() == "boundingbox") handleBlockCollision(own, other);
+  if(own.getTag() == "ray") handleRayCollision(own, other);
+
+}
+
+void PlayerImplementation::handleBlockCollision(const Collision::Collisioner &own, const Collision::Collisioner &other) {
+  
   auto p = own.getBoundingBox()->calculatePenetration(*other.getBoundingBox());
 
 
-  std::cout << "Center own: " << glm::to_string(own.getBoundingBox()->getCenter()) << std::endl;
-  std::cout << "Center other: " << glm::to_string(other.getBoundingBox()->getCenter()) << std::endl;
+  // std::cout << "Center own: " << glm::to_string(own.getBoundingBox()->getCenter()) << std::endl;
+  // std::cout << "Center other: " << glm::to_string(other.getBoundingBox()->getCenter()) << std::endl;
 
   auto other_size = other.getBoundingBox()->getSize();
   auto own_size = own.getBoundingBox()->getSize();
@@ -274,3 +299,20 @@ void PlayerImplementation::onCollide(const Collision::Collisioner &own,
     min_dots += glm::min(glm::vec3{dotx, 0.f, dotz}, glm::vec3{0.f, 0.f, 0.f});
   }
 }
+
+void PlayerImplementation::handleRayCollision(const Collision::Collisioner &own, const Collision::Collisioner &other) {
+  // std::cout << "looking at block" << std::endl;
+
+  if(pickingobject.has_value()){
+    auto prev_distance = glm::length(pickingobject.value()->getPosition() - ray->getPosition());
+    auto new_distance = glm::length(other.getBoundingBox()->getPosition() - ray->getPosition());
+
+    if(new_distance < prev_distance) {
+      pickingobject = other.getEntity();
+    }
+  } else {
+    pickingobject = other.getEntity();
+  }
+  
+}
+

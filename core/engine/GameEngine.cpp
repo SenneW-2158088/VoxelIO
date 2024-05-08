@@ -21,6 +21,7 @@
 #include <manager/AssetManager.h>
 #include <memory>
 #include <optional>
+#include <vector>
 
 GameEngine::GameEngine(const EngineConfig &engineConfig) {
   config = engineConfig;
@@ -76,18 +77,34 @@ void GameEngine::gameLoop() {
 
     inputManager->handleInput();
 
-    handleCollisions();
 
     update(windowManager->getDelta());
 
     render();
+
+    handleCollisions();
   }
 }
 
 void GameEngine::update(float dt) {
+  std::vector<int> toRemove{};
 
   for (const auto &entity : entities) {
-    entity->update(dt);
+    if(entity->isAlive()){
+      entity->update(dt);
+    }
+    else {
+      std::vector<Entity*>::iterator position = std::find(entities.begin(), entities.end(), entity);
+      if (position != entities.end()){
+        entities.erase(position);
+      }
+
+      std::vector<Collision::Collisionable*>::iterator pos = std::find(collisioners.begin(), collisioners.end(), (Collision::Collisionable *) entity);
+      if (position != entities.end()){
+        collisioners.erase(pos);
+      }
+
+    }
 
     for (const auto &terrain : terrains) {
       if (camera.has_value()) {
