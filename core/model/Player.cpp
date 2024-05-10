@@ -10,6 +10,7 @@
 #include "glm/ext/quaternion_geometric.hpp"
 #include "glm/geometric.hpp"
 #include "glm/gtx/dual_quaternion.hpp"
+#include "manager/AssetManager.h"
 #include "manager/InputManager.h"
 #include "model/Camera.h"
 #include "model/CrossHair.hpp"
@@ -24,10 +25,16 @@ PlayerStates::PlayerState::PlayerState(Player *player)
 // Idle state
 std::optional<PlayerStates::PlayerState *>
 PlayerStates::IdleState::handleInput(InputKeymap map) {
+  AssetManager::stopCurrentSound();
   const auto notWalking = map.down == GLFW_RELEASE && map.up == GLFW_RELEASE &&
                           map.left == GLFW_RELEASE && map.right == GLFW_RELEASE;
   if (notWalking) {
     return std::nullopt;
+  }
+
+  const auto running = map.shift == GLFW_PRESS;
+  if(running){
+    return new RunningState(entity);
   }
 
   return new PlayerStates::WalkingState(entity);
@@ -36,8 +43,85 @@ PlayerStates::IdleState::handleInput(InputKeymap map) {
 // Walking state
 std::optional<PlayerStates::PlayerState *>
 PlayerStates::WalkingState::handleInput(InputKeymap map) {
+  AssetManager::playSound("footsteps.mp3");
+  entity->setSpeed(Player::walking_speed);
   const auto walking = map.down == GLFW_PRESS || map.up == GLFW_PRESS ||
                        map.left == GLFW_PRESS || map.right == GLFW_PRESS;
+
+  const auto running = map.shift == GLFW_PRESS;
+  const auto jumping = map.space == GLFW_PRESS;
+  
+  if(jumping){
+    entity->jump();
+    return new JumpingState(entity);
+  }
+
+  if (map.up == GLFW_PRESS)
+    entity->forward();
+  if (map.left == GLFW_PRESS)
+    entity->left();
+  if (map.down == GLFW_PRESS)
+    entity->backward();
+  if (map.right == GLFW_PRESS)
+    entity->right();
+  
+
+  if (walking) {
+    if(running){
+      return new RunningState(entity);
+    }
+    return std::nullopt;
+  }
+
+  return new IdleState(entity);
+}
+
+// Jumping state
+std::optional<PlayerStates::PlayerState *>
+PlayerStates::JumpingState::handleInput(InputKeymap map) {
+  AssetManager::playSound("jump.mp3");
+  entity->setSpeed(Player::walking_speed);
+  const auto walking = map.down == GLFW_PRESS || map.up == GLFW_PRESS ||
+                       map.left == GLFW_PRESS || map.right == GLFW_PRESS;
+
+  const auto running = map.shift == GLFW_PRESS;
+  const auto jumping = map.space == GLFW_PRESS;
+
+  if(jumping){
+    entity->jump();
+    return std::nullopt;
+  }
+
+  if (map.up == GLFW_PRESS)
+    entity->forward();
+  if (map.left == GLFW_PRESS)
+    entity->left();
+  if (map.down == GLFW_PRESS)
+    entity->backward();
+  if (map.right == GLFW_PRESS)
+    entity->right();
+
+  if (walking) {
+    if(running){
+      return new RunningState(entity);
+    }
+    return new WalkingState(entity);
+  }
+
+  return new IdleState(entity);
+  
+}
+
+// Running state
+std::optional<PlayerStates::PlayerState *>
+PlayerStates::RunningState::handleInput(InputKeymap map) {
+  AssetManager::playSound("footsteps.mp3", 1.3f);
+  entity->setSpeed(Player::running_speed);
+  const auto walking = map.down == GLFW_PRESS || map.up == GLFW_PRESS ||
+                       map.left == GLFW_PRESS || map.right == GLFW_PRESS;
+
+  const auto running = map.shift == GLFW_PRESS;
+
   if (map.up == GLFW_PRESS)
     entity->forward();
   if (map.left == GLFW_PRESS)
@@ -49,23 +133,15 @@ PlayerStates::WalkingState::handleInput(InputKeymap map) {
   if (map.space == GLFW_PRESS)
     entity->jump();
 
-  if (walking) {
-    return std::nullopt;
+  if(walking){
+    if (running) {
+      return std::nullopt;
+    }
+
+    return new WalkingState(entity);
   }
-
+  
   return new IdleState(entity);
-}
-
-// Jumping state
-std::optional<PlayerStates::PlayerState *>
-PlayerStates::JumpingState::handleInput(InputKeymap map) {
-  return std::nullopt;
-}
-
-// Running state
-std::optional<PlayerStates::PlayerState *>
-PlayerStates::RunningState::handleInput(InputKeymap map) {
-  return std::nullopt;
 }
 
 PlayerImplementation::PlayerImplementation() {
@@ -120,6 +196,10 @@ void PlayerImplementation::transition(
 void PlayerImplementation::update(float dt) {
 
 
+  // if(state){
+  //   std::cout << state->toString() << std::endl;
+  //   std::cout << speed << std::endl;
+  // }
   auto signx = (dots.x > 0) ? 1.f : -1.f;
   auto signy = (dots.y > 0) ? 1.f : -1.f;
   auto signz = (dots.z > 0) ? 1.f : -1.f;
@@ -233,7 +313,7 @@ void PlayerImplementation::right() {
 
 void PlayerImplementation::jump() {
   std::cout << "Jumping" << std::endl;
-  velocity += glm::vec3{0.f, 2.f, 0.1} * speed;
+  velocity += glm::vec3{0.f, 10.f, 0.1};
   acceleration.y = 0;
   for (auto collisioner : getCollisioners()) {
     collisioner->getBoundingBox()->setPosition(position);

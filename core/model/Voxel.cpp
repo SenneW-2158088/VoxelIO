@@ -50,13 +50,14 @@ void Voxel::onCollide(const Collision::Collisioner& own, const Collision::Collis
 
 InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 position)
     : shader{AssetManager::getShader("instanced_voxel")},
-      texture{AssetManager::getTexture("villager.jpg")},
+      texture{AssetManager::getTexture("grass.jpg")},
       Collision::Collisionable{} {
   // TODO: remove hardcoded value
   this->position = position;
   std::cout << "voxel mesh on: " << glm::to_string(position) << std::endl;
   this->mesh = new Mesh::InstancedMesh(vertices, indices, {}, positions, position);
   this->shader->setBlockBinding("Matrices", 0);
+  this->shader->setBlockBinding("DirectionalLightData", 1);
   // this->mesh->move(this->position);
   // this->mesh->scale(glm::vec3{1.f});
   // std::cout << "created mesh" << glm::to_string(position) << std::endl;

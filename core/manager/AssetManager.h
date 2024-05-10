@@ -8,6 +8,9 @@
 #include "graphics/Cubemap.h"
 #include "graphics/Mesh.h"
 #include "graphics/Model.h"
+#include "ik_ISound.h"
+#include "ik_ISoundEngine.h"
+#include "ik_ISoundSource.h"
 #include <assimp/material.h>
 #include <assimp/mesh.h>
 #include <graphics/Shader.h>
@@ -16,6 +19,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+#include <irrKlang.h>
 #include <filesystem>
 #include <map>
 
@@ -26,7 +30,7 @@ static const std::string SHADER_PATH = std::filesystem::path(ASSET_PATH) / "shad
 static const std::string TEXTURE_PATH = std::filesystem::path(ASSET_PATH) / "texture";
 static const std::string CUBEMAP_PATH = std::filesystem::path(ASSET_PATH) / "cubemap";
 static const std::string MODEL_PATH = std::filesystem::path(ASSET_PATH) / "model";
-static const std::string SOUND_PATH= std::filesystem::path(ASSET_PATH) / "sound" / "beat.mp3";
+static const std::string SOUND_PATH= std::filesystem::path(ASSET_PATH) / "sound";
 
 class AssetManager {
 private:
@@ -35,6 +39,9 @@ private:
   static std::map<std::string, std::shared_ptr<Texture>> textures;
   static std::map<std::string, std::shared_ptr<Cubemap>> cubemaps;
   static std::map<std::string, std::shared_ptr<graphics::Model>> models;
+  static std::map<std::string, irrklang::ISoundSource* > sounds;
+  static irrklang::ISoundEngine* soundEngine;
+  static irrklang::ISound* currentSound;
 
   // Load shaders
   static void loadShaders();
@@ -61,6 +68,11 @@ private:
                                std::vector<Material *> &materials, std::filesystem::path& path);
   static Material* processModelMaterial(aiMaterial *material, const aiScene *scene, std::filesystem::path& path);
 
+  // load sounds
+
+  static void loadSounds();
+  static irrklang::ISoundSource* loadSound(const std::string &filename);
+
 public:
   AssetManager() = default;
   static void initializeAssets();
@@ -70,6 +82,11 @@ public:
   static Texture *getTexture(const std::string &name);
   static Cubemap *getCubemap(const std::string &name);
   static graphics::Model *getModel(const std::string &name);
+
+  // audio
+  static void playSound(const std::string &name, float playbackSpeed = 1.f);
+  static void stopCurrentSound();
+
 };
 
 #endif // VOXELIO_ASSETMANAGER_H

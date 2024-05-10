@@ -7,10 +7,15 @@
 #include "graphics/Mesh.h"
 #include "graphics/Model.h"
 #include "graphics/Texture.h"
+#include "ik_ISound.h"
+#include "ik_ISoundEngine.h"
+#include "ik_ISoundSource.h"
+#include "irrKlang.h"
 #include <assimp/material.h>
 #include <assimp/postprocess.h>
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 
 namespace fs = std::filesystem;
 
@@ -18,12 +23,24 @@ std::map<std::string, std::shared_ptr<Shader>> AssetManager::shaders{};
 std::map<std::string, std::shared_ptr<Texture>> AssetManager::textures{};
 std::map<std::string, std::shared_ptr<Cubemap>> AssetManager::cubemaps{};
 std::map<std::string, std::shared_ptr<graphics::Model>> AssetManager::models{};
+std::map<std::string, irrklang::ISoundSource *> AssetManager::sounds{};
+
+irrklang::ISoundEngine *AssetManager::soundEngine = nullptr;
+irrklang::ISound *AssetManager::currentSound = nullptr;
 
 void AssetManager::initializeAssets() {
   loadShaders();
   loadTextures();
   loadCubemaps();
   loadModels();
+
+  soundEngine = irrklang::createIrrKlangDevice();
+  currentSound = nullptr;
+  if (soundEngine) {
+    loadSounds();
+  } else {
+    std::cout << "Failed to create sound engine" << std::endl;
+  }
 }
 
 void AssetManager::clearAssets() {
@@ -139,8 +156,9 @@ void AssetManager::loadModels() {
 
 graphics::Model *AssetManager::loadModel(const std::string &filename) {
   Assimp::Importer import;
-  const aiScene *scene =
-      import.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_ConvertToLeftHanded);
+  const aiScene *scene = import.ReadFile(
+      filename, aiProcess_Triangulate | aiProcess_FlipUVs |
+                    aiProcess_GenNormals | aiProcess_ConvertToLeftHanded);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !scene->mRootNode) {
@@ -252,9 +270,10 @@ Material *AssetManager::processModelMaterial(aiMaterial *material,
     try {
       auto cached = getTexture(filename.C_Str());
       diffuse.push_back(cached);
-      
-    } catch(std::out_of_range e) {
-      Texture *texture = loadTexture(path / filename.C_Str(), Texture::Format::PNG);
+
+    } catch (std::out_of_range e) {
+      Texture *texture =
+          loadTexture(path / filename.C_Str(), Texture::Format::PNG);
       diffuse.push_back(texture);
       textures.emplace(filename.C_Str(), std::shared_ptr<Texture>(texture));
     }
@@ -267,9 +286,10 @@ Material *AssetManager::processModelMaterial(aiMaterial *material,
     try {
       auto cached = getTexture(filename.C_Str());
       specular.push_back(cached);
-      
-    } catch(std::out_of_range e) {
-      Texture *texture = loadTexture(path / filename.C_Str(), Texture::Format::PNG);
+
+    } catch (std::out_of_range e) {
+      Texture *texture =
+          loadTexture(path / filename.C_Str(), Texture::Format::PNG);
       specular.push_back(texture);
       textures.emplace(filename.C_Str(), std::shared_ptr<Texture>(texture));
     }
@@ -282,4 +302,53 @@ Material *AssetManager::processModelMaterial(aiMaterial *material,
 
 graphics::Model *AssetManager::getModel(const std::string &name) {
   return models.at(name).get();
+}
+
+void AssetManager::loadSounds() {
+  if (fs::is_directory(SOUND_PATH)) {
+    for (const auto &entry : fs::directory_iterator(SOUND_PATH)) {
+      std::string name = entry.path().filename();
+
+      irrklang::ISoundSource *source = loadSound(entry.path());
+      if (source) {
+        sounds.emplace(name, source);
+        std::cout << "Loaded sound: " << name << std::endl;
+      } else {
+        std::cout << "Failed to load sound: " << name << std::endl;
+      }
+    }
+  }
+}
+
+irrklang::ISoundSource *AssetManager::loadSound(const std::string &filename) {
+  if (soundEngine) {
+    return soundEngine->addSoundSourceFromFile(filename.c_str());
+  }
+
+  return nullptr;
+}
+
+void AssetManager::playSound(const std::string &name, float playbackSpeed) {
+  auto source = sounds.at(name);
+
+  if (!currentSound || currentSound->getSoundSource()->getName() != source->getName()) {
+    std::cout << "trying to play sound: " << name << std::endl;
+    if (currentSound) {
+      currentSound->stop();
+      currentSound->drop();
+      std::cout << "replacing sound" << name << std::endl;
+    }
+    currentSound = soundEngine->play2D(source, true, false, true);
+  }
+  if(currentSound){
+    currentSound->setPlaybackSpeed(playbackSpeed);
+  }
+}
+
+void AssetManager::stopCurrentSound() {
+  if (currentSound) {
+    currentSound->stop();
+    currentSound->drop();
+    currentSound = nullptr;
+  }
 }

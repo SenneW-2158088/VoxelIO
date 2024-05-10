@@ -10,7 +10,7 @@
 #include <vector>
 
 struct InputKeymap {
-    int up, down, left, right, space;
+    int up, down, left, right, space, shift;
 };
 
 class InputListener {

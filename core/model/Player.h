@@ -20,6 +20,9 @@
  */
 class Player : public Entity, public InputListener, public Collision::Collisionable{
 public:
+  constexpr static const float walking_speed = 5.f;
+  constexpr static const float running_speed = 10.f;
+public:
   Player() = default;
   virtual Camera *getCamera() const = 0;
   void onInput(InputKeymap map) override = 0;
@@ -32,6 +35,7 @@ public:
   virtual void left() = 0;
   virtual void right() = 0;
   virtual void jump() = 0;
+  virtual void setSpeed(float speed) = 0;
 };
 
 /**
@@ -104,8 +108,9 @@ public:
  */
 class PlayerImplementation : public Player {
 private:
+
   const float height = 1.8f;
-  const float speed = 5.f;
+  float speed = walking_speed;
 
   // collision TODO: refactor
   glm::vec3 dots{};
@@ -148,8 +153,13 @@ public:
   void jump() override;
 
 public:
+
   Camera *getCamera() const override { return camera; };
   void onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) override;
+  void setSpeed(float speed) override {
+    this->speed = speed;  
+  };
+
 };
 
 #endif // VOXELIO_PLAYER_H

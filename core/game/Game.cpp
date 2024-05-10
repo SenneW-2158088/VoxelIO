@@ -44,8 +44,8 @@ void Game::start() {
   engine->addEntity(skybox);
 
   // Add terain
-  Terrain* voxelTerrain = new VoxelTerrain();
-  engine->addTerrain(voxelTerrain);
+  // Terrain* voxelTerrain = new VoxelTerrain();
+  // engine->addTerrain(voxelTerrain);
 
   // Basic voxel for testing
   Voxel *voxel = new Voxel(glm::vec3{0.f, -1.f, 0.f});
@@ -81,8 +81,8 @@ void Game::start() {
 
   // engine->addEntity(iv);
 
-  irrklang::ISoundEngine *sound = irrklang::createIrrKlangDevice();
-  sound->play2D(SOUND_PATH.c_str(), true);
+  // irrklang::ISoundEngine *sound = irrklang::createIrrKlangDevice();
+  // sound->play2D(SOUND_PATH.c_str(), true);
   
 
   // Waifu* waifu = new Waifu(glm::vec3{10.f, 0.f, 10.f});

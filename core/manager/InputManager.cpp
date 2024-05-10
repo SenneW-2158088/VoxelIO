@@ -15,9 +15,10 @@ void InputManager::handleInput() {
   const auto down = glfwGetKey(window, GLFW_KEY_S);
   const auto right = glfwGetKey(window, GLFW_KEY_D);
   const auto space = glfwGetKey(window, GLFW_KEY_SPACE);
+  const auto shift = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT);
 
   for (const auto listener : listeners) {
-    listener->onInput(InputKeymap{up, down, left, right, space});
+    listener->onInput(InputKeymap{up, down, left, right, space, shift});
   }
 }
 
