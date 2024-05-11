@@ -10,9 +10,7 @@ struct PointLightData {
     glm::vec4 diffuse;
     glm::vec4 specular;
     glm::vec4 position;
-    float constant;
-    float linear;
-    float quadratic;
+    glm::vec4 distance;
 };
 
 

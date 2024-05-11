@@ -20,28 +20,13 @@ struct PointLight {
     vec4 diffuse;
     vec4 specular;
     vec4 position;
-    float constant;
-    float linear;
-    float quadratic;
+    vec4 distance;
 };
-
-struct TestData{
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 position;
-};
-
-// layout(std430, binding = 3) buffer PointLights {
-//     PointLight lights[];
-// } pl;
 
 layout(std430, binding = 3) buffer PointLights {
-    float data[];
+    PointLight lights[];
 } pl;
 
-// layout(std430, binding = 3) buffer pls {
-//     float test;
-// };
 
 uniform sampler2D blockTexture;
 uniform bool highlighted;
@@ -71,18 +56,18 @@ vec3 calculateDirLight(vec3 normal, vec3 view){
 }
 
 vec3 calculatePointLight(PointLight light, vec3 normal, vec3 position, vec3 view){
-    vec3 lightDir = normalize(-vec3(DirLight.direction));
+    vec3 lightDir = normalize(vec3(light.position) - position);  // Fixed to use light's position
     float diff = max(dot(normal, lightDir), 0.0);
 
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(view, reflectDir), 0.0), 32.0);
 
-    float distance    = length(vec3(light.position) - position);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + 
-  			     light.quadratic * (distance * distance));    
+    float distance = length(vec3(light.position) - position);
+    float attenuation = 1.0 / (light.distance.x + light.distance.y * distance + 
+                               light.distance.z* (distance * distance));    
     // combine results
-    vec3 ambient  = vec3(light.ambient)  * texture(blockTexture, TexCoord).rgb;
-    vec3 diffuse  = vec3(light.diffuse)  * diff * texture(blockTexture, TexCoord).rgb;
+    vec3 ambient  = vec3(light.ambient) * texture(blockTexture, TexCoord).rgb;
+    vec3 diffuse  = vec3(light.diffuse) * diff * texture(blockTexture, TexCoord).rgb;
     vec3 specular = vec3(light.specular) * spec * texture(blockTexture, TexCoord).rgb;
 
     ambient  *= attenuation;
@@ -92,30 +77,51 @@ vec3 calculatePointLight(PointLight light, vec3 normal, vec3 position, vec3 view
     return (ambient + diffuse + specular);    
 }
 
+// vec3 calculatePointLight(PointLight light, vec3 normal, vec3 position, vec3 view){
+//     vec3 lightDir = normalize(vec3(light.position) - position);
+//     float diff = max(dot(normal, lightDir), 0.0);
+
+//     vec3 reflectDir = reflect(-lightDir, normal);
+//     float spec = pow(max(dot(view, reflectDir), 0.0), 32.0);
+
+//     float distance    = length(vec3(light.position) - position);
+//     float attenuation = 1.0 / (light.distance.x+ light.distance.y * distance + 
+//   			     light.distance.z* (distance * distance));    
+//     // combine results
+//     vec3 ambient  = vec3(light.ambient)  * texture(blockTexture, TexCoord).rgb;
+//     vec3 diffuse  = vec3(light.diffuse)  * diff * texture(blockTexture, TexCoord).rgb;
+//     vec3 specular = vec3(light.specular) * spec * texture(blockTexture, TexCoord).rgb;
+
+//     ambient  *= attenuation;
+//     diffuse  *= attenuation;
+//     specular *= attenuation;
+
+//     return (ambient + diffuse + specular);    
+// }
+
 void main(){
     vec3 norm = normalize(Normal);
     vec3 view = normalize(ViewPos - FragPos);
 
-    vec3 dirLightColor = calculateDirLight(norm, view);
+    vec3 dirLightColor = calculateDirLight(norm, view) * vec3(0.05);
     vec3 pointLightColor = vec3(0);
 
-    // for(int i = 0; i < pl.lights.length(); i++){
-    //     // pointLightColor += calculatePointLight(lights[i], norm, FragPos, view);
-    //     pointLightColor += vec3(pl.lights[i].ambient);
+    for(int i = 0; i < pl.lights.length(); i++){
+        pointLightColor += calculatePointLight(pl.lights[i], norm, FragPos, view);
+        // pointLightColor += vec3(pl.lights[i].ambient);
+    }
+
+    // if (valid) {
+    //     FragColor = vec4(pointLightColor, 1.0); // Display the first element as red intensity
+    // } else {
+    //     FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Yellow if length is 0
     // }
 
-    vec3 color = dirLightColor + pointLightColor;
-
-    // if(test == 1.0){
-    if (pl.data.length() > 0) {
-        FragColor = vec4(0.0, pl.data[1], 0.0, 1.0); // Display the first element as red intensity
-    } else {
-        FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Yellow if length is 0
-    }
+    vec3 color = pointLightColor + dirLightColor;
 
     if(highlighted){
-        color = dirLightColor * vec3(0.2, 0.2, 0.2) ;
+        color = color * vec3(0.2, 0.2, 0.2) ;
     }
 
-    // FragColor = vec4(color, 1.0);
+    FragColor = vec4(color, 1.0);
 }

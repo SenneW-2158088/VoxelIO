@@ -20,24 +20,21 @@ public:
   unsigned int getSBO() const {return SBO; };
 public:
     SSBO() {
-        glGenBuffers(1, &SBO);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW); // Allocate with null initially
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        // glGenBuffers(1, &SBO);
+        // glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
+        // // glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW); // Allocate with null initially
+        // glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     }
 
     ~SSBO() {
         glDeleteBuffers(1, &SBO);
     }
 
-    void updateBuffer(std::vector<T>& data) {
+    void updateBuffer(std::vector<T> data) {
         std::cout << "Updating buffer with size: " << sizeof(T) << " * " << data.size() << std::endl;
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
         glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(T) * data.size(), data.data(), GL_DYNAMIC_DRAW);
-        GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-        std::memcpy(p, data.data(), sizeof(T) * data.size());
-        glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SBO);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, SBO);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
     }

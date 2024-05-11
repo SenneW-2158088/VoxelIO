@@ -46,20 +46,31 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
   UniformLocator::provideGame(gameUniform);
   UniformLocator::provideLighting(lightingUniform);
 
-  // pointLightBuffer = new PointLightBuffer();
-  // pointLightBuffer->addPointLight(
-  //   new lighting::PointLight(
-  //     glm::vec3{0.3f, 0.2f, 0.8f},
-  //     glm::vec3{0.3f, 0.2f, 0.8f},
-  //     glm::vec3{0.3f, 0.2f, 0.8f},
-  //     glm::vec3{0.f, 4.f, 8.f},
-  //     1.f,
-  //     0.09f,
-  //     0.032f
-  //   )
-  // );
+  pointLightBuffer = new PointLightBuffer();
+  pointLightBuffer->addPointLight(
+    new lighting::PointLight(
+      glm::vec3{0.9f, 0.2f, 0.0f},
+      glm::vec3{0.3f, 0.2f, 0.8f},
+      glm::vec3{0.3f, 0.2f, 0.8f},
+      glm::vec3{0.f, 4.f, 30.f},
+      1.f,
+      1.f,
+      0.032f
+    )
+  );
+  pointLightBuffer->addPointLight(
+    new lighting::PointLight(
+      glm::vec3{1.0f, 0.0f, 0.8f},
+      glm::vec3{1.0f, 0.2f, 0.8f},
+      glm::vec3{1.0f, 0.2f, 0.8f},
+      glm::vec3{0.f, 2.f, 0.f},
+      1.f,
+      0.09f,
+      0.032f
+    )
+  );
 
-  // pointLightBuffer->buffer();
+  pointLightBuffer->buffer();
 
   // pointLightBuffer->bind(0);
 
@@ -97,28 +108,6 @@ GameEngine::~GameEngine() {
 void GameEngine::start() { this->gameLoop(); }
 
 void GameEngine::gameLoop() {
-  // struct TestData {
-  //   glm::vec3 ambient;
-  //   float pad_1;
-
-  //   glm::vec3 diffuse;
-  //   float pad_2;
-
-  //   glm::vec3 position;
-  //   float pad_3;
-  // };
-
-  unsigned int ssbo;
-  float *t = new float[10];
-  t[0] = 1.f;
-  t[1] = 0.f;
-
-  glGenBuffers(1, &ssbo);
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER,ssbo);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-  delete[] t;
 
   while (!windowManager->shouldClose()) {
 
@@ -126,9 +115,6 @@ void GameEngine::gameLoop() {
 
 
     update(windowManager->getDelta());
-
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER,ssbo);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 
     render();
 

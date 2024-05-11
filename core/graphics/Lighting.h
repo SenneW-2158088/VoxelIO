@@ -45,6 +45,8 @@ protected:
 public:
   PointLight();
   PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 position, float constant, float linear, float quadratic);
+  glm::vec3 getPosition() { return this->position; }
+  glm::vec3 getDistance() { return glm::vec3{constant,linear, quadratic}; };
 };
 
 class SpotLight : public PointLight {
