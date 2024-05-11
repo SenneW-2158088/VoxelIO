@@ -17,8 +17,8 @@ DirectionalLight::DirectionalLight(glm::vec3 ambient, glm::vec3 diffuse, glm::ve
     : Light{ambient, diffuse, specular}, direction{direction} {}
 
 
-PointLight::PointLight() : 
-    Light{}, position{0.f, 1.f, 0.f}, constant{0.f}, linear{0.f}, quadratic{0.f}
+PointLight::PointLight():
+    Light{}, position{0.f, 9.f, 0.f}, constant{1.f}, linear{.09f}, quadratic{.032f}
 {}
 PointLight::PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 position, float constant, float linear, float quadratic) : 
     Light{ambient, diffuse, specular}, position{position}, constant{constant}, linear{linear}, quadratic{quadratic}

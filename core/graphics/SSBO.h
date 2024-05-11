@@ -1,6 +1,11 @@
 #pragma once
 
 #include "glad/glad.h"
+#include <cstring>
+#include <iostream>
+#include <iterator>
+#include <ostream>
+#include <vector>
 
 /* Here lies the most beautiful piece of software, the magical infinite buffer */
 template<class T>
@@ -11,31 +16,34 @@ private:
 public:
   void setId(unsigned int id) { this->id = id; };
 public:
-  unsigned int getId() const { return id; };
+  unsigned int getId() const { return this->id; };
   unsigned int getSBO() const {return SBO; };
 public:
-  // Update the buffer with the supplied array
-  void updateBuffer(T data[], unsigned int size) {
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(T) * size, data, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-  }
-public:
-  SSBO() : id{0} {
-    // Create SBBO buffer
-    glGenBuffers(1, &SBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, id, SBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-  };
+    SSBO() {
+        glGenBuffers(1, &SBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW); // Allocate with null initially
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    }
 
-  ~SSBO<T>() {
-    glDeleteBuffers(1, &SBO);
-  };
+    ~SSBO() {
+        glDeleteBuffers(1, &SBO);
+    }
 
-  void bind() const {
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, getId(), SBO);
-  };
+    void updateBuffer(std::vector<T>& data) {
+        std::cout << "Updating buffer with size: " << sizeof(T) << " * " << data.size() << std::endl;
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(T) * data.size(), data.data(), GL_DYNAMIC_DRAW);
+        GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+        std::memcpy(p, data.data(), sizeof(T) * data.size());
+        glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SBO);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+    }
+
+    void bind(int bindingPoint) {
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, SBO);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingPoint, SBO);
+    }
 };

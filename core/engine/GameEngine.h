@@ -38,6 +38,7 @@ private:
   // Graphics data objects
   Uniform::GameUniform *gameUniform;
   Uniform::LightingUniform *lightingUniform;
+  PointLightBuffer* pointLightBuffer;
 
   // Core objects
   std::vector<Entity *> entities{};

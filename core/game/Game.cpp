@@ -79,7 +79,7 @@ void Game::start() {
       },
       {0.f, 0.f, 0.f});
 
-  // engine->addEntity(iv);
+  engine->addEntity(iv);
 
   // irrklang::ISoundEngine *sound = irrklang::createIrrKlangDevice();
   // sound->play2D(SOUND_PATH.c_str(), true);

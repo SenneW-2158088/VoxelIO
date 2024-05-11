@@ -1,8 +1,9 @@
 # TODO
 
-- play audio on player movements | 30min
-
-- add point lights | 1h
+- Add point lights | 1h
 - Particles when running | 2h
+- Add water | 30m
 - Fix noise generation | 1h
-- Add water | 2h
+- Fix spawn position
+
+- Add crosshair

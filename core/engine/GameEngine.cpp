@@ -5,6 +5,7 @@
 #include "GameEngine.h"
 #include "gameplay/Chunk.h"
 #include "gameplay/Collision.h"
+#include "glad/glad.h"
 #include "glm/fwd.hpp"
 #include "graphics/Lighting.h"
 #include "graphics/Uniform.h"
@@ -45,6 +46,29 @@ GameEngine::GameEngine(const EngineConfig &engineConfig) {
   UniformLocator::provideGame(gameUniform);
   UniformLocator::provideLighting(lightingUniform);
 
+  // pointLightBuffer = new PointLightBuffer();
+  // pointLightBuffer->addPointLight(
+  //   new lighting::PointLight(
+  //     glm::vec3{0.3f, 0.2f, 0.8f},
+  //     glm::vec3{0.3f, 0.2f, 0.8f},
+  //     glm::vec3{0.3f, 0.2f, 0.8f},
+  //     glm::vec3{0.f, 4.f, 8.f},
+  //     1.f,
+  //     0.09f,
+  //     0.032f
+  //   )
+  // );
+
+  // pointLightBuffer->buffer();
+
+  // pointLightBuffer->bind(0);
+
+
+  // glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+  // GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+  // memcpy(p, &v, sizeof(v));
+  // glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
   windowManager->setResizeCallback([](int width, int height) {
     // Get uniform
     auto uniform = UniformLocator::getGame();
@@ -73,12 +97,38 @@ GameEngine::~GameEngine() {
 void GameEngine::start() { this->gameLoop(); }
 
 void GameEngine::gameLoop() {
+  // struct TestData {
+  //   glm::vec3 ambient;
+  //   float pad_1;
+
+  //   glm::vec3 diffuse;
+  //   float pad_2;
+
+  //   glm::vec3 position;
+  //   float pad_3;
+  // };
+
+  unsigned int ssbo;
+  float *t = new float[10];
+  t[0] = 1.f;
+  t[1] = 0.f;
+
+  glGenBuffers(1, &ssbo);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER,ssbo);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+  delete[] t;
+
   while (!windowManager->shouldClose()) {
 
     inputManager->handleInput();
 
 
     update(windowManager->getDelta());
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER,ssbo);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo);
 
     render();
 
