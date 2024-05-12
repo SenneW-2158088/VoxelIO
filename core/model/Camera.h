@@ -41,7 +41,7 @@ public:
 class PerspectiveCamera : public Camera {
 private:
   const float NEAR = .05f;
-  const float FAR = 500.f;
+  const float FAR = 10000.f;
   float field;  // Field Of View
   float aspect; // Aspect ratio
 public:

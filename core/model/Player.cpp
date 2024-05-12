@@ -247,12 +247,12 @@ void PlayerImplementation::update(float dt) {
   // std::cout << "az: "<< az << std::endl;
 
   if(a.z > a.x && ax + 0.4f < 1.f && az + 0.4f > 1) {
-    std::cout << "cx" << std::endl;
+    // std::cout << "cx" << std::endl;
     correction.x = 0;
   }
 
   if(a.x > a.z && az + 0.4f < 1.f && ax + 0.4f > 1) {
-    std::cout << "cz" << std::endl;
+    // std::cout << "cz" << std::endl;
     correction.z = 0;
   }
 

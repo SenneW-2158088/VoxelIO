@@ -54,7 +54,7 @@ InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 posit
       Collision::Collisionable{} {
   // TODO: remove hardcoded value
   this->position = position;
-  std::cout << "voxel mesh on: " << glm::to_string(position) << std::endl;
+  // std::cout << "voxel mesh on: " << glm::to_string(position) << std::endl;
   this->mesh = new Mesh::InstancedMesh(vertices, indices, {}, positions, position);
   this->shader->setBlockBinding("Matrices", 0);
   this->shader->setBlockBinding("DirectionalLightData", 1);
@@ -70,7 +70,6 @@ InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 posit
   for (glm::vec3 &pos : positions) {
     Collision::Collisioner* collisioner = new Collision::Collisioner(
         this, new Collision::AABoundingBox(position + pos - mesh->getTranslation(), mesh), "Voxel Bounding Box");
-    std::cout << "Bounding box on: " << glm::to_string(position + pos) << std::endl;
     addCollsioner(collisioner);
     tree->insert(collisioner);
     this->positions.push_back(position + pos - mesh->getTranslation());
@@ -125,4 +124,18 @@ void InstancedVoxel::destroy(glm::vec3 position) {
       mesh->setActive(index, false);
       collisioners[index]->getBoundingBox()->setActive(false);
     } 
+}
+
+int InstancedVoxel::getHeight(glm::vec3 position){
+  for (auto &pos : positions ){
+
+    std::cout << "checking: " << glm::to_string(pos - glm::vec3(0.5f)) <<  std::endl;
+    if((pos.x -.5f) == position.x && (pos.z -.5f)== position.z){
+      std::cout << "found height block" << pos.y <<  std::endl;
+      return pos.y + 1;
+    }
+  }
+
+  std::cout << "found no matching height block" << std::endl;
+  return 0;
 }

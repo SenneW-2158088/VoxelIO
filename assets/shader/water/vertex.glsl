@@ -3,6 +3,8 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexture;
+layout (location = 3) in mat4 aModel;
+layout (location = 7) in float instanceActive;
 
 layout (std140) uniform Matrices
 {
@@ -19,10 +21,10 @@ out vec3 FragPos;
 out vec3 ViewPos;
 
 void main() {
-    
-    Normal = mat3(transpose(inverse(model))) * aNormal;
+
+    Normal = mat3(transpose(inverse(aModel))) * aNormal;
     TexCoord = aTexture;
-    FragPos = vec3(model * vec4(aPos, 1.0));
+    FragPos = vec3(aModel * vec4(aPos, 1.0));
     ViewPos = vec3(viewPos);
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_Position = projection * view * model * aModel * vec4(aPos, 1.0);
 }

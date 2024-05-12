@@ -97,7 +97,7 @@ void main(){
         pointLightColor += calculatePointLight(pl.lights[i], norm, FragPos, view);
     }
 
-    vec3 color = pointLightColor + dirLightColor;
+    vec3 color = pointLightColor + dirLightColor * vec3(0.4);
 
     if(highlighted && highlighted_id == instanceID){
         color = color * vec3(0.7) ;

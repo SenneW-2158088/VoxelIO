@@ -11,10 +11,10 @@
 #include "graphics/Texture.h"
 #include <graphics/Mesh.h>
 #include <graphics/Shader.h>
+#include <iostream>
 #include <model/Entity.h>
 #include <optional>
 #include <vector>
-#include <iostream>
 
 class Voxel : public Entity, public Collision::Collisionable {
 private:
@@ -77,17 +77,18 @@ public:
 
   void draw() override;
 
-  inline void highlight() { isHighlighted = true;};
+  inline void highlight() { isHighlighted = true; };
 
-  void onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) override;
+  void onCollide(const Collision::Collisioner &own,
+                 const Collision::Collisioner &other) override;
 };
 
 class InstancedVoxel : public Entity, public Collision::Collisionable {
 private:
   Shader *shader;
-  Mesh::InstancedMesh* mesh;
+  Mesh::InstancedMesh *mesh;
   Texture *texture;
-  Collision::CollisionerOctree* tree;
+  Collision::CollisionerOctree *tree;
   std::vector<glm::vec3> positions;
 
   std::optional<unsigned int> highlighted;
@@ -136,25 +137,24 @@ private:
                                        16, 17, 18, 18, 19, 16,
                                        // Bottom face
                                        22, 21, 20, 20, 23, 22};
-  void tempCollide(const Collision::Collisioner& own, const Collision::Collisioner & other);
+  void tempCollide(const Collision::Collisioner &own,
+                   const Collision::Collisioner &other);
 
-  int getIndex(glm::vec3 position){
-    auto it = find(positions.begin(), positions.end(), position); 
-    if (it != positions.end())  
-    { 
-        return it - positions.begin(); 
-    }else{
+  int getIndex(glm::vec3 position) {
+    auto it = find(positions.begin(), positions.end(), position);
+    if (it != positions.end()) {
+      return it - positions.begin();
+    } else {
       return -1;
     }
   }
 
 public:
   inline void highlight(glm::vec3 position) {
-    auto index =getIndex(position);
-    if (index != -1)  
-    { 
-        highlighted = index;
-    }else{
+    auto index = getIndex(position);
+    if (index != -1) {
+      highlighted = index;
+    } else {
       highlighted = std::nullopt;
     }
   };
@@ -162,7 +162,10 @@ public:
   void draw() override;
   void update(float dt) override;
   void collide(Collisionable &other) override;
-  void onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) override;
+  void onCollide(const Collision::Collisioner &own,
+                 const Collision::Collisioner &other) override;
   void destroy(glm::vec3 position);
+
+  int getHeight(glm::vec3 pos);
 };
 #endif // VOXELIO_VOXEL_H

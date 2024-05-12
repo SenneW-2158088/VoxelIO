@@ -48,11 +48,21 @@ void VoxelTerrain::collide(Collision::Collisionable &other) {
         for (auto e : chunk->getEntities()) {
           const auto c = dynamic_cast<Collision::Collisionable *>(e);
           if (c) {
-            std::cout << "Let player collide with" << e->getName() << std::endl;
+            // std::cout << "Let player collide with" << e->getName() << std::endl;
             c->collide(other);
           }
         }
       }
     }
   }
+}
+
+glm::vec3 VoxelTerrain::getSpawnPos(glm::vec3 position){
+  auto new_pos = glm::vec3{
+      std::floor(position.x / 16),
+      0.f,
+      std::floor(position.z / 16),
+  };
+  auto c = chunkManager->load(base_position).lock();
+  return c->getSpawnPos(position);
 }

@@ -132,7 +132,6 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
   // Bind vertex array
   glBindVertexArray(VAO);
 
-  std::cout << "in constructor" << std::endl;
 
   // Initialize model matrices
   for(const auto &pos : positions){
@@ -141,7 +140,6 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
     active.push_back(true);
   }
 
-  std::cout << "creating vbo" << std::endl;
 
   // Initialize instance VBO
   glGenBuffers(1, &VBO_INSTANCED);
@@ -151,7 +149,6 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
 
  
 
-  std::cout << "applying stride" << std::endl;
   // Calculate stride, mat4 = 4 * vec4
   const auto stride = sizeof(glm::vec4) * 4;
 
@@ -170,19 +167,13 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
   glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, stride,
                         (void *)(sizeof(glm::vec4) * 3));
 
-  std::cout << "add divisor" << std::endl;
   glVertexAttribDivisor(3, 1);
   glVertexAttribDivisor(4, 1);
   glVertexAttribDivisor(5, 1);
   glVertexAttribDivisor(6, 1);
 
-  std::cout << "unbind" << std::endl;
   // unbind VBO_INSTANCED
   // glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  for(auto i : active){
-    std::cout << i << std::endl;
-  }
 
   glGenBuffers(1, &ACTIVE_BUFFER);
   glBindBuffer(GL_ARRAY_BUFFER, ACTIVE_BUFFER);

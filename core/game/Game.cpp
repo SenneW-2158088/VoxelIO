@@ -36,7 +36,8 @@ Game::Game() {
 void Game::start() {
   // Add player
   Player *player = new PlayerImplementation();
-  player->setPosition(glm::vec3{0.f, 0.f, -3.f});
+  auto spawn = glm::vec3{0.f, 20.f, 0.f};
+  player->setPosition(spawn);
 
   engine->addInputListener(player);
   engine->setCamera(player->getCamera());
@@ -47,7 +48,7 @@ void Game::start() {
   engine->addEntity(skybox);
 
   // Add terain
-  Terrain* voxelTerrain = new VoxelTerrain();
+  VoxelTerrain* voxelTerrain = new VoxelTerrain();
   engine->addTerrain(voxelTerrain);
 
   Terrain* waterTerrain = new WaterTerrain();
@@ -99,19 +100,31 @@ void Game::start() {
 
   std::vector<glm::vec3> lightPositions = {
     glm::vec3{0.f, 10.f, 0.f},
-    glm::vec3{3.f, 10.f, 2.f},
-    glm::vec3{2.f, 10.f, 4.f},
+    glm::vec3{3.f, 10.f, 10.f},
+    glm::vec3{2.f, 10.f, 10.f},
+    glm::vec3{2.f, 12.f, 20.f},
+    glm::vec3{2.f, 14.f, 30.f},
+    glm::vec3{2.f, 16.f, 40.f},
+    glm::vec3{2.f, 20.f, 50.f},
+    glm::vec3{2.f, 30.f, 60.f},
+    glm::vec3{2.f, 10.f, 70.f},
   };
 
   LightBlock* lightblock = new LightBlock(lightPositions, glm::vec3{0.f});
   engine->addEntity(lightblock);
 
-  Gnome *gnome = new Gnome(glm::vec3{4.f, 0.f, -4.f});
+
+  spawn = glm::vec3{4.f, 0.f, -4.f};
+  std::cout << "spawning gnome on: " << glm::to_string(spawn) << std::endl;
+  Gnome *gnome = new Gnome(voxelTerrain->getSpawnPos(spawn));
   engine->addEntity(gnome);
 
   // Box
   Box *box = new Box(glm::vec3{0.f, 0.f, 2.f});
-  // engine->addEntity(box);
+  engine->addEntity(box);
+
+  Box *box2 = new Box(glm::vec3{2.f, 0.f, 2.f});
+  engine->addEntity(box2);
 
   // Start engine
   engine->start();

@@ -17,11 +17,6 @@ layout(std140) uniform DirectionalLightData {
 
 uniform float time;
 
-float perlin(vec2 p) {
-    // Implement Perlin noise generation here
-    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
 vec3 calculateDirLight(vec3 normal, vec3 view){
     if(DirLight.isActive){
         // ambient

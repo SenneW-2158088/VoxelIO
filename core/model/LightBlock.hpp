@@ -66,18 +66,23 @@ public:
     this->shader = AssetManager::getShader("lightblock");
 
     std::cout << "light block mesh on: " << glm::to_string(position) << std::endl;
+    float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+    float g = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+    float b = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+    std::cout << "color" << r << " " << g << " " << b << std::endl;
+
     this->material = new ColouredMaterial(
-      glm::vec3(1.f),
-      glm::vec3(1.f),
-      glm::vec3(1.f),
-      0.f
+      glm::vec3(r,g,b),
+      glm::vec3(r,g,b),
+      glm::vec3(r,g,b),
+      10.f
     );
 
     for(const auto &pos : positions){
       auto light = new lighting::PointLight(
-        glm::vec3(1.f, 1.f, 1.f),
-        glm::vec3(1.f, 1.f, 1.f),
-        glm::vec3(1.f, 1.f, 1.f),
+        glm::vec3(r,g,b),
+        glm::vec3(r,g,b),
+        glm::vec3(r,g,b),
         pos,
         1.f, 0.09f, 0.032f
       );

@@ -16,6 +16,7 @@ public:
   virtual ~Chunk() = default;
   virtual void draw() const = 0;
   virtual std::vector<Entity*> getEntities() const = 0;
+  virtual glm::vec3 getSpawnPos(glm::vec3 position) = 0;
 };
 
 class BasicChunk : public Chunk {
@@ -25,12 +26,15 @@ public:
   BasicChunk(const noise::Noise &noise);
   void draw() const override;
   std::vector<Entity *> getEntities() const override { return voxels; };
+  glm::vec3 getSpawnPos(glm::vec3 position) override { return position; };
 };
 
 class InstancedChunk : public Chunk {
   InstancedVoxel* voxels;
+  std::vector<glm::vec3> positions;
 public:
   InstancedChunk(const noise::Noise &noise, glm::vec3 position);
   void draw() const override;
   std::vector<Entity *> getEntities() const override { return std::vector<Entity *>{voxels}; };
+  glm::vec3 getSpawnPos(glm::vec3 position) override;
 };

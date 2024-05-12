@@ -19,4 +19,5 @@ public:
   void draw() const override;
   void update(const float dt) override;
   void collide(Collision::Collisionable &other) override;
+  glm::vec3 getSpawnPos(glm::vec3 position);
 };
