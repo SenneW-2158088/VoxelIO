@@ -138,6 +138,7 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
   for(const auto &pos : positions){
     glm::mat4 model{1.f};
     models.push_back(glm::translate(this->model, position + pos));
+    active.push_back(true);
   }
 
   std::cout << "creating vbo" << std::endl;
@@ -148,7 +149,7 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
   glBufferData(GL_ARRAY_BUFFER, this->models.size() * sizeof(glm::mat4),
                &this->models[0], GL_STATIC_DRAW);
 
-  
+ 
 
   std::cout << "applying stride" << std::endl;
   // Calculate stride, mat4 = 4 * vec4
@@ -177,12 +178,31 @@ Mesh::InstancedMesh::InstancedMesh(std::vector<Vertex> vertices,
 
   std::cout << "unbind" << std::endl;
   // unbind VBO_INSTANCED
+  // glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  for(auto i : active){
+    std::cout << i << std::endl;
+  }
+
+  glGenBuffers(1, &ACTIVE_BUFFER);
+  glBindBuffer(GL_ARRAY_BUFFER, ACTIVE_BUFFER);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->active.size(), this->active.data(), GL_DYNAMIC_DRAW);
+
+  glEnableVertexAttribArray(7); // Assuming 7 is the next available index
+  glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*) nullptr);
+  glVertexAttribDivisor(7, 1);  // Important for instancing
+
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   // unbind VAO
   glBindVertexArray(0);
 }
 void Mesh::InstancedMesh::draw(Shader *shader) {
+
+  if(material){
+    material->apply(*shader);
+    material->use();
+  }
 
   shader->use();
   shader->setMat4("model", model);
@@ -211,4 +231,13 @@ void Mesh::InstancedMesh::move(const glm::vec3 position) {
   for(int i = 0; i < models.size(); i++) {
     models[i] = glm::translate(models[i], position);
   }
+}
+
+void Mesh::InstancedMesh::setActive(int index, bool value){
+  if (index >= 0 && index < active.size()) {
+        active[index] = value ? 1.0f : 0.0f;
+        glBindBuffer(GL_ARRAY_BUFFER, ACTIVE_BUFFER);
+        glBufferSubData(GL_ARRAY_BUFFER, index * sizeof(float), sizeof(float), &active[index]);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
 }

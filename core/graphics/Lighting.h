@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <vector>
 
 namespace lighting {
 // Basic lighting class
@@ -15,6 +16,7 @@ protected:
 public:
   Light();
   Light(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+  virtual ~Light(){ };
 
   inline void setActive(bool active) { this->active = active; };
   inline void toggle() { this->active = !active; };
@@ -59,8 +61,10 @@ protected:
 /* Interface for entities that are a light */
 class Lightable {
 private:
-  lighting::Light *source;
+  std::vector<lighting::Light *> sources;
 
 public:
-  inline lighting::Light *getLight() const { return source; };
+  Lightable() = default;
+  inline std::vector<lighting::Light *>getSources() const { return sources; };
+  inline void addSource(lighting::Light* source) {this->sources.push_back(source);}
 };

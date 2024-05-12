@@ -27,7 +27,6 @@ public:
 
     inline bool isAlive() const { return alive; };
     inline void destroy() { this->alive = false;};
-    
 };
 
 

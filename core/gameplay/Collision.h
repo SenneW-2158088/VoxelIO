@@ -16,6 +16,7 @@ private:
 protected:
   glm::vec3 position; // Could get the position from the entity but this is more
   glm::vec3 size; // size of the bounding box in each direction
+  bool active{true};
 
 public:
   BoundingBox(glm::vec3 position);
@@ -34,6 +35,8 @@ public:
 
   virtual inline glm::vec3 getCenter() const { return position; };
   virtual inline glm::vec3 getSize() const { return size; };
+  inline bool isActive() const { return this->active; };
+  void setActive(bool active){this->active = active;}
 };
 
 class AABoundingBox : public BoundingBox {

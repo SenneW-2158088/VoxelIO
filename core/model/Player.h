@@ -130,7 +130,7 @@ private:
   Collision::AABoundingBox *boundingBox;
   Collision::Ray *ray;
 
-  std::optional<Entity*> pickingobject{};
+  std::optional<const Collision::Collisioner*> pickingobject{};
   CrossHair *crosshair;
 
 private:

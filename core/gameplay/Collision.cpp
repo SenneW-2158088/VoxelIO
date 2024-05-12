@@ -58,6 +58,10 @@ AABoundingBox::AABoundingBox(glm::vec3 position, Mesh::BaseMesh *mesh)
 }
 
 bool AABoundingBox::collides(const BoundingBox &other) const {
+  if(!this->active || !other.isActive()){
+    return false;
+  }
+
   return other.collideWith(*this);
 }
 

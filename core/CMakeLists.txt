@@ -36,6 +36,9 @@ add_library(model STATIC
 
         model/Gnome.hpp
         model/CrossHair.hpp
+
+        model/CrossHair.hpp
+        model/LightBlock.hpp
         )
 
 add_library(graphics STATIC

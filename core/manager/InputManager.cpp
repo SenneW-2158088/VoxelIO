@@ -16,9 +16,11 @@ void InputManager::handleInput() {
   const auto right = glfwGetKey(window, GLFW_KEY_D);
   const auto space = glfwGetKey(window, GLFW_KEY_SPACE);
   const auto shift = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT);
+  const auto interact = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 
   for (const auto listener : listeners) {
-    listener->onInput(InputKeymap{up, down, left, right, space, shift});
+    listener->onInput(
+        InputKeymap{up, down, left, right, space, shift, interact});
   }
 }
 

@@ -8,6 +8,7 @@
 #include "model/Box.h"
 #include "model/Gnome.hpp"
 #include "model/Kermit.hpp"
+#include "model/LightBlock.hpp"
 #include "model/Skybox.h"
 #include "model/Triangle.h"
 #include "model/Waifu.h"
@@ -19,6 +20,7 @@
 
 #include <glm/glm.hpp>
 #include <graphics/Uniform.h>
+#include <vector>
 
 Game::Game() {
   EngineConfig config = EngineConfig{
@@ -44,8 +46,8 @@ void Game::start() {
   engine->addEntity(skybox);
 
   // Add terain
-  // Terrain* voxelTerrain = new VoxelTerrain();
-  // engine->addTerrain(voxelTerrain);
+  Terrain* voxelTerrain = new VoxelTerrain();
+  engine->addTerrain(voxelTerrain);
 
   // Basic voxel for testing
   Voxel *voxel = new Voxel(glm::vec3{0.f, -1.f, 0.f});
@@ -79,7 +81,7 @@ void Game::start() {
       },
       {0.f, 0.f, 0.f});
 
-  engine->addEntity(iv);
+  // engine->addEntity(iv);
 
   // irrklang::ISoundEngine *sound = irrklang::createIrrKlangDevice();
   // sound->play2D(SOUND_PATH.c_str(), true);
@@ -90,6 +92,15 @@ void Game::start() {
 
   // Kermit* kermit = new Kermit(glm::vec3{2.f, 2.f, 2.f});
   // engine->addEntity(kermit);
+
+  std::vector<glm::vec3> lightPositions = {
+    glm::vec3{0.f, 10.f, 0.f},
+    glm::vec3{3.f, 10.f, 2.f},
+    glm::vec3{2.f, 10.f, 4.f},
+  };
+
+  LightBlock* lightblock = new LightBlock(lightPositions, glm::vec3{0.f});
+  engine->addEntity(lightblock);
 
   Gnome *gnome = new Gnome(glm::vec3{4.f, 0.f, -4.f});
   engine->addEntity(gnome);

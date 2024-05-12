@@ -73,13 +73,25 @@ InstancedVoxel::InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 posit
     std::cout << "Bounding box on: " << glm::to_string(position + pos) << std::endl;
     addCollsioner(collisioner);
     tree->insert(collisioner);
+    this->positions.push_back(position + pos - mesh->getTranslation());
   }
-
 }
 
 void InstancedVoxel::draw() {
+  if(highlighted.has_value()){
+    shader->use();
+    shader->setBool("highlighted", true);
+    shader->setInt("highlighted_id", highlighted.value());
+  }
+  else{
+    shader->use();
+    shader->setBool("highlighted", false);
+    
+  }
   texture->use();
   mesh->draw(shader);
+
+  highlighted = std::nullopt;
 }
 
 void InstancedVoxel::update(float dt) {}
@@ -104,5 +116,13 @@ void InstancedVoxel::collide(Collisionable &other) {
 
 void InstancedVoxel::onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) {
 
-  // std::cout << "Player collided with block" << std::endl;
+  // std::cout << "Block collided " << glm::to_string(own.getBoundingBox()->getPosition()) << std::endl;
+}
+
+void InstancedVoxel::destroy(glm::vec3 position) {
+    auto index = getIndex(position);
+    if (index != -1) {
+      mesh->setActive(index, false);
+      collisioners[index]->getBoundingBox()->setActive(false);
+    } 
 }

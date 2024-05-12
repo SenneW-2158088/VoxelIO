@@ -26,6 +26,7 @@ Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath) {
     if(!success) {
         glGetProgramInfoLog(this->program, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        throw new std::exception;
     }
 }
 

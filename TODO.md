@@ -1,9 +1,10 @@
 # TODO
 
-- Add point lights | 1h
-- Particles when running | 2h
-- Add water | 30m
+- fix picking
+- Add water | 1h
+- Fix spawn position | 30min
 - Fix noise generation | 1h
-- Fix spawn position
+- add model to scene | 30min
+- add pointlights to scene | 30min
 
-- Add crosshair
+- Particles when running | 2h

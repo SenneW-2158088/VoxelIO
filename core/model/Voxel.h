@@ -7,11 +7,14 @@
 
 #include "gameplay/Collision.h"
 #include "glm/fwd.hpp"
+#include "glm/gtx/string_cast.hpp"
 #include "graphics/Texture.h"
 #include <graphics/Mesh.h>
 #include <graphics/Shader.h>
 #include <model/Entity.h>
+#include <optional>
 #include <vector>
+#include <iostream>
 
 class Voxel : public Entity, public Collision::Collisionable {
 private:
@@ -85,6 +88,9 @@ private:
   Mesh::InstancedMesh* mesh;
   Texture *texture;
   Collision::CollisionerOctree* tree;
+  std::vector<glm::vec3> positions;
+
+  std::optional<unsigned int> highlighted;
 
   const std::vector<Mesh::Vertex> vertices = {
       // Front face
@@ -131,11 +137,32 @@ private:
                                        // Bottom face
                                        22, 21, 20, 20, 23, 22};
   void tempCollide(const Collision::Collisioner& own, const Collision::Collisioner & other);
+
+  int getIndex(glm::vec3 position){
+    auto it = find(positions.begin(), positions.end(), position); 
+    if (it != positions.end())  
+    { 
+        return it - positions.begin(); 
+    }else{
+      return -1;
+    }
+  }
+
 public:
+  inline void highlight(glm::vec3 position) {
+    auto index =getIndex(position);
+    if (index != -1)  
+    { 
+        highlighted = index;
+    }else{
+      highlighted = std::nullopt;
+    }
+  };
   InstancedVoxel(std::vector<glm::vec3> positions, glm::vec3 position);
   void draw() override;
   void update(float dt) override;
   void collide(Collisionable &other) override;
   void onCollide(const Collision::Collisioner &own, const Collision::Collisioner &other) override;
+  void destroy(glm::vec3 position);
 };
 #endif // VOXELIO_VOXEL_H

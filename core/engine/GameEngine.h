@@ -7,6 +7,7 @@
 
 #include "gameplay/Chunk.h"
 #include "gameplay/Collision.h"
+#include "graphics/Lighting.h"
 #include "manager/CameraHandler.h"
 #include "model/PointLightBuffer.h"
 #include <GLFW/glfw3.h>
@@ -44,6 +45,7 @@ private:
   std::vector<Entity *> entities{};
   std::vector<Collision::Collisionable *> collisioners{};
   std::vector<Terrain *> terrains{};
+  std::vector<lighting::PointLight*> pointlights;
 
 private:
   void gameLoop();

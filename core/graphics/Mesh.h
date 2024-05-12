@@ -58,10 +58,13 @@ namespace Mesh {
     private:
         unsigned int VBO_INSTANCED{};
         std::vector<glm::mat4> models;
+        unsigned int ACTIVE_BUFFER{};
+        std::vector<float> active{};
     public:
         InstancedMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Material *material, std::vector<glm::vec3> positions, glm::vec3 position);
         void draw(Shader *shader) override;
         void move(const glm::vec3 position) override;
+        void setActive(int index, bool value);
     };
 }
 

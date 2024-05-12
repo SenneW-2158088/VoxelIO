@@ -182,6 +182,19 @@ PlayerImplementation::PlayerImplementation() {
 }
 
 void PlayerImplementation::onInput(InputKeymap map) {
+  if(map.interact == GLFW_PRESS && pickingobject.has_value()){
+    if(pickingobject.has_value()){
+      auto v = dynamic_cast<Voxel*>(pickingobject.value()->getEntity().value());
+      if(v){
+        v->destroy();
+      }
+      auto i = dynamic_cast<InstancedVoxel*>(pickingobject.value()->getEntity().value());
+      if(i){
+        i->destroy(pickingobject.value()->getBoundingBox()->getPosition());
+      }
+    }
+  }
+
   transition(state->handleInput(map));
 }
 
@@ -262,10 +275,13 @@ void PlayerImplementation::update(float dt) {
   // this->acceleration= glm::vec3{0};
 
   if(pickingobject.has_value()){
-    auto v = dynamic_cast<Voxel*>(pickingobject.value());
+    auto v = dynamic_cast<Voxel*>(pickingobject.value()->getEntity().value());
     if(v){
       v->highlight();
-      // v->destroy();
+    }
+    auto i = dynamic_cast<InstancedVoxel*>(pickingobject.value()->getEntity().value());
+    if(i){
+      i->highlight(pickingobject.value()->getBoundingBox()->getPosition());
     }
   }
   
@@ -381,17 +397,16 @@ void PlayerImplementation::handleBlockCollision(const Collision::Collisioner &ow
 }
 
 void PlayerImplementation::handleRayCollision(const Collision::Collisioner &own, const Collision::Collisioner &other) {
-  // std::cout << "looking at block" << std::endl;
 
   if(pickingobject.has_value()){
-    auto prev_distance = glm::length(pickingobject.value()->getPosition() - ray->getPosition());
+    auto prev_distance = glm::length(pickingobject.value()->getBoundingBox()->getPosition() - ray->getPosition());
     auto new_distance = glm::length(other.getBoundingBox()->getPosition() - ray->getPosition());
 
     if(new_distance < prev_distance) {
-      pickingobject = other.getEntity();
+      pickingobject = &other;
     }
   } else {
-    pickingobject = other.getEntity();
+      pickingobject = &other;
   }
   
 }
