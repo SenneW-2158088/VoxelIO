@@ -1,6 +1,5 @@
 # TODO
 
-- fix picking
 - Add water | 1h
 - Fix spawn position | 30min
 - Fix noise generation | 1h

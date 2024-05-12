@@ -12,6 +12,7 @@
 #include "model/Skybox.h"
 #include "model/Triangle.h"
 #include "model/Waifu.h"
+#include "model/WaterTerrain.hpp"
 #include <model/Camera.h>
 #include <model/Player.h>
 #include <model/Voxel.h>
@@ -48,6 +49,9 @@ void Game::start() {
   // Add terain
   Terrain* voxelTerrain = new VoxelTerrain();
   engine->addTerrain(voxelTerrain);
+
+  Terrain* waterTerrain = new WaterTerrain();
+  engine->addTerrain(waterTerrain);
 
   // Basic voxel for testing
   Voxel *voxel = new Voxel(glm::vec3{0.f, -1.f, 0.f});
